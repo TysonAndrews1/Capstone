@@ -3,7 +3,7 @@ import {ScrollView, Text, Pressable,TouchableOpacity,StyleSheet,View} from 'reac
 import MainLayout from './layouts/MainLayout';
 import MiniAnnouncment from './components/MiniAnnouncemnt'
 import MiniSchedule from './components/MiniSchedule'
-import DateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function Home ({navigation}){
   const [date, setDate] = useState(new Date());

@@ -34,7 +34,7 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* Shifts Button */}
-      <TouchableOpacity onPress={() => onPress("Shifts")} style = {styles.navButton}>
+      <TouchableOpacity onPress={() => onPress("calenderTest")} style = {styles.navButton}>
         <Icon name="calendar" size={30} color={getButtonColor("Shifts")} />
         <Text style={[styles.navText, { color: getButtonColor("Shifts") }]}>Shifts</Text>
       </TouchableOpacity>
