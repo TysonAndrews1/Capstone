@@ -3,7 +3,7 @@ import {ScrollView, Text, Pressable,StyleSheet, View, TextInput} from 'react-nat
 import MainLayout from '../layouts/MainLayout';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function Events({ navigation, route }) {
+export default function Events() {
   const [date, setDate] = useState(new Date());
   // const True = true;
 return (
