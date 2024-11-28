@@ -27,7 +27,7 @@ const Firestore = () => {
     <View>
       <Text>Firestore Data</Text>
         {data.map((item) => (
-          <Text key={item.uid}>
+          <Text key={item.id}>
             {item.email} - {item.role}
           </Text>
         ))}
