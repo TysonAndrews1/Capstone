@@ -1,7 +1,7 @@
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "./firebaseConfig";
 
-// 로그인 처리
+// Deal with Login
 export const handleLogin = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -9,11 +9,11 @@ export const handleLogin = async (email, password) => {
     return userCredential.user;
   } catch (error) {
     console.error("Error logging in:", error.message);
-    throw new Error(error.message); // 오류 메시지를 전달
+    throw new Error(error.message); // Send an error message
   }
 };
 
-// 회원가입 처리
+// Sing up 
 export const handleSignUp = async (email, password) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -21,6 +21,6 @@ export const handleSignUp = async (email, password) => {
     return userCredential.user;
   } catch (error) {
     console.error("Error signing up:", error.message);
-    throw new Error(error.message); // 오류 메시지를 전달
+    throw new Error(error.message); // Send an error message
   }
 }; 
