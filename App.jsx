@@ -1,11 +1,11 @@
 
 import React, { useState } from 'react';
+import Home from './screens/Home';
+import Events from './screens/Events'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Index from './app/index'
-import Home from './app/screens/Home';
-import Events from './app/screens/Events';
-import Footer from './app/layouts/Footer';
+
+
 
 const Stack = createNativeStackNavigator(); 
 export default function Capstone({navigation}) {
@@ -13,7 +13,7 @@ export default function Capstone({navigation}) {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home' screenOptions= {
+      <Stack.Navigator screenOptions={
         {
           headerStyle:{
             backgroundColor:'#3F6D89',
@@ -25,12 +25,8 @@ export default function Capstone({navigation}) {
           },
         }
       }>
-        <Stack.Screen name="Index" component={Index} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Events" component={Events} />
-        
+        <Stack.Screen name="index" component={Index} />
       </Stack.Navigator>
-      <Footer/>
     </NavigationContainer>
   );
 }

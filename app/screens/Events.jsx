@@ -1,47 +1,55 @@
 import React, { useState,useEffect } from 'react';
-import {ScrollView, Text, Pressable,StyleSheet, View, TextInput} from 'react-native'
+import {ScrollView, Text, Pressable, StyleSheet, View} from 'react-native'
 import MainLayout from '../layouts/MainLayout';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import AntDesign from 'react-native-vector-icons/AntDesign'; // For back arrow icon
 
-export default function Events() {
-  const [date, setDate] = useState(new Date());
-  // const True = true;
+export default function Events({ navigation, route }) {
 return (
     <MainLayout>
-      <View style = {styles.form}>
-        <Text style = {styles.label}>Event Title</Text>
-        <TextInput style = {styles.inputField}></TextInput>
-
-        <Text style = {styles.label}>Start Time</Text>
-        <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode="date"
-              display="default"  // Use 'default' for standard display
-              // is24Hour={true}
-            />
-        <Text style = {styles.label}>End Time</Text>
-        <Text style = {styles.label}>Location</Text>
-        <TextInput style = {styles.inputField}></TextInput>
-        <Text style = {styles.label}>Event Manager</Text>
-        <TextInput style = {styles.inputField}></TextInput>
-        <Text style = {styles.label}>Special Requirements</Text>
-        <TextInput style = {styles.inputField}></TextInput>
-        
-      </View> 
+      <ScrollView style={styles.container}>
+      <View style ={styles.TitleContainer}>
+        <Text style={styles.title}>Transaction Details</Text>
+        </View>
+        <Text style={styles.text}>Title: </Text>
+        <Text style={styles.text}>Description: </Text>
+        <Text style={styles.text}>Amount: </Text>
+      </ScrollView>
     </MainLayout>
   
 )}
 
 const styles = StyleSheet.create({
-  form:{
+    Leisure: {
+        backgroundColor:"#FFCFB3"
+},
+Other: {
+        backgroundColor:"#CAF4FF"
+},
+Essential:{
+        backgroundColor:"#C9E9D2"
+},
+  
+    container: {
 
+    flex:1,
+    borderWidth:3,
+    borderColor:'white',
 
   },
-  label:{
-
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign:'center',
+    paddingVertical:20,
   },
-  inputField:{
-
-  }
+  text: {
+    fontSize: 18,
+    margin:5,
+    color:'#fff',
+    textAlign:'center',
+  },
+  Hcontainer: {
+    flexDirection:'row',
+    justifyContent:'center'
+  },
 });
