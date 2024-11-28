@@ -1,7 +1,26 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput} from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert} from 'react-native';
+import React, { useState } from 'react';
+import { handleLogin } from "../firebase/auth";
+import { useRouter } from "expo-router";
 
 const Login = () => {
+    const router = useRouter();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+
+    const onLoginPress = async () => {
+        if (!email || !password) {
+            Alert.alert("Error", "Please enter both email and password.");
+            return;
+        }
+
+        try {
+            await handleLogin(email, password);
+            router.push('/screens/ManagerScreen');
+        } catch (error) {
+            Alert.alert("Login Failed", error.message);
+        }
+    };
   return (
     <View style={styles.container}>
         <Text style={styles.heading}>Sign In</Text>
@@ -12,18 +31,20 @@ const Login = () => {
             <Text style={styles.inputText}>Email</Text>
             <View style={styles.inputGroup}>
                 {/* put an icon */}
-                <TextInput style={styles.input} placeholder="email" placeholderTextColor="#aaa" />
+                <TextInput style={styles.input} placeholder="email" placeholderTextColor="#aaa"
+                value={email} onChangeText={setEmail} />
             </View>
             
             {/* Password Input */}
             <Text style={styles.inputText}>Password</Text>
             <View style={styles.inputGroup}>
                 {/* put an icon */}
-                <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#aaa" secureTextEntry />
+                <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#aaa" secureTextEntry
+                 value={password} onChangeText={setPassword} />
             </View>
 
             {/* Login BUtton */}
-            <TouchableOpacity style={styles.button} onPress={() => Navigation.navigate("")}>
+            <TouchableOpacity style={styles.button} onPress={onLoginPress}>
                 <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
 
