@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import {ScrollView, Text, Pressable,TouchableOpacity,StyleSheet,View} from 'react-native'
-import MainLayout from './layouts/MainLayout';
-import MiniAnnouncment from './components/MiniAnnouncemnt'
-import MiniSchedule from './components/MiniSchedule'
+import MainLayout from '../layouts/MainLayout';
+import MiniAnnouncment from '../components/MiniAnnouncemnt'
+import MiniSchedule from '../components/MiniSchedule'
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function Home ({navigation}){
+export default function Home (){
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 

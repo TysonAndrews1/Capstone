@@ -1,10 +1,11 @@
 import React, { useState,useEffect } from 'react';
 import {ScrollView, Text, Pressable,StyleSheet, View, TextInput} from 'react-native'
-import MainLayout from './layouts/MainLayout';
+import MainLayout from '../layouts/MainLayout';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function Events({ navigation, route }) {
   const [date, setDate] = useState(new Date());
+  // const True = true;
 return (
     <MainLayout>
       <View style = {styles.form}>
@@ -17,7 +18,7 @@ return (
               value={date}
               mode="date"
               display="default"  // Use 'default' for standard display
-              is24Hour={True}
+              // is24Hour={true}
             />
         <Text style = {styles.label}>End Time</Text>
         <Text style = {styles.label}>Location</Text>
