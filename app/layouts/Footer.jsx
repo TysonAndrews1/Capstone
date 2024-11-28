@@ -20,6 +20,7 @@ export default function Footer() {
 
   return (
     <View style={styles.container}>
+      
       {/* Home Button */}
       <TouchableOpacity onPress={() => onPress("Home")} style = {styles.navButton}>
         <Icon name="home" size={30} color={getButtonColor("Home")} />
