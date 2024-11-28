@@ -13,8 +13,8 @@ const ManagerScreen = () => {
       <View style={styles.container}>
         <Firestore />
         <Pressable style={styles.button}
-         onPress={() => router.push('/screens/AddEmployee')}>
-          <Text style={styles.text}>ADD Employee</Text>
+         onPress={() => router.push('/screens/Events')}>
+          <Text style={styles.text}>ADD Event</Text>
         </Pressable>  
       </View>
     </MainLayout>
