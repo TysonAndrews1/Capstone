@@ -1,25 +1,25 @@
+// app/components/Footer.tsx
 import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native'; // Import useRoute to get the current route
-import Icon from 'react-native-vector-icons/AntDesign'; // Using AntDesign icons
-import More from 'react-native-vector-icons/Feather'; // Using Feather icons
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router'; // expo-router's useRouter hook
+import Icon from 'react-native-vector-icons/AntDesign';
 
 export default function Footer() {
-  const navigation = useNavigation();  // Access the navigation object using the hook
-  const route = useRoute();  // Access the current route
-  
-  // Function to handle page navigation
+  const router = useRouter(); // Initialize the router
+
+  // Function to navigate to the correct screen
   const onPress = (pageName) => {
-    navigation.navigate(pageName);  // Navigate to the specified page
+    router.push(`/screens/${pageName}`); // Navigate to screens using path
   };
 
   // Function to determine the active button's color
   const getButtonColor = (pageName) => {
-    return route.name === pageName ? '#000000' : '#fff';  // Highlight active page
+    // return route.name === pageName ? '#000000' : '#fff';  // Highlight active page
   };
 
   return (
     <View style={styles.container}>
+      
       {/* Home Button */}
       <TouchableOpacity onPress={() => onPress("Home")} style = {styles.navButton}>
         <Icon name="home" size={30} color={getButtonColor("Home")} />
@@ -27,22 +27,22 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* Chat Button */}
-      <TouchableOpacity onPress={() => onPress("Details")} style = {styles.navButton}>
-        <Icon name="message1" size={30} color={getButtonColor("Details")} />
-        <Text style={[styles.navText, { color: getButtonColor("Details") }]}>Chat</Text>
+      <TouchableOpacity onPress={() => onPress("Events")} style = {styles.navButton}>
+        <Icon name="message1" size={30} color={getButtonColor("Events")} />
+        <Text style={[styles.navText, { color: getButtonColor("Events") }]}>Chat</Text>
       </TouchableOpacity>
 
       {/* Shifts Button */}
-      <TouchableOpacity onPress={() => onPress("Shifts")} style = {styles.navButton}>
+      <TouchableOpacity onPress={() => onPress("calenderTest")} style = {styles.navButton}>
         <Icon name="calendar" size={30} color={getButtonColor("Shifts")} />
         <Text style={[styles.navText, { color: getButtonColor("Shifts") }]}>Shifts</Text>
       </TouchableOpacity>
 
       {/* More Button */}
-      <TouchableOpacity onPress={() => onPress("More")} style = {styles.navButton}>
+      {/* <TouchableOpacity onPress={() => onPress("More")} style = {styles.navButton}>
         <More name="more-horizontal" size={30} color={getButtonColor("More")} />
         <Text style={[styles.navText, { color: getButtonColor("More") }]}>More</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
