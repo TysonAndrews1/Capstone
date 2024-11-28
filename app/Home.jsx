@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import {ScrollView, Text, Pressable,TouchableOpacity,StyleSheet,View} from 'react-native'
-import AntDesign from 'react-native-vector-icons/AntDesign'; // For back arrow icon
-import MainLayout from '../layouts/MainLayout';
-import MiniAnnouncment from '../components/MiniAnnouncemnt'
-import MiniSchedule from '../components/MiniSchedule'
+import MainLayout from './layouts/MainLayout';
+import MiniAnnouncment from './components/MiniAnnouncemnt'
+import MiniSchedule from './components/MiniSchedule'
 
 
 

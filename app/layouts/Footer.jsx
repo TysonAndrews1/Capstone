@@ -27,9 +27,9 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* Chat Button */}
-      <TouchableOpacity onPress={() => onPress("Details")} style = {styles.navButton}>
-        <Icon name="message1" size={30} color={getButtonColor("Details")} />
-        <Text style={[styles.navText, { color: getButtonColor("Details") }]}>Chat</Text>
+      <TouchableOpacity onPress={() => onPress("Events")} style = {styles.navButton}>
+        <Icon name="message1" size={30} color={getButtonColor("Events")} />
+        <Text style={[styles.navText, { color: getButtonColor("Events") }]}>Chat</Text>
       </TouchableOpacity>
 
       {/* Shifts Button */}

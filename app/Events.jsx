@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import {ScrollView, Text, Pressable,StyleSheet, View} from 'react-native'
-import MainLayout from '../layouts/MainLayout';
-import AntDesign from 'react-native-vector-icons/AntDesign'; // For back arrow icon
+import MainLayout from './layouts/MainLayout';
 
 export default function Events({ navigation, route }) {
 return (
