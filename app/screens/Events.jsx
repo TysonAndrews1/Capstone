@@ -1,19 +1,19 @@
 import React, { useState,useEffect } from 'react';
-import {ScrollView, Text, Pressable, StyleSheet, View} from 'react-native'
+import {ScrollView, Text, Pressable,StyleSheet, View} from 'react-native'
 import MainLayout from '../layouts/MainLayout';
 import AntDesign from 'react-native-vector-icons/AntDesign'; // For back arrow icon
 
 export default function Events({ navigation, route }) {
 return (
     <MainLayout>
-      <ScrollView style={styles.container}>
+      {/* <ScrollView style={styles.container}>
       <View style ={styles.TitleContainer}>
-        <Text style={styles.title}>Transaction Details</Text>
+        <Text style={[styles.title,styling]}>Transaction Details</Text>
         </View>
-        <Text style={styles.text}>Title: </Text>
-        <Text style={styles.text}>Description: </Text>
-        <Text style={styles.text}>Amount: </Text>
-      </ScrollView>
+        <Text style={[styles.text]}>Title: {transaction.title}</Text>
+        <Text style={styles.text}>Description: {transaction.desc}</Text>
+        <Text style={styles.text}>Amount: {transaction.amount}</Text>
+      </ScrollView> */}
     </MainLayout>
   
 )}
