@@ -11,11 +11,27 @@ const ManagerScreen = () => {
   return (
     <MainLayout>
       <View style={styles.container}>
+        <Text>Manager Tools</Text>
+        <Pressable style={styles.button}>
+          <Text style={styles.text}>Manage Employee Schedule</Text>
+        </Pressable>        
+        <Pressable style={styles.button}>
+          <Text style={styles.text}>View Employee Request</Text>
+        </Pressable>
+        <Pressable style={styles.button} onPress={()=> router.push('/screens/Events')}>
+          <Text style={styles.text}>Manage Events</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text style={styles.text}>Manage Employee Accounts</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text style={styles.text}>Employee Report</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text style={styles.text}>Push Schedule Notification</Text>
+        </Pressable>
         <Firestore />
-        <Pressable style={styles.button}
-         onPress={() => router.push('/screens/Events')}>
-          <Text style={styles.text}>ADD Event</Text>
-        </Pressable>  
+
       </View>
     </MainLayout>
   );
@@ -26,8 +42,8 @@ export default ManagerScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
+    padding: 16,
   },
   button: {
     alignItems: 'center',
@@ -37,6 +53,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     elevation: 3,
     backgroundColor: '#3f6d89',
+    width: '90%',
+    marginVertical: 8,
   },
   text: {
     fontSize: 16,
