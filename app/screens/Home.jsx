@@ -4,8 +4,10 @@ import MainLayout from '../layouts/MainLayout';
 import MiniAnnouncment from '../components/MiniAnnouncemnt'
 import MiniSchedule from '../components/MiniSchedule'
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { useRouter } from 'expo-router';
 export default function Home (){
+
+  const router = useRouter(); // Initialize the router
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
 
@@ -17,32 +19,21 @@ export default function Home (){
   const showDatepicker = () => {
     setShow(true);
   };
+  const toEvent = () =>{
+    router.push(`/screens/Events`); // Navigate to screens using path
+
+  }
 return (
     <MainLayout>
     <ScrollView style = {styles.container}>
     <View>
           <Text>Here</Text>
           <Text>There</Text>
-
-          {/* Button to show date picker */}
-          <TouchableOpacity onPress={showDatepicker} style={styles.button}>
-            <Text style={styles.buttonText}>Select Date</Text>
-          </TouchableOpacity>
-
-          {/* DateTimePicker only shows when `show` is true */}
-          {show && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode="date"
-              display="default"  // Use 'default' for standard display
-              onChange={onChange}
-            />
-          )}
+          
         </View>
       <MiniAnnouncment/>
       <View>
-        <Pressable></Pressable>
+        <Pressable onPress={toEvent}><Text>To Event Create</Text></Pressable>
         <Pressable></Pressable>
         <Pressable></Pressable>
         <Pressable></Pressable>

@@ -3,6 +3,8 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router'; // expo-router's useRouter hook
 import Icon from 'react-native-vector-icons/AntDesign';
+import More from 'react-native-vector-icons/Feather'
+import { useRoute } from '@react-navigation/native';
 
 export default function Footer() {
   const router = useRouter(); // Initialize the router
@@ -14,9 +16,12 @@ export default function Footer() {
 
   // Function to determine the active button's color
   const getButtonColor = (pageName) => {
-    // return route.name === pageName ? '#000000' : '#fff';  // Highlight active page
-  };
 
+    
+    const route = useRoute();  // Access the current route
+    // Compare the route name with pageName and highlight accordingly
+    return route.name == `/screens${pageName}` ? '#000000' : '#fff'; 
+  };
   return (
     <View style={styles.container}>
       
@@ -39,10 +44,10 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* More Button */}
-      {/* <TouchableOpacity onPress={() => onPress("More")} style = {styles.navButton}>
+      <TouchableOpacity onPress={() => onPress("More")} style = {styles.navButton}>
         <More name="more-horizontal" size={30} color={getButtonColor("More")} />
         <Text style={[styles.navText, { color: getButtonColor("More") }]}>More</Text>
-      </TouchableOpacity> */}
+      </TouchableOpacity>
     </View>
   );
 }

@@ -7,6 +7,11 @@ const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    const forgotPass = ()=>{
+      router.push('/screens/Home');
+
+    }
 
     const onLoginPress = async () => {
         if (!email || !password) {
@@ -47,8 +52,9 @@ const Login = () => {
             <TouchableOpacity style={styles.button} onPress={onLoginPress}>
                 <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
-
+              <TouchableOpacity onPress={forgotPass}>
             <Text style={styles.inputText}>Forgot password?</Text>
+            </TouchableOpacity>
         </View>
     </View>
   )
