@@ -10,7 +10,23 @@ export const handleLogin = async (email, password) => {
     return userCredential.user;
   } catch (error) {
     console.error("Error logging in:", error.message);
-    throw new Error(error.message); // Send an error message
+    
+    // Error Message Mapping
+    let errorMessage =  "";
+    switch (error.code) {
+      case "auth/user-not-found":
+        errorMessage = "The user is not registered. Please check the email address.";
+        break;
+      case "auth/wrong-password":
+        errorMessage = "The password is incorrect. Please try again.";
+        break;
+      case "auth/invalid-email":
+        errorMessage = "The email format is invalid.";
+        break;
+      default:
+        errorMessage = "An issue occurred during login. Please try again.";
+    }
+    throw new Error(errorMessage);
   }
 };
 
