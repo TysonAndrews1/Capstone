@@ -26,8 +26,6 @@ export default function Capstone({navigation}) {
         }
       }>
         <Stack.Screen name="Index" component={Index} />
-        <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Events" component={Events} />
         
       </Stack.Navigator>
       <Footer/>

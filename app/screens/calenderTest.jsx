@@ -3,7 +3,7 @@ import { StyleSheet,View, Text, Button } from "react-native";
 import MainLayout from "../layouts/MainLayout";
 import { Calendar } from "react-native-calendars";
 
-export default function calenderTest() {
+export default function calenderTest({ navigation, route }) {
     const [selectedDate, setSelectedDate] = useState('');
     const onDayPress = (day) => {
         setSelectedDate(day.dateString);

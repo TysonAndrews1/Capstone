@@ -12,14 +12,7 @@ return (
         <Text style = {styles.label}>Event Title</Text>
         <TextInput style = {styles.inputField}></TextInput>
 
-        <Text style = {styles.label}>Start Time</Text>
-        <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              mode="date"
-              display="default"  // Use 'default' for standard display
-              // is24Hour={true}
-            />
+        <Text style = {styles.label}>Start Time</Text>  
         <Text style = {styles.label}>End Time</Text>
         <Text style = {styles.label}>Location</Text>
         <TextInput style = {styles.inputField}></TextInput>
