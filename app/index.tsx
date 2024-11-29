@@ -1,6 +1,7 @@
-import Home from "./screens/Home"
+import Login from '../app/screens/Login';
+
 export default function Index() {
   return (
-        <Home/>
+    <Login />
   );
 }
