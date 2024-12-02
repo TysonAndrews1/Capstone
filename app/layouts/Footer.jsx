@@ -20,7 +20,7 @@ export default function Footer() {
     
     const route = useRoute();  // Access the current route
     // Compare the route name with pageName and highlight accordingly
-    return route.name == `/screens${pageName}` ? '#000000' : '#fff'; 
+    return route.name == `${pageName}` ? '#000000' : '#fff'; 
   };
   return (
     <View style={styles.container}>
@@ -32,9 +32,9 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* Chat Button */}
-      <TouchableOpacity onPress={() => onPress("Events")} style = {styles.navButton}>
-        <Icon name="message1" size={30} color={getButtonColor("Events")} />
-        <Text style={[styles.navText, { color: getButtonColor("Events") }]}>Chat</Text>
+      <TouchableOpacity onPress={() => onPress("EventList")} style = {styles.navButton}>
+        <Icon name="message1" size={30} color={getButtonColor("EventList")} />
+        <Text style={[styles.navText, { color: getButtonColor("EventsList") }]}>Chat</Text>
       </TouchableOpacity>
 
       {/* Shifts Button */}

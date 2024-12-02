@@ -14,9 +14,10 @@ export default function RootLayout() {
       }}
     >
       <Stack.Screen name='index' options={{ headerShown: false}} /> {/* remove a header on the login screen */}
-      <Stack.Screen name="Home"  options={{ title: 'Home' }}/> {/* Navigate to screens/Home */}
-      <Stack.Screen name="Events" options={{ title: 'Events' }} /> {/* Navigate to screens/Events */}
-      <Stack.Screen name="calendarTest"  options={{ title: 'Test' }}/> {/* Navigate to screens/CalendarTest */}
+      <Stack.Screen name="screens/Home"  options={{ title: 'Home' }}/> {/* Navigate to screens/Home */}
+      <Stack.Screen name="screens/EventList" options={{ title: 'Manage Events' }} /> {/* Navigate to screens/Events */}
+      <Stack.Screen name="screens/calenderTest"  options={{ title: 'Test' }}/> {/* Navigate to screens/CalendarTest */}
+      <Stack.Screen name="screens/EventEdit"  options={{ title: 'Edit Events' }}/> {/* Navigate to screens/CalendarTest */}
     </Stack>
   );
 }

@@ -39,7 +39,6 @@ return (
         <Pressable></Pressable>
 
       </View>
-      <MiniSchedule/>
     </ScrollView>
     </MainLayout>
 );

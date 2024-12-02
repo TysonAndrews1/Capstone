@@ -9,7 +9,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     
     const forgotPass = ()=>{
-      router.push('/screens/Home');
+      router.push('/screens/ManagerScreen');
 
     }
 
