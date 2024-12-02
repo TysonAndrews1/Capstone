@@ -3,9 +3,12 @@ import { ScrollView, Text, TouchableOpacity, StyleSheet, View } from 'react-nati
 import MainLayout from '../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
 import EventBar from '../components/eventBar';  // Assuming this component displays the events based on filter
 import { useRouter } from 'expo-router';
+
 export default function Events() {
+
   const [selectedOption, setSelectedOption] = useState('upcoming');  // Default to 'upcoming'
   const router = useRouter(); // Initialize the router
+
   // Handle selection change
   const handleSelect = (option) => {
     setSelectedOption(option);
@@ -13,6 +16,7 @@ export default function Events() {
   const CreateEvent = () =>{
     router.push('/screens/EventEdit')
   }
+  
   return (
     <MainLayout>
       <View style={styles.container}>

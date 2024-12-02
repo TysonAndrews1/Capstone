@@ -21,6 +21,8 @@ To run the backend server.
 1. Inside the demo folder, navigate to demo > scr > main > recources > applicationl.properties.
 2. You might need to change the password to match the one you created for your mysql account. (I used "P@ssword123" if you want to use the same).
 3. Run the DemoApplication.java to start the backend server.
-4. For now you can just only see all events created in the database using "http://localhost:8080/api/events" in your browser.
+4. See all events created in the database using "http://localhost:8080/api/events" in your browser.
+5. http://localhost:8080/api/events/filter?timeframe=past to see all past events.
+6. http://localhost:8080/api/events/filter?timeframe=upcoming to see all upcoming events.
 
 *Working on connecting the frontend to the backend. 
