@@ -1,0 +1,9 @@
+package com.example.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.demo.entity.BanquetEvent;
+
+public interface BanquetEventRepository extends JpaRepository<BanquetEvent, Long> {
+    // Currently using built-in CRUD operations from Spring Data JPA.
+    // Can add some custom quries after creating a working frontend and backend connection.
+}

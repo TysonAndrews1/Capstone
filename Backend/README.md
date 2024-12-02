@@ -1,0 +1,26 @@
+# Phase3-Backend
+ This is a repository for the backend and database for Shift Solutions Employee Management App Prototype
+
+Prerequisites
+- Java JDK 23
+- MySQL 9.10
+
+Optional 
+- MySQL Workbench 8.0.40
+- VScode
+
+Run the test.sql file
+1. Make sure you have MySQL 9.10 installed and configured an account.
+2. Open command prompt and change file directory to where the test.sql is located, or type CMD in the file address bar where the test.sql is located.
+3. Log into your account using "mysql -u root -p" in the command prompt.
+4. After logging in, run the test.sql file using "SOURCE test.sql;".
+5. To verify if the database was created properly use "SHOW DATABASES;" and check if the employee_management database was created.
+6. You should be able to view the tables inside the employee_management database. You can try "SELECT * FROM banquet_events;"
+
+To run the backend server.
+1. Inside the demo folder, navigate to demo > scr > main > recources > applicationl.properties.
+2. You might need to change the password to match the one you created for your mysql account. (I used "P@ssword123" if you want to use the same).
+3. Run the DemoApplication.java to start the backend server.
+4. For now you can just only see all events created in the database using "http://localhost:8080/api/events" in your browser.
+
+*Working on connecting the frontend to the backend. 
