@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {ScrollView, Text, Pressable, StyleSheet, View, TextInput} from 'react-native'
+import {ScrollView, Text, Pressable, StyleSheet, View, TextInput, Button, Platform } from 'react-native'
 import MainLayout from '../layouts/MainLayout';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -14,6 +14,9 @@ const Events = () => {
   const [assignedManager, setAssignedManager] = useState('');
   const [specialRequirements, setSpecialRequirements] = useState('');
 
+  const BASE_URL =
+  Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
+
   const handleSubmit = async () => {
     const eventData = {
       eventName,
@@ -26,7 +29,7 @@ const Events = () => {
     }
 
   try {
-    const response = await fetch('http://localhost:8080/api/events', {
+    const response = await fetch(BASE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,44 +53,46 @@ return (
       {/* Event Title */}
       <View style={styles.row}>
         <Text style={styles.label}>Event Title</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setEventName} value={eventName}/>
       </View>
 
       {/* Start Time */}
       <View style={styles.row}>
         <Text style={styles.label}>Start Time</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setEventStartDate} value = {eventStartDate} placeholder='YYYY-MM-DDThh:mm:ss'/>
       </View>
 
       {/* End Time */}
       <View style={styles.row}>
         <Text style={styles.label}>End Time</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setEventEndDate} value = {eventEndDate} placeholder='YYYY-MM-DDThh:mm:ss'/>
       </View>
 
       {/* Location */}
       <View style={styles.row}>
         <Text style={styles.label}>Location</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setEventLocation} value={eventLocation}/>
       </View>
 
       {/* Number Of Guest */}
       <View style={styles.row}>
         <Text style={styles.label}>Number of Guests</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setNumberOfGuests} value={numberOfGuests} keyboardType='numeric'/>
       </View>
 
       {/* Event Manager */}
       <View style={styles.row}>
         <Text style={styles.label}>Event Manager</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setAssignedManager} value={assignedManager}/>
       </View>
 
       {/* Special Requirements */}
       <View style={styles.row}>
         <Text style={styles.label}>Special Requirements</Text>
-        <TextInput style={styles.inputField} />
+        <TextInput style={styles.inputField} onChangeText={setSpecialRequirements} value={specialRequirements}/>
       </View>
+
+      <Button title='Create Event' onPress={handleSubmit}></Button>
     </View>
   </MainLayout>
   );
