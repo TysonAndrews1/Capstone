@@ -1,11 +1,49 @@
-import React, { useState,useEffect } from 'react';
-import {ScrollView, Text, Pressable,StyleSheet, View, TextInput} from 'react-native'
+import React, { useState, useEffect } from 'react';
+import {ScrollView, Text, Pressable, StyleSheet, View, TextInput} from 'react-native'
 import MainLayout from '../layouts/MainLayout';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function Events() {
-  const [date, setDate] = useState(new Date());
-  // const True = true;
+const Events = () => {
+
+  // State variables for user inputs
+  const [eventName, setEventName] = useState('');
+  const [eventStartDate, setEventStartDate] = useState('');
+  const [eventEndDate, setEventEndDate] = useState('');
+  const [eventLocation, setEventLocation] = useState('');
+  const [numberOfGuests, setNumberOfGuests] = useState('');
+  const [assignedManager, setAssignedManager] = useState('');
+  const [specialRequirements, setSpecialRequirements] = useState('');
+
+  const handleSubmit = async () => {
+    const eventData = {
+      eventName,
+      eventStartDate,
+      eventEndDate,
+      eventLocation,
+      numberOfGuests: parseInt(numberOfGuests),
+      assignedManager,
+      specialRequirements,
+    }
+
+  try {
+    const response = await fetch('http://localhost:8080/api/events', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Event created successfully!');
+    } else {
+      Alert.alert('Error', 'Failed to create event. Please try again.');
+    }
+  } catch (error) {
+    Alert.alert('Error', `An error occurred: ${error.message}`);
+  }
+};
+
 return (
   <MainLayout>
     <View style={styles.form}>
@@ -33,6 +71,12 @@ return (
         <TextInput style={styles.inputField} />
       </View>
 
+      {/* Number Of Guest */}
+      <View style={styles.row}>
+        <Text style={styles.label}>Number of Guests</Text>
+        <TextInput style={styles.inputField} />
+      </View>
+
       {/* Event Manager */}
       <View style={styles.row}>
         <Text style={styles.label}>Event Manager</Text>
@@ -46,8 +90,8 @@ return (
       </View>
     </View>
   </MainLayout>
-  
-)}
+  );
+};
 
 const styles = StyleSheet.create({
   form: {
@@ -70,5 +114,7 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderRadius: 5,
     paddingHorizontal: 10,
-  }
+  },
 });
+
+export default Events;
