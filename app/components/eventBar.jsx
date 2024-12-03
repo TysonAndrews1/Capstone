@@ -4,78 +4,23 @@ import { useRouter } from 'expo-router';
 import MiniSchedule from './MiniSchedule';
 import { format } from 'date-fns'; // For date formatting
 
-export default function EventBar({ TimeFrame }) {
+export default function EventBar({ events, filterType }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const router = useRouter(); // Initialize the router
 
-  // Example events
-  const testEvents = [
-    {
-      eventId: 1,
-      eventType: 'Wedding',
-      EventName: 'Alice & Bob Wedding',
-      EventStartTime: new Date(2024, 9, 10, 8, 30),
-      EventEndTime: new Date(2024, 9, 10, 12, 0),
-      Room: 'Grand Ballroom',
-      Description: 'A beautiful wedding celebration!',
-    },
-    {
-      eventId: 2,
-      eventType: 'Conference',
-      EventName: 'Tech Conference 2023',
-      EventStartTime: new Date(2023, 11, 15, 9, 0),
-      EventEndTime: new Date(2023, 11, 15, 17, 0),
-      Room: 'Conference Hall A',
-      Description: 'A full-day tech conference with various workshops.',
-    },
-    // Added test events for 2025
-    {
-      eventId: 3,
-      eventType: 'Workshop',
-      EventName: 'React Native Workshop',
-      EventStartTime: new Date(2025, 2, 21, 9, 0),  // March 21, 2025, 9:00 AM
-      EventEndTime: new Date(2025, 2, 21, 17, 0),  // March 21, 2025, 5:00 PM
-      Room: 'Tech Hub Room 1',
-      Description: 'A hands-on workshop to learn React Native.',
-    },
-    {
-      eventId: 4,
-      eventType: 'Concert',
-      EventName: 'Summer Music Concert',
-      EventStartTime: new Date(2025, 5, 15, 19, 30), // June 15, 2025, 7:30 PM
-      EventEndTime: new Date(2025, 5, 15, 22, 0),  // June 15, 2025, 10:00 PM
-      Room: 'Main Stage',
-      Description: 'An exciting music concert featuring popular bands.',
-    },
-    {
-      eventId: 5,
-      eventType: 'Conference',
-      EventName: 'AI & ML Global Summit',
-      EventStartTime: new Date(2025, 7, 10, 8, 0),  // August 10, 2025, 8:00 AM
-      EventEndTime: new Date(2025, 7, 10, 18, 0),  // August 10, 2025, 6:00 PM
-      Room: 'AI Conference Hall',
-      Description: 'A summit on the latest advancements in AI and Machine Learning.',
-    },
-    {
-      eventId: 6,
-      eventType: 'Festival',
-      EventName: 'Autumn Festival',
-      EventStartTime: new Date(2025, 9, 3, 10, 0),  // October 3, 2025, 10:00 AM
-      EventEndTime: new Date(2025, 9, 3, 16, 0),  // October 3, 2025, 4:00 PM
-      Room: 'Festival Grounds',
-      Description: 'A community festival featuring local artisans, food trucks, and live music.',
-    },
-  ];
-
   const currentDate = new Date();
 
   // Filter events based on filterType ('past' or 'upcoming')
-  const filteredEvents = testEvents.filter((event) => {
-    if (TimeFrame === 'past') {
-      return event.EventStartTime < currentDate;
-    } else if (TimeFrame === 'upcoming') {
-      return event.EventStartTime > currentDate;
+  const filteredEvents = events.filter((event) => {
+
+    const eventStartTime = new Date(event.eventStartDate);
+    const eventEndTime = new Date(event.eventEndDate);
+
+    if (filterType === 'past') {
+      return eventStartTime < currentDate;
+    } else if (filterType === 'upcoming') {
+      return eventEndTime > currentDate;
     }
     return true; // Default behavior if no filterType is passed
   });
@@ -105,10 +50,8 @@ export default function EventBar({ TimeFrame }) {
 
   // Format date safely, return fallback text if invalid date
   const formatDate = (date) => {
-    if (date instanceof Date && !isNaN(date)) {
-      return format(date, 'MMM dd, yyyy h:mm a'); // Format the date correctly
-    }
-    return 'Invalid date'; // Return fallback text for invalid dates
+    const parsedDate = new Date(date);
+    return isNaN(parsedDate) ? 'Invalid date' : format(parsedDate, 'MMM dd, yyyy h:mm a');
   };
 
   return (
@@ -117,9 +60,8 @@ export default function EventBar({ TimeFrame }) {
         {filteredEvents.map((event) => (
           <Pressable key={event.eventId} onPress={() => openModal(event)}>
             <MiniSchedule
-              eventType={event.eventType}
-              EventName={event.EventName}
-              EventStartTime={event.EventStartTime}
+              EventName={event.eventName}
+              EventStartTime={new Date(event.eventStartDate)}
             />
           </Pressable>
         ))}
@@ -140,18 +82,18 @@ export default function EventBar({ TimeFrame }) {
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
 
-              <Text style={styles.modalTitle}>{selectedEvent?.EventName}</Text>
+              <Text style={styles.modalTitle}>{selectedEvent?.eventName}</Text>
               <Text style={styles.modalDetails}>
-                <Text style={styles.bold}>Start Time:</Text> {formatDate(selectedEvent?.EventStartTime)}
+                <Text style={styles.bold}>Start Time:</Text> {formatDate(selectedEvent?.eventStartDate)}
               </Text>
               <Text style={styles.modalDetails}>
-                <Text style={styles.bold}>End Time:</Text> {formatDate(selectedEvent?.EventEndTime)}
+                <Text style={styles.bold}>End Time:</Text> {formatDate(selectedEvent?.eventEndDate)}
               </Text>
               <Text style={styles.modalDetails}>
-                <Text style={styles.bold}>Room:</Text> {selectedEvent?.Room}
+                <Text style={styles.bold}>Room:</Text> {selectedEvent?.eventLocation}
               </Text>
               <Text style={styles.modalDetails}>
-                <Text style={styles.bold}>Description:</Text> {selectedEvent?.Description}
+                <Text style={styles.bold}>Description:</Text> {selectedEvent?.specialRequirements || 'No description available'}
               </Text>
 
               {/* Edit and Delete buttons */}

@@ -5,7 +5,7 @@ import { View } from "react-native";
 
 
 
-export default function MiniSchedule({EventName,EventStartTime,}){
+export default function MiniSchedule({EventName, EventStartTime}){
  const Months =["Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sept","Oct","Nov","Dec"]
 const date = new Date(EventStartTime)
 const MonthNumber = date.getMonth()

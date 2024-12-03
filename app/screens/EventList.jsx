@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform } from 'react-native';
 import MainLayout from '../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
 import EventBar from '../components/eventBar';  // Assuming this component displays the events based on filter
 import { useRouter } from 'expo-router';
@@ -7,7 +7,34 @@ import { useRouter } from 'expo-router';
 export default function Events() {
 
   const [selectedOption, setSelectedOption] = useState('upcoming');  // Default to 'upcoming'
+  const [events, setEvents] = useState([]); // State to store events from the backend
+  const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
+
+  const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
+
+  // Function to fetch events from the backend
+  const fetchEvents = async (timeframe) => {
+  
+    setError(true); // Reset error state
+    try {
+      const response = await fetch(`${BASE_URL}/filter?timeframe=${timeframe}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data);
+      setEvents(data); // Update the state with the fetched events
+    } catch (err) {
+      console.error('Error fetching events:', err);
+      setError('Failed to fetch events. Please try again later.');
+    }
+  };
+
+  // Fetch events whenever the selected option changes
+  useEffect(() => {
+    fetchEvents(selectedOption);
+  }, [selectedOption]);
 
   // Handle selection change
   const handleSelect = (option) => {
@@ -47,8 +74,7 @@ export default function Events() {
 
         {/* Scrollable Event List */}
         <ScrollView contentContainerStyle={styles.eventList}>
-          {/* Pass selected filter type to the EventBar */}
-          <EventBar TimeFrame={selectedOption} />
+          <EventBar events={events} filterType={selectedOption} />
         </ScrollView>
 
         {/* Create New Event Button */}

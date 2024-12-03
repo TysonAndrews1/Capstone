@@ -17,44 +17,44 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/events")
 public class BanquetEventController {
 
-    // Allows Spring to use BanquetEventRepository automatically into the controller
-    @Autowired
-    private BanquetEventRepository repository;
+// Allows Spring to use BanquetEventRepository automatically into the controller
+@Autowired
+private BanquetEventRepository repository;
 
-    // Display a list of all events in the database
-    @GetMapping
-    public List<BanquetEvent> getAllEvents() {
-        return repository.findAll();
-    }
+// Display a list of all events in the database
+@GetMapping
+public List<BanquetEvent> getAllEvents() {
+    return repository.findAll();
+}
 
-    // Filters events by timeframe (past or upcoming)
-    @GetMapping("/filter")
-    public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {
-        
-        // Store the loacal time and date
-        LocalDateTime today = LocalDate.now().atStartOfDay();
+// Filters events by timeframe (past or upcoming)
+@GetMapping("/filter")
+public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {
+    
+    // Store the loacal time and date
+    LocalDateTime today = LocalDate.now().atStartOfDay();
 
-        // Takes all events from database and stoer in a list
-        List<BanquetEvent> allEvents = repository.findAll();
+    // Takes all events from database and stoer in a list
+    List<BanquetEvent> allEvents = repository.findAll();
 
-        // Compares event with today date and time
-        return allEvents.stream().filter(event -> {
-            if ("past".equalsIgnoreCase(timeframe)) {
-                // Check if the event has ended before today
-                return event.getEventEndDate().isBefore(today);
-            } else if ("upcoming".equalsIgnoreCase(timeframe)) {
-                // Check if the event is starting after today
-                return event.getEventStartDate().isAfter(today);
-            }
-            return false;
-        })
-        .collect(Collectors.toList());
-    }
+    // Compares event with today date and time
+    return allEvents.stream().filter(event -> {
+        if ("past".equalsIgnoreCase(timeframe)) {
+            // Check if the event has ended before today
+            return event.getEventEndDate().isBefore(today);
+        } else if ("upcoming".equalsIgnoreCase(timeframe)) {
+            // Check if the event starts before or on today and ends after today
+            return event.getEventEndDate().isAfter(today);
+        }
+        return false;
+    })
+    .collect(Collectors.toList());
+}
 
-    // Will use this method to create new events using infomation from the frontend
-    // *Work in progress still*
-    @PostMapping
-    public BanquetEvent createEvent(@RequestBody BanquetEvent event) {
-        return repository.save(event);
-    }
+// Will use this method to create new events using infomation from the frontend
+// *Work in progress still*
+@PostMapping
+public BanquetEvent createEvent(@RequestBody BanquetEvent event) {
+    return repository.save(event);
+}
 }

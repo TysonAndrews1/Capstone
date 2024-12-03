@@ -49,7 +49,7 @@ CREATE TABLE `banquet_events` (
   `assigned_manager` varchar(100) DEFAULT NULL,
   `special_requirements` text,
   PRIMARY KEY (`event_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -63,7 +63,9 @@ LOCK TABLES `banquet_events` WRITE;
 INSERT INTO `banquet_events` VALUES 
 (1,'Wedding Reception','2024-12-15 18:00:00','2024-12-15 22:00:00','Banquet Hall A',150,'John Doe','Vegetarian meals for 20 guests'),
 (2,'Corporate Seminar','2024-12-20 09:00:00','2024-12-20 17:00:00','Conference Room B',50,'Jane Smith','Projector and sound system required'),
-(3,'Christmas Party','2023-12-20 09:00:00','2023-12-20 17:00:00','Conference Room C',250,'Jane Smith','Christmas decor in room');
+(3,'Christmas Party','2023-12-20 09:00:00','2023-12-20 17:00:00','Banquet Hall C',250,'Jane Smith','Add Christmas decor in room'),
+(4,'18th Birthday Party','2022-05-21 17:00:00','2022-05-21 21:00:00','Banquet Hall A&B',90,'John Doe',''),
+(5,'Poker Tournament','2024-12-01 09:00:00','2024-12-20 09:00:00','Casino Room',300,'John Doe','Add coffee and water station in room');
 /*!40000 ALTER TABLE `banquet_events` ENABLE KEYS */;
 
 -- Unlocks the benquet_events table

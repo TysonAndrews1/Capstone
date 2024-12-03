@@ -97,4 +97,18 @@ public class BanquetEvent {
     public void setSpecialRequirements(String specialRequirements) {
         this.specialRequirements = specialRequirements;
     }
+
+    @Override
+    public String toString() {
+        return "BanquetEvent{" +
+                "eventId=" + eventId +
+                ", eventName='" + eventName + '\'' +
+                ", eventLocation='" + eventLocation + '\'' +
+                ", eventStartDate=" + eventStartDate +
+                ", eventEndDate=" + eventEndDate +
+                ", numberOfGuests=" + numberOfGuests +
+                ", specialRequirements='" + specialRequirements + '\'' +
+                ", assignedManager='" + assignedManager + '\'' +
+                '}';
+    }
 }
