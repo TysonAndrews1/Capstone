@@ -90,7 +90,8 @@ export default function EventBar({ TimeFrame }) {
     setSelectedEvent(null);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (event) => {
+    // sessionStorage.setItem('selectedEvent', JSON.stringify(event));
     // Navigate to the Edit screen
     router.push(`/screens/EventEdit?eventId=${selectedEvent.eventId}`);
     closeModal();
@@ -155,7 +156,7 @@ export default function EventBar({ TimeFrame }) {
 
               {/* Edit and Delete buttons */}
               <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.button} onPress={handleEdit}>
+                <TouchableOpacity style={styles.button} onPress={() => handleEdit(selectedEvent)}>
                   <Text style={styles.buttonText}>Edit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>

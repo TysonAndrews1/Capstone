@@ -5,11 +5,11 @@ import { View } from "react-native";
 
 
 
-export default function MiniSchedule({EventName,EventStartTime,eventType}){
+export default function MiniSchedule({EventName,EventStartTime,}){
  const Months =["Jan","Feb","Mar","Apr","May","Jun","July","Aug","Sept","Oct","Nov","Dec"]
 const date = new Date(EventStartTime)
 const MonthNumber = date.getMonth()
-const day = date.getDay()
+const day = date.getDate()
 let weekday =  date.toLocaleDateString('en-US', { weekday: 'long' }).slice(0,3);
 let Month = Months[MonthNumber]
     return(
