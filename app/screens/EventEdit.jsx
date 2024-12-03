@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../layouts/MainLayout';  
 import CalendarComponent from '../components/Calender';  // Your Calendar component
+import { useRouter } from 'expo-router';
 
 export default function CreateEvent(id) {
   // Track events (for the sake of this example, using a simple state)
   const [events, setEvents] = useState([]);
   const [eventId, setEventId] = useState(null); // Track which event (if any) is being edited
+  const router = useRouter(); // Initialize the router
 
   const [eventTitle, setEventTitle] = useState('');
   const [startTime, setStartTime] = useState(new Date());
@@ -15,6 +17,7 @@ export default function CreateEvent(id) {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [location, setLocation] = useState('');
+  const [numberOfGuests, setNumberOfGuests] = useState('');
   const [eventManager, setEventManager] = useState('');
   const [specialRequirements, setSpecialRequirements] = useState('');
   
@@ -45,7 +48,7 @@ export default function CreateEvent(id) {
 
   // Handle submit for creating or editing an event
   const handleSubmit = () => {
-    if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !eventManager) {
+    if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !numberOfGuests || !eventManager) {
       Alert.alert("Error", "Please fill in all the fields");
       return;
     }
@@ -58,14 +61,34 @@ export default function CreateEvent(id) {
     endDateTime.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds());
 
     const newEvent = {
-      id: eventId || Date.now(),  // If eventId exists (for editing), use it; otherwise, generate a new one
-      eventTitle,
-      startDateTime,
-      endDateTime,
-      location,
-      eventManager,
-      specialRequirements
+      eventName: eventTitle,
+      eventStartDate: startDateTime,
+      eventEndDate: endDateTime,
+      eventLocation: location,
+      numberOfGuests: parseInt(numberOfGuests),
+      assignedManager: eventManager,
+      specialRequirements: specialRequirements,
     };
+
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
+
+    // Use fetch to send the event data to the backend
+    fetch(BASE_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newEvent),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      Alert.alert("Success", "Event created successfully!");
+      router.push('/screens/EventList');
+    })
+    .catch((error) => {
+      console.error('Error creating event:', error);
+      Alert.alert("Error", "Failed to create event");
+    });
 
     // If editing an existing event (eventId is set), update the event
     if (eventId) {
@@ -93,6 +116,7 @@ export default function CreateEvent(id) {
       setStartDate(eventToEdit.startDateTime);
       setEndDate(eventToEdit.endDateTime);
       setLocation(eventToEdit.location);
+      setNumberOfGuests(eventToEdit.numberOfGuests);
       setEventManager(eventToEdit.eventManager);
       setSpecialRequirements(eventToEdit.specialRequirements);
     }
@@ -178,6 +202,15 @@ export default function CreateEvent(id) {
           value={location}
           onChangeText={setLocation}
           placeholder="Enter location"
+        />
+
+        <Text style={styles.label}>Number of Guests</Text>
+        <TextInput
+          style={styles.inputField}
+          value={numberOfGuests}
+          onChangeText={setNumberOfGuests}
+          placeholder="Enter number of guests"
+          keyboardType='numeric'
         />
 
         <Text style={styles.label}>Event Manager</Text>

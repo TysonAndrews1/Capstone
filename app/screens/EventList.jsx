@@ -23,7 +23,6 @@ export default function Events() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      console.log(data);
       setEvents(data); // Update the state with the fetched events
     } catch (err) {
       console.error('Error fetching events:', err);
