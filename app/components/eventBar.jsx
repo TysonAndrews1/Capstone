@@ -14,14 +14,14 @@ export default function EventBar({ events, filterType }) {
   // Filter events based on filterType ('past' or 'upcoming')
   const filteredEvents = events.filter((event) => {
 
-    const eventStartTime = new Date(event.eventStartDate);
-    const eventEndTime = new Date(event.eventEndDate);
+  const eventStartTime = new Date(event.eventStartDate);
+  const eventEndTime = new Date(event.eventEndDate);
 
-    if (filterType === 'past') {
+  if (filterType === 'past') {
       return eventStartTime < currentDate;
-    } else if (filterType === 'upcoming') {
+  } else if (filterType === 'upcoming') {
       return eventEndTime > currentDate;
-    }
+  }
     return true; // Default behavior if no filterType is passed
   });
 
@@ -73,8 +73,8 @@ export default function EventBar({ events, filterType }) {
           visible={modalVisible}
           animationType="slide"
           transparent={true}
-          onRequestClose={closeModal}
-        >
+          onRequestClose={closeModal}>
+
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               {/* Close button (X) */}
