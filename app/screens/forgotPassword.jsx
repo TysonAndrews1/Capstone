@@ -17,6 +17,10 @@ const Login = () => {
 
         Alert.alert("Success","Request Sent Successfully, Please await a response from your manager ");
     };
+    const forgotPass = ()=>{
+      router.push('/screens/Login');
+
+    }
   return (
     <View style={styles.container}>
         <Text style={styles.heading}>Forgot Password</Text>
@@ -39,9 +43,12 @@ const Login = () => {
                  value={password} onChangeText={setPassword} />
             </View>
 
-            {/* Login BUtton */}
+            {/* Login Button */}
             <TouchableOpacity style={styles.button} onPress={onLoginPress}>
                 <Text style={styles.buttonText}>Send Request</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={forgotPass}>
+            <Text style={styles.inputText}>Back to Sign in</Text>
             </TouchableOpacity>
         </View>
     </View>
