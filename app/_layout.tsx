@@ -20,6 +20,7 @@ export default function RootLayout() {
       <Stack.Screen name="screens/EventEdit"  options={{ title: 'Edit Events' }}/> {/* Navigate to screens/CalendarTest */}
       <Stack.Screen name="screens/forgotPassword"  options={{ title: 'Forgot Password', headerShown: false }}/> {/* Navigate to screens/CalendarTest */}
       <Stack.Screen name="screens/ManagerScreen"  options={{ title: 'Manager Options' }}/> {/* Navigate to screens/CalendarTest */}
+      <Stack.Screen name='screens/Login' options={{ headerShown: false}} /> {/* remove a header on the login screen */}
     </Stack>
   );
 }
