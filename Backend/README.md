@@ -27,11 +27,10 @@ Run the test.sql file
 6. You should be able to view the tables inside the employee_management database. You can try "SELECT * FROM banquet_events;"
 
 To run the backend server.
-1. Inside the demo folder, navigate to demo > scr > main > recources > applicationl.properties.
-2. You might need to change the password to match the one you created for your mysql account. (I used "P@ssword123" if you want to use the same).
-3. Run the DemoApplication.java to start the backend server.
-4. See all events created in the database using "http://localhost:8080/api/events" in your browser.
-5. http://localhost:8080/api/events/filter?timeframe=past to see all past events.
-6. http://localhost:8080/api/events/filter?timeframe=upcoming to see all upcoming events.
+1. Inside the demo folder, navigate to backend > demo
+2. Run the DemoApplication.java to start the backend server by entering "mvn spring-boot:run"
+3. See all events created in the database using "http://localhost:8080/api/events" in your browser.
+4. http://localhost:8080/api/events/filter?timeframe=past to see all past events.
+5. http://localhost:8080/api/events/filter?timeframe=upcoming to see all upcoming events.
 
 *Working on connecting the frontend to the backend. 
