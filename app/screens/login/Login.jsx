@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert} from 'react-native';
 import React, { useState } from 'react';
-import { handleLogin } from "../firebase/auth";
+import { handleLogin } from "../../firebase/auth";
 import { useRouter } from "expo-router";
 
 const Login = () => {
@@ -8,27 +8,32 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     
+    const forgotPass = ()=>{
+      router.push('/screens/forgotPassword');
+
+    }
 
     const onLoginPress = async () => {
         if (!email || !password) {
-            Alert.alert("Error", "please enter a valid email in both fields");
+            Alert.alert("Error", "Please enter both email and password.");
             return;
         }
 
-        Alert.alert("Success","Request Sent Successfully, Please await a response from your manager ");
+        try {
+            await handleLogin(email, password);
+            router.push('/screens/manager/ManagerScreen');
+        } catch (error) {
+            Alert.alert("Login Failed", error.message);
+        }
     };
-    const forgotPass = ()=>{
-      router.push('/screens/Login');
-
-    }
   return (
     <View style={styles.container}>
-        <Text style={styles.heading}>Forgot Password</Text>
+        <Text style={styles.heading}>Sign In</Text>
 
         <View style={styles.card}>
             
             {/* Username Input */}
-            <Text style={styles.inputText}>Manager's Email</Text>
+            <Text style={styles.inputText}>Email</Text>
             <View style={styles.inputGroup}>
                 {/* put an icon */}
                 <TextInput style={styles.input} placeholder="email" placeholderTextColor="#aaa"
@@ -36,19 +41,19 @@ const Login = () => {
             </View>
             
             {/* Password Input */}
-            <Text style={styles.inputText}>Your Email</Text>
+            <Text style={styles.inputText}>Password</Text>
             <View style={styles.inputGroup}>
                 {/* put an icon */}
-                <TextInput style={styles.input} placeholder="email" placeholderTextColor="#aaa" secureTextEntry
+                <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#aaa" secureTextEntry
                  value={password} onChangeText={setPassword} />
             </View>
 
-            {/* Login Button */}
+            {/* Login BUtton */}
             <TouchableOpacity style={styles.button} onPress={onLoginPress}>
-                <Text style={styles.buttonText}>Send Request</Text>
+                <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={forgotPass}>
-            <Text style={styles.inputText}>Back to Sign in</Text>
+              <TouchableOpacity onPress={forgotPass}>
+            <Text style={styles.inputText}>Forgot password?</Text>
             </TouchableOpacity>
         </View>
     </View>

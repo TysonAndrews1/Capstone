@@ -1,24 +1,29 @@
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import React from 'react';
-import MainLayout from '../layouts/MainLayout';
+import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
-import Firestore from '../firebase/firestore';
 
-const ManagerScreen = () => {
+
+const ManagerMore = () => {
 
   const router = useRouter();
 
   return (
     <MainLayout>
+      <View style={styles.searchContainer}>
+        <View style={styles.searchBox}>
+          <Text style={styles.searchText}>Search</Text>
+          <Image source={require('../../../assets/images/search.png')} style={{ width: 24, height: 24}} />
+        </View>
+      </View>
       <View style={styles.container}>
-        <Text>Manager Tools</Text>
         <Pressable style={styles.button}>
           <Text style={styles.text}>Manage Employee Schedule</Text>
         </Pressable>        
         <Pressable style={styles.button}>
           <Text style={styles.text}>View Employee Request</Text>
         </Pressable>
-        <Pressable style={styles.button} onPress={()=> router.push('/screens/EventList')}>
+        <Pressable style={styles.button} onPress={()=> router.push('/screens/manager/EventList')}>
           <Text style={styles.text}>Manage Events</Text>
         </Pressable>
         <Pressable style={styles.button}>
@@ -30,14 +35,12 @@ const ManagerScreen = () => {
         <Pressable style={styles.button}>
           <Text style={styles.text}>Push Schedule Notification</Text>
         </Pressable>
-        <Firestore />
-
       </View>
     </MainLayout>
   );
 };
 
-export default ManagerScreen;
+export default ManagerMore;
 
 const styles = StyleSheet.create({
   container: {
@@ -62,5 +65,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     letterSpacing: 0.25,
     color: 'white',
+  },
+  searchContainer: {
+    margin: 10, // 상하좌우 여백
+    alignItems: 'center', // 가운데 정렬
+  },
+  searchBox: {
+    flexDirection: 'row', // 가로 정렬
+    alignItems: 'center', // 세로 중앙 정렬
+    backgroundColor: '#E0E0E0', // 배경색
+    borderRadius: 25, // 둥근 테두리
+    paddingVertical: 8, // 상하 패딩
+    paddingHorizontal: 12, // 좌우 패딩
+    width: '90%', // 화면 너비의 90% 차지
+  },
+  searchText: {
+    flex: 1, // 텍스트 영역 확장
+    fontSize: 16, // 텍스트 크기
+    color: '#757575', // 텍스트 색상
   },
 });

@@ -1,54 +1,60 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 import { Calendar } from "react-native-calendars";
 
-const CalendarComponent = ({ onDateSelect }) => {
+const CalendarComponent = () => {
   const [selectedDate, setSelectedDate] = useState('');
 
   const onDayPress = (day) => {
-    const selected = day.dateString;  // Get date in 'YYYY-MM-DD' format
-    setSelectedDate(selected);  // Update local state
-
-    // Convert the selected date string to a Date object using local time zone
-    const [year, month, dayOfMonth] = selected.split('-');
-    const dateObject = new Date(year, month - 1, dayOfMonth); // month is 0-based in JavaScript Date
-
-    // Pass the Date object to the parent via callback
-    if (onDateSelect) {
-      onDateSelect(dateObject);
-    }
+    const selected = day.dateString; // Format: 'YYYY-MM-DD'
+    setSelectedDate(selected); // Update local state
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.selectedDateText}>
-        Selected Date: {selectedDate || 'None'}
-      </Text>
-
+      {/* Calendar Component */}
+      <View style={styles.calendarWrapper}>
       <Calendar
-        current={selectedDate || new Date().toISOString().split('T')[0]}
-        minDate={'2020-01-01'}
-        maxDate={'2026-12-31'}
-        onDayPress={onDayPress}
-        markedDates={{
-          [selectedDate]: { selected: true, selectedColor: 'orange', selectedTextColor: 'white' }
-        }}
-        theme={{
-          selectedDayBackgroundColor: 'blue',
-          todayTextColor: 'green',
-          dayTextColor: 'black',
-          arrowColor: 'orange',
-          monthTextColor: 'purple',
-          textDayFontWeight: 'bold',
-          textMonthFontWeight: 'bold',
-          textDayHeaderFontWeight: 'bold',
-          textDayHeaderFontSize: 16,
-          textMonthFontSize: 20,
-        }}
-      />
-
-      {/* You can remove this Button or customize it */}
-      <Button title="Select a Date" onPress={() => {}} />
+  current={new Date().toISOString().split('T')[0]}
+  minDate={'2020-01-01'}
+  maxDate={'2025-12-31'}
+  onDayPress={onDayPress}
+  markedDates={{
+    [selectedDate]: {
+      selected: true,
+      selectedColor: '#FFB74D',
+      selectedTextColor: '#fff',
+    },
+  }}
+  theme={{
+    backgroundColor: '#ffffff',
+    calendarBackground: '#f9f9f9',
+    textSectionTitleColor: '#000',
+    selectedDayBackgroundColor: '#FFB74D',
+    selectedDayTextColor: '#ffffff',
+    todayTextColor: '#000',
+    dayTextColor: '#2d4150',
+    arrowColor: '#3F6D89',
+    monthTextColor: '#000',
+    textDayFontWeight: '300',
+    textMonthFontWeight: 'bold',
+    textDayHeaderFontWeight: 'bold',
+    textDayFontSize: 14,
+    textMonthFontSize: 20,
+    textDayHeaderFontSize: 16,
+    'stylesheet.calendar.header': {
+      dayTextAtIndex0: { width: '14%', textAlign: 'center' }, // Sunday
+      dayTextAtIndex1: { width: '14%', textAlign: 'center' }, // Monday
+      dayTextAtIndex2: { width: '14%', textAlign: 'center' }, // Tuesday
+      dayTextAtIndex3: { width: '14%', textAlign: 'center' }, // Wednesday
+      dayTextAtIndex4: { width: '14%', textAlign: 'center' }, // Thursday
+      dayTextAtIndex5: { width: '14%', textAlign: 'center' }, // Friday
+      dayTextAtIndex6: { width: '14%', textAlign: 'center' }, // Saturday
+    },
+  }}
+  style={styles.calendar}
+/>
+      </View>
     </View>
   );
 };
@@ -56,12 +62,22 @@ const CalendarComponent = ({ onDateSelect }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    padding: 10,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
   },
-  selectedDateText: {
-    fontSize: 18,
-    marginBottom: 10,
+  calendarWrapper: {
+    width: '90%',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    elevation: 3, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  calendar: {
+    borderRadius: 10,
   },
 });
 

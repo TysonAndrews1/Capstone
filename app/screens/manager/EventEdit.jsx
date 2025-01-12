@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import MainLayout from '../layouts/MainLayout';  
-import CalendarComponent from '../components/Calender';  // Your Calendar component
+import MainLayout from '../../layouts/MainLayout';  
+import CalendarComponent from '../../components/Calender';  // Your Calendar component
 import { useRouter } from 'expo-router';
 
 export default function CreateEvent(id) {
@@ -29,22 +29,32 @@ export default function CreateEvent(id) {
   
   // Handle date changes for time pickers (start and end time)
   const handleDateChange = (event, selectedDate, setTime, setShowPicker) => {
-    const currentDate = selectedDate || startTime;
-    setTime(currentDate);
+    if (selectedDate) {
+      setTime(new Date(selectedDate));
+    }
     setShowPicker(false);
   };
 
-  // Handle date selection for start date
   const handleStartChange = (selectedDate) => {
-    setStartDate(selectedDate);
-    setShowStartCalendar(false);  // Hide calendar after selection
+    if (selectedDate) {
+      setStartDate(new Date(selectedDate)); // Ensure it's a valid Date object
+    }
+    setShowStartCalendar(false);
+  };
+  
+  const handleEndChange = (selectedDate) => {
+    if (selectedDate) {
+      setEndDate(new Date(selectedDate)); // Ensure it's a valid Date object
+    }
+    setShowEndCalendar(false);
   };
 
-  // Handle date selection for end date
-  const handleEndChange = (selectedDate) => {
-    setEndDate(selectedDate);
-    setShowEndCalendar(false);  // Hide calendar after selection
+  const combineDateAndTime = (date, time) => {
+    const combined = new Date(date);
+    combined.setHours(time.getHours(), time.getMinutes(), time.getSeconds());
+    return new Date(combined.getTime() - combined.getTimezoneOffset() * 60000); // Adjust for timezone offset
   };
+  
 
   // Handle submit for creating or editing an event
   const handleSubmit = () => {
@@ -52,20 +62,17 @@ export default function CreateEvent(id) {
       Alert.alert("Error", "Please fill in all the fields");
       return;
     }
-
-    // Combine startDate with startTime and endDate with endTime into full Date objects
-    const startDateTime = new Date(startDate);
-    startDateTime.setHours(startTime.getHours(), startTime.getMinutes(), startTime.getSeconds());
-
-    const endDateTime = new Date(endDate);
-    endDateTime.setHours(endTime.getHours(), endTime.getMinutes(), endTime.getSeconds());
-
+  
+    // Combine dates and times with proper time zone handling
+    const startDateTime = combineDateAndTime(startDate, startTime);
+    const endDateTime = combineDateAndTime(endDate, endTime);
+  
     const newEvent = {
       eventName: eventTitle,
-      eventStartDate: startDateTime,
-      eventEndDate: endDateTime,
+      eventStartDate: startDateTime.toISOString(), // Store as ISO string for consistency
+      eventEndDate: endDateTime.toISOString(),
       eventLocation: location,
-      numberOfGuests: parseInt(numberOfGuests),
+      numberOfGuests: parseInt(numberOfGuests, 10),
       assignedManager: eventManager,
       specialRequirements: specialRequirements,
     };
@@ -83,7 +90,7 @@ export default function CreateEvent(id) {
     .then((response) => response.json())
     .then((data) => {
       Alert.alert("Success", "Event created successfully!");
-      router.push('/screens/EventList');
+      router.push('/screens/manager/EventList');
     })
     .catch((error) => {
       console.error('Error creating event:', error);
@@ -102,7 +109,7 @@ export default function CreateEvent(id) {
       setEvents(prevEvents => [...prevEvents, newEvent]);
       Alert.alert("Success", "Event created successfully!");
     }
-    router.push(`/screens/EventList`);
+    router.push(`/screens/manager/EventList`);
   };
 
   // Edit an existing event

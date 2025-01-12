@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform } from 'react-native';
-import MainLayout from '../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
-import EventBar from '../components/eventBar';  // Assuming this component displays the events based on filter
+import MainLayout from '../../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
+import EventBar from '../../components/eventBar';  // Assuming this component displays the events based on filter
 import { useRouter } from 'expo-router';
 
 export default function Events() {
@@ -11,6 +11,7 @@ export default function Events() {
   const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
 
+  /// 10.187.237.34 this ipv4 address works only for my laptop(teddy). so, you guys need to use your IP address or the one written before.
   const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
 
   // Function to fetch events from the backend
@@ -40,7 +41,7 @@ export default function Events() {
     setSelectedOption(option);
   };
   const CreateEvent = () =>{
-    router.push('/screens/EventEdit')
+    router.push('/screens/manager/EventEdit')
   }
   
   return (
