@@ -5,21 +5,29 @@ import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 
+// Backend API base URL
 const BASE_URL = 'http://10.0.2.2:8080/api/events';
 
 const ManagerScreen = () => {
-  const [user, setUser] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentWeek, setCurrentWeek] = useState(getCurrentWeek());
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null); // State for storing user information
+  const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the selected date
+  const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week dates
+  const [events, setEvents] = useState([]); //State for storing events fetched from the backend
+  
+  // State for handling loading and error states
+  const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(null);
 
+  /**
+   * Helper function to get the current week's dates.
+   * The week starts on Sunday (weekStartsOn: 0).
+   */
   function getCurrentWeek() {
     const start = startOfWeek(new Date(), { weekStartsOn: 0 });
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   };
 
+  // Fetch user data from Firestore on component mount
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -27,7 +35,7 @@ const ManagerScreen = () => {
         const userData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }))[0]; // 첫 번째 사용자만 가져옴
+        }))[0]; // Fetch the first user only
         setUser(userData);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -37,6 +45,7 @@ const ManagerScreen = () => {
     fetchUserData();
   }, []);
 
+  // Fetch events for the selected date whenever it changes
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
@@ -48,20 +57,20 @@ const ManagerScreen = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setEvents(data);
+        setEvents(data); // Store fetched events
       } catch (err) {
         console.error('Error fetching events:', err);
         setError('Failed to fetch events. Please try again.');
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop loading indicator
       }
     };
     fetchEvents();
   }, [selectedDate]);
 
-  {/** Get the time of day message */}
+  // Helper function to get a greeting message based on the curren time of day
   const getTimeOfDayMessage = () => {
-    {/** using built-in Data component */}
+
     const hour = new Date().getHours();
     
     if (hour < 12) {
@@ -73,9 +82,10 @@ const ManagerScreen = () => {
     }
   };
 
+  // Filter events to show only those occurring on the selected date
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.eventStartDate); // ISO 8601 문자열을 Date 객체로 변환
-    return isSameDay(eventDate, selectedDate); // 날짜 비교
+    const eventDate = new Date(event.eventStartDate); // Convert event start date to Date object
+    return isSameDay(eventDate, selectedDate); // Compare dates
   });
 
   return (
@@ -87,7 +97,7 @@ const ManagerScreen = () => {
           {user ? `${user.firstName}` : "Loading..."}
         </Text>
 
-        {/** Show personal information? */}
+        {/* User Information Card */}
         <View style={{ ...styles.card, backgroundColor: '#212124' }}>
           <View style={styles.cardContainer}>
             <Text style={styles.cardTitle}>
@@ -102,6 +112,7 @@ const ManagerScreen = () => {
           </View>
         </View>
 
+        {/* New Employee Requests Card */}
         <TouchableOpacity style={styles.card}>
           <View style={styles.cardRequest}>
             <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10, }} />
@@ -109,18 +120,20 @@ const ManagerScreen = () => {
           </View>  
         </TouchableOpacity>
 
+        {/* Weekly Calendar */}
         <View style={styles.card}>
-        <Text style={styles.monthText}>{format(selectedDate, 'MMMM yyyy')}</Text>
-        <View style={styles.weekContainer}>
-          {currentWeek.map((day) => (
-            <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay,]}
-            onPress={() => setSelectedDate(day)}>
-              <Text style={styles.dayText}>{format(day, 'EEE')}</Text>
-              <Text style={styles.dateText}>{format(day, 'd')}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+          <Text style={styles.monthText}>{format(selectedDate, 'MMMM yyyy')}</Text>
+          <View style={styles.weekContainer}>
+            {currentWeek.map((day) => (
+              <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay,]}
+              onPress={() => setSelectedDate(day)}>
+                <Text style={styles.dayText}>{format(day, 'EEE')}</Text>
+                <Text style={styles.dateText}>{format(day, 'd')}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
+        {/* Event Details for Selected Date */}
         <View style={styles.detailsContainer}>
         <ScrollView>
             {loading ? (
@@ -128,21 +141,21 @@ const ManagerScreen = () => {
             ) : filteredEvents.length > 0 ? (
               filteredEvents.map((event) => (
                 <View key={event.eventId} style={styles.eventContainer}>
-                  {/* 위 점선 */}
+                  {/* Top Dotted Line */}
                   <View style={styles.dottedLine}></View>
 
-                  {/* 시작시간 - 끝나는시간 */}
+                  {/* Event Time */}
                   <Text style={styles.timeText}>
                     {format(new Date(event.eventStartDate), 'hh:mm a')} -{' '}
                     {format(new Date(event.eventEndDate), 'hh:mm a')}
                   </Text>
 
-                  {/* 이벤트 이름 및 게스트 숫자 */}
+                  {/* Event Name and Guest Count */}
                   <Text style={styles.eventDetails}>
                     {event.eventName} ({event.numberOfGuests} Guests)
                   </Text>
 
-                  {/* 아래 점선 */}
+                  {/* Bottom Dotted Line */}
                   <View style={styles.dottedLine}></View>
                 </View>
               ))

@@ -2,21 +2,32 @@ import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
+/**
+ * Custom Calendar Component
+ * Allows users to select a date, with the ability to toggle the selection on/off.
+ * @param {function} onDateSelect - Callback function to pass the selected date to the parent component. 
+ * @returns 
+ */
 const CalendarComponent = ({ onDateSelect }) => {
+
+  // Tracks the currently selected date
   const [selectedDate, setSelectedDate] = useState(null);
 
-  // 날짜 선택/해제 로직
+  /**
+   * Handles the logic for date selection and deselection.
+   * @param {object} day - Object containing information about the selected date (e.g., dateString). 
+   */
   const onDayPress = (day) => {
-    const selected = new Date(day.dateString); // YYYY-MM-DD -> Date 객체 (UTC)
+    const selected = new Date(day.dateString); 
 
     if (selectedDate && selectedDate.toISOString() === selected.toISOString()) {
-      // 날짜를 다시 선택하면 해제
+      // If the same date is selected again, deselect it
       setSelectedDate(null);
-      onDateSelect(null); // 선택 해제
+      onDateSelect(null); // Notify parent component of deselection
     } else {
-      // 새로운 날짜를 선택
+      // Select a new date
       setSelectedDate(selected);
-      onDateSelect(selected); // UTC 날짜 그대로 상위 컴포넌트로 전달
+      onDateSelect(selected); // Pass the selected date (in UTC) to the parent component
     }
   };
 
@@ -50,7 +61,6 @@ const CalendarComponent = ({ onDateSelect }) => {
           textDayFontSize: 14,
           textMonthFontSize: 20,
           textDayHeaderFontSize: 16,
-          // 스타일시트에서 요일 텍스트의 넓이를 조정
           'stylesheet.calendar.header': {
             dayTextAtIndex0: { width: '14%', textAlign: 'center' }, // Sunday
             dayTextAtIndex1: { width: '14%', textAlign: 'center' }, // Monday

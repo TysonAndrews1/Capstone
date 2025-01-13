@@ -2,28 +2,30 @@ import React, { useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../../layouts/MainLayout';  
-import CalendarComponent from '../../components/Calender';  // Calendar Component
+import CalendarComponent from '../../components/Calender';  
 import { useRouter } from 'expo-router';
 
 export default function CreateEvent() {
-  const [eventTitle, setEventTitle] = useState('');
-  const [startDate, setStartDate] = useState(null); // UTC 날짜
-  const [endDate, setEndDate] = useState(null); // UTC 날짜
-  const [startTime, setStartTime] = useState(new Date()); // 시간 관리
-  const [endTime, setEndTime] = useState(new Date());
-  const [location, setLocation] = useState('');
-  const [numberOfGuests, setNumberOfGuests] = useState('');
-  const [eventManager, setEventManager] = useState('');
-  const [specialRequirements, setSpecialRequirements] = useState('');
+  // States for managing event details
+  const [eventTitle, setEventTitle] = useState(''); // Event title
+  const [startDate, setStartDate] = useState(null); // Event start date (UTC)
+  const [endDate, setEndDate] = useState(null); // Event end date (UTC)
+  const [startTime, setStartTime] = useState(new Date()); // Event start time
+  const [endTime, setEndTime] = useState(new Date()); // Event end time
+  const [location, setLocation] = useState(''); // Event location
+  const [numberOfGuests, setNumberOfGuests] = useState(''); // Number of expected guests
+  const [eventManager, setEventManager] = useState(''); // Name of the manager who is in charge
+  const [specialRequirements, setSpecialRequirements] = useState(''); // Additional event requirement
 
-  const [showStartCalendar, setShowStartCalendar] = useState(false); // Start Date 캘린더
-  const [showEndCalendar, setShowEndCalendar] = useState(false); // End Date 캘린더
-  const [showStartTimePicker, setShowStartTimePicker] = useState(false); // Start Time 선택
-  const [showEndTimePicker, setShowEndTimePicker] = useState(false); // End Time 선택
+  // States for managing UI elements
+  const [showStartCalendar, setShowStartCalendar] = useState(false); // Toggles start date calendar
+  const [showEndCalendar, setShowEndCalendar] = useState(false); // Toggles end date calendar
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false); // Toggles start time picker
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false); // Toggles end time picker
 
-  const router = useRouter();
+  const router = useRouter(); // Navigation hook for screen transitions
 
-  // 날짜와 시간을 결합하는 함수 (UTC 기준)
+  // Combines a given date and time into a single UTC DateTime object
   const combineDateAndTime = (date, time) => {
     const combined = new Date(
       date.getUTCFullYear(),
@@ -33,23 +35,27 @@ export default function CreateEvent() {
       time.getMinutes(),
       time.getSeconds()
     );
-    console.log("Combined DateTime (UTC):", combined.toISOString()); // 디버깅
     return combined;
   };
 
-  // 이벤트 제출 처리
+  /**
+   * Handles the submission of the event form.
+   * Validates inputs, combines dates and times, and sends a POST request to the backend API.
+   */
   const handleSubmit = () => {
     if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !numberOfGuests || !eventManager) {
       Alert.alert("Error", "Please fill in all the fields");
       return;
     }
 
-    const startDateTime = combineDateAndTime(startDate, startTime); // 시작 날짜와 시간 결합
-    const endDateTime = combineDateAndTime(endDate, endTime); // 종료 날짜와 시간 결합
+    // Combine start and end dates with times into UTC DateTime
+    const startDateTime = combineDateAndTime(startDate, startTime);
+    const endDateTime = combineDateAndTime(endDate, endTime); 
 
+    // Construct the event object
     const newEvent = {
       eventName: eventTitle,
-      eventStartDate: startDateTime.toISOString(), // UTC 시간으로 저장
+      eventStartDate: startDateTime.toISOString(),
       eventEndDate: endDateTime.toISOString(),
       eventLocation: location,
       numberOfGuests: parseInt(numberOfGuests, 10),
@@ -57,8 +63,10 @@ export default function CreateEvent() {
       specialRequirements: specialRequirements,
     };
 
+    // API base URL, adjusted for platform
     const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
 
+    // Send POST request to create the event
     fetch(BASE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -67,7 +75,7 @@ export default function CreateEvent() {
       .then((response) => response.json())
       .then(() => {
         Alert.alert("Success", "Event created successfully!");
-        router.push('/screens/manager/EventList');
+        router.push('/screens/manager/EventList'); // Navigate to the EventList screen
       })
       .catch((error) => {
         console.error('Error creating event:', error);
@@ -78,6 +86,8 @@ export default function CreateEvent() {
   return (
     <MainLayout>
       <ScrollView contentContainerStyle={styles.form}>
+        
+        {/* Input for Event Title */}
         <Text style={styles.label}>Event Title</Text>
         <TextInput
           style={styles.inputField}
@@ -86,6 +96,7 @@ export default function CreateEvent() {
           placeholder="Enter event title"
         />
 
+        {/* Input for Start Date */}
         <Text style={styles.label}>Start Date</Text>
         <TouchableOpacity onPress={() => setShowStartCalendar(!showStartCalendar)}>
           <Text style={styles.inputField}>
@@ -102,6 +113,7 @@ export default function CreateEvent() {
           />
         )}
 
+        {/* Input for Start Time */}
         <Text style={styles.label}>Start Time</Text>
         <TouchableOpacity onPress={() => setShowStartTimePicker(true)}>
           <Text style={styles.inputField}>
@@ -120,6 +132,7 @@ export default function CreateEvent() {
           />
         )}
 
+        {/* Input for End Date */}
         <Text style={styles.label}>End Date</Text>
         <TouchableOpacity onPress={() => setShowEndCalendar(!showEndCalendar)}>
           <Text style={styles.inputField}>
@@ -136,6 +149,7 @@ export default function CreateEvent() {
           />
         )}
 
+        {/* Input for End Time */}
         <Text style={styles.label}>End Time</Text>
         <TouchableOpacity onPress={() => setShowEndTimePicker(true)}>
           <Text style={styles.inputField}>
@@ -154,6 +168,7 @@ export default function CreateEvent() {
           />
         )}
 
+        {/* Input for Location */}
         <Text style={styles.label}>Location</Text>
         <TextInput
           style={styles.inputField}
@@ -162,6 +177,7 @@ export default function CreateEvent() {
           placeholder="Enter location"
         />
 
+        {/* Input for Number of Guests */}
         <Text style={styles.label}>Number of Guests</Text>
         <TextInput
           style={styles.inputField}
@@ -171,6 +187,7 @@ export default function CreateEvent() {
           keyboardType="numeric"
         />
 
+        {/* Input for Name of the Manager */}
         <Text style={styles.label}>Event Manager</Text>
         <TextInput
           style={styles.inputField}
@@ -179,6 +196,7 @@ export default function CreateEvent() {
           placeholder="Enter event manager"
         />
 
+        {/* Input for Special Requirements */}
         <Text style={styles.label}>Special Requirements</Text>
         <TextInput
           style={styles.inputField}
@@ -187,6 +205,7 @@ export default function CreateEvent() {
           placeholder="Enter special requirements"
         />
 
+        {/* Submit button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
           <Text style={styles.submitButtonText}>Create Event</Text>
         </TouchableOpacity>

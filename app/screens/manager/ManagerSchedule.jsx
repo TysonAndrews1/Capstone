@@ -4,21 +4,29 @@ import MainLayout from '../../layouts/MainLayout';
 import CalendarComponent from '../../components/Calender';
 
 const ManagerSchedule = () => {
+    // State to track the selected date
     const [selectedDate, setSelectedDate] = useState(null);
 
+    /**
+     *Handles the date selection from the calendar.
+     Updates the 'selectedDate' state with the selected date in UTC format.
+     * @param {Date} date - The selected date.
+     */
     const handleDateSelect = (date) => {
-        console.log("Selected Date (UTC):", date); // 디버깅용 로그
-        setSelectedDate(date); // 선택된 날짜 업데이트 (UTC 그대로 저장)
+        setSelectedDate(date);
     };
 
     return (
     <MainLayout>
         <View style={ styles.container }>
-   
+        
+        {/* Calendar Component */}
         <CalendarComponent onDateSelect={handleDateSelect} />
             
+            {/* Conditional UI based on whether a date is selected */}
             <View style={styles.textAndButton}>
                 {!selectedDate ? (
+                    // If no date is selected, show this UI
                     <>
                         <Text style={styles.infoText}>Select a date to manage</Text>
                         <Text style={styles.infoText}>OR</Text>
@@ -28,6 +36,7 @@ const ManagerSchedule = () => {
                         </TouchableOpacity>
                     </>
                 ) : (
+                    // If a date is selected, show this UI
                     <>
                         <TouchableOpacity style={styles.infoButton}>
                         <Text style={styles.infoButtonText}>Add Shift</Text>
@@ -54,7 +63,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     textAndButton: {
-        marginTop: 20, // Add space between calendar and text/buttons
+        marginTop: 20,
         width: '100%',
         alignItems: 'center',
     },

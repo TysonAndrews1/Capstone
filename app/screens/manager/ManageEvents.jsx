@@ -6,37 +6,46 @@ import MiniSchedule from "../../components/MiniSchedule";
 import { useRouter } from 'expo-router';
 
 const ManageEvents = () => {
-  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 (기본값 null)
-  const [events, setEvents] = useState([]); // 모든 이벤트 데이터
-  const [filteredEvents, setFilteredEvents] = useState([]); // 선택된 날짜의 필터링된 이벤트
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const router = useRouter();
+  
+  const [selectedDate, setSelectedDate] = useState(null); // State to manage the selected date
+  const [events, setEvents] = useState([]); // State to hold all event data
+  const [filteredEvents, setFilteredEvents] = useState([]); // State to hold events filtered by the selected date
+  const [loading, setLoading] = useState(false); // Loading state to show spinner or message during data fetching
+  const [error, setError] = useState(null); // Error state to handle API fetch errors
+  const router = useRouter(); // For navigating to other screens
 
-  // 모든 이벤트 데이터 가져오기
+  /**
+   * Fetch all events from the backend API.
+   * Sets the 'events' state with the fetched data.
+   * Handles loading and error states during the fetch process.
+   */
   const fetchEvents = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.0.2.2:8080/api/events");
+      const response = await fetch("http://10.0.2.2:8080/api/events"); // API call to fetch events
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setEvents(data);
+      setEvents(data); // Store the fetched data in 'events'
     } catch (err) {
       console.error("Error fetching events:", err);
-      setError("Failed to fetch events. Please try again.");
+      setError("Failed to fetch events. Please try again."); // Set error message
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading
     }
   };
 
-  // 날짜 기준으로 이벤트 필터링
+  /**
+   * Filters the list of events based on the selected date.
+   * @param {Date} date - The selected date to filter events.
+   * @returns {Array} - List of events happening on the selected date.
+   */
   const filterEventsByDate = (date) => {
-    if (!date) return []; // 날짜가 null이면 빈 배열 반환
+    if (!date) return []; // Return empty array if no date is selected
     return events.filter((event) => {
-      const eventDate = new Date(event.eventStartDate); // 이벤트 시작 날짜 (UTC 기준)
+      const eventDate = new Date(event.eventStartDate); // Parse event start date (in UTC)
       return (
         eventDate.getUTCFullYear() === date.getUTCFullYear() &&
         eventDate.getUTCMonth() === date.getUTCMonth() &&
@@ -45,32 +54,40 @@ const ManageEvents = () => {
     });
   };
 
-  // 날짜 선택 핸들러
+  /**
+   * Handles the selection of a date from the calendar.
+   * Updates the 'selectedDate' and filters the events for that date.
+   * @param {Date} date - The selected date from the calendar 
+   */
   const handleDateSelect = (date) => {
-    setSelectedDate(date); // 선택된 날짜 설정
+    setSelectedDate(date); 
     const filtered = filterEventsByDate(date);
-    setFilteredEvents(filtered); // 필터링된 이벤트 업데이트
+    setFilteredEvents(filtered); 
   };
 
-  // 컴포넌트 로드 시 모든 이벤트 데이터 가져오기
+  // Fetch all events when the component loads
   useEffect(() => {
-    fetchEvents();
+    fetchEvents(); // Call the fetchEvents function
   }, []);
 
   return (
     <MainLayout>
       <View style={styles.container}>
-        {/* 캘린더 컴포넌트 */}
+
+        {/* Calendar Component for date selection */}
         <View style={styles.calendarWrapper}>
           <CalendarComponent onDateSelect={handleDateSelect} />
         </View>
-        {/* 날짜 선택 여부에 따른 조건부 렌더링 */}
+
+        {/* Conditional rendering based on whether a date is selected */}
         {selectedDate ? (
-          // 날짜가 선택된 경우: 필터링된 이벤트 목록 표시
+          // If a date is selected, show filtered events for that date
           <ScrollView style={{ flex: 1, marginTop: 10 }}>
             {loading ? (
+              // Show loading message if events are being fetched
               <Text style={styles.loadingText}>Loading...</Text>
             ) : filteredEvents.length > 0 ? (
+              // Show the filtered list of events
               filteredEvents.map((event) => (
                 <MiniSchedule
                   key={event.eventId}
@@ -81,16 +98,17 @@ const ManageEvents = () => {
                 />
               ))
             ) : (
+              // Show message if no events are available for the selected date
               <Text style={styles.noEventsText}>No events for this date.</Text>
             )}
           </ScrollView>
         ) : (
-          // 날짜가 선택되지 않은 경우: 안내 메시지와 버튼 표시
+          // If no date is selected, show a prompt to select a date or create a new event
           <View style={styles.noDateContainer}>
             <Text style={styles.noDateText}>Select a day to view events</Text>
             <TouchableOpacity
               style={styles.createButton}
-              onPress={() => router.push('screens/manager/EventEdit')}
+              onPress={() => router.push('screens/manager/EventEdit')} // Navigate to the event creation screen
             >
               <Text style={styles.createButtonText}>Create new event</Text>
             </TouchableOpacity>
@@ -113,16 +131,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
-    marginTop: 10, // 달력과 텍스트 간격을 줄이기
+    marginTop: 10,
   },
   noDateText: {
     fontSize: 18,
     color: "#F4A261",
     textAlign: "center",
-    marginBottom: 10, // 텍스트와 버튼 간의 여백
+    marginBottom: 10, 
   },
   createButton: {
-    marginTop: 10, // 버튼과 텍스트 사이 간격
+    marginTop: 10, 
     paddingVertical: 12,
     paddingHorizontal: 32,
     backgroundColor: "#E6F2FA",
@@ -137,6 +155,6 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   calendarWrapper: {
-    marginBottom: 10, // 달력 아래 간격 줄이기
+    marginBottom: 10, 
   },
 });
