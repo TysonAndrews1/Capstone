@@ -1,11 +1,15 @@
 import React from 'react';
 import 'tailwindcss/tailwind.css'; 
+import HamburgerMenu from '../components/HamburgerMenu';
+
+
 
 function MainLayout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <header className="bg-shift-blue text-white py-4 px-6">
-        <h1 className="text-2xl font-bold">Shift Solutions</h1>
+      <header className="bg-hover-blue text-white py-4 px-6 flex items-center">
+        <HamburgerMenu />
+        <h1 className="text-2xl font-bold ml-4">Shift Solutions</h1> 
       </header>
       
       <main className="flex-grow p-6">
@@ -18,5 +22,7 @@ function MainLayout({ children }) {
     </div>
   );
 }
+
+
 
 export default MainLayout;

@@ -5,8 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: { // Corrected from 'color' to 'colors'
-        'shift-blue': '#3F6D89',
+      colors: { 
+        'hover-blue': '#3F6D89',
+        'main-blue': '#32576d',
       },
     },
   },
