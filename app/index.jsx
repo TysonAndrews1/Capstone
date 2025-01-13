@@ -1,4 +1,4 @@
-import Login from '../app/screens/Login';
+import Login from './screens/login/Login';
 
 export default function Index() {
   return (

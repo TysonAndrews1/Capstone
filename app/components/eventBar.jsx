@@ -13,12 +13,15 @@ export default function EventBar({ events, filterType }) {
 
   // Filter events based on filterType ('past' or 'upcoming')
   const filteredEvents = events.filter((event) => {
-    const eventStartTime = new Date(event.eventStartDate);
-    if (filterType === 'past') {
+
+  const eventStartTime = new Date(event.eventStartDate);
+  const eventEndTime = new Date(event.eventEndDate);
+
+  if (filterType === 'past') {
       return eventStartTime < currentDate;
-    } else if (filterType === 'upcoming') {
-      return eventStartTime > currentDate;
-    }
+  } else if (filterType === 'upcoming') {
+      return eventEndTime > currentDate;
+  }
     return true; // Default behavior if no filterType is passed
   });
 
@@ -32,43 +35,17 @@ export default function EventBar({ events, filterType }) {
     setSelectedEvent(null);
   };
 
-  const handleEdit = () => {
+  const handleEdit = (event) => {
+    // sessionStorage.setItem('selectedEvent', JSON.stringify(event));
     // Navigate to the Edit screen
     router.push(`/screens/EventEdit?eventId=${selectedEvent.eventId}`);
     closeModal();
   };
 
   const handleDelete = () => {
-<<<<<<< Updated upstream
     // Handle the delete action (you would typically delete it from state or database)
-    alert(`Event "${selectedEvent.eventName}" deleted.`);
+    alert(`Event "${selectedEvent.EventName}" deleted.`);
     closeModal();
-=======
-    if (!selectedEvent) return;
-
-    console.log(`http://localhost:8080/api/events/${selectedEvent.eventId}`);
-  
-    fetch(`http://localhost:8080/api/events/${selectedEvent.eventId}`, {
-      method: 'DELETE',
-    })
-      .then((response) => {
-        if (response.ok) {
-          alert(`Event "${selectedEvent.eventName}" deleted.`);
-          // Remove the event from the local state to update the UI
-          const updatedEvents = events.filter((event) => event.eventId !== selectedEvent.eventId);
-          closeModal();
-        } else {
-          response.json().then((data) => {
-            console.log('Delete failed:', data); // Log error for debugging
-            alert(data.message || 'Failed to delete event.');
-          });
-        }
-      })
-      .catch((error) => {
-        console.error('Error deleting event:', error);
-        alert('An error occurred while deleting the event.');
-      });
->>>>>>> Stashed changes
   };
 
   // Format date safely, return fallback text if invalid date
@@ -96,14 +73,15 @@ export default function EventBar({ events, filterType }) {
           visible={modalVisible}
           animationType="slide"
           transparent={true}
-          onRequestClose={closeModal}
-        >
+          onRequestClose={closeModal}>
+
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               {/* Close button (X) */}
               <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                 <Text style={styles.closeButtonText}>X</Text>
               </TouchableOpacity>
+
               <Text style={styles.modalTitle}>{selectedEvent?.eventName}</Text>
               <Text style={styles.modalDetails}>
                 <Text style={styles.bold}>Start Time:</Text> {formatDate(selectedEvent?.eventStartDate)}
@@ -120,7 +98,7 @@ export default function EventBar({ events, filterType }) {
 
               {/* Edit and Delete buttons */}
               <View style={styles.modalActions}>
-                <TouchableOpacity style={styles.button} onPress={handleEdit}>
+                <TouchableOpacity style={styles.button} onPress={() => handleEdit(selectedEvent)}>
                   <Text style={styles.buttonText}>Edit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>

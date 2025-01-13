@@ -10,7 +10,7 @@ public class BanquetEvent {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Maps AUTO_INCREMENT
     @Column(name = "event_id")
-    private Long eventId;
+    private int eventId;
 
     @Column(name = "event_name", nullable = false, length = 100)
     private String eventName;
@@ -34,11 +34,11 @@ public class BanquetEvent {
     private String specialRequirements;
 
     // Getters and Setters
-    public Long getEventId() {
+    public int getEventId() {
         return eventId;
     }
 
-    public void setEventId(Long eventId) {
+    public void setEventId(int eventId) {
         this.eventId = eventId;
     }
 
