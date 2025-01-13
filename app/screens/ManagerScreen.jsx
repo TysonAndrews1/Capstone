@@ -24,7 +24,7 @@ const ManagerScreen = () => {
         <Pressable style={styles.button} onPress={()=> router.push('/screens/EventList')}>
           <Text style={styles.text}>Manage Events</Text>
         </Pressable>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={()=> router.push('/screens/EmployeeAccounts')}>
           <Text style={styles.text}>Manage Employee Accounts</Text>
         </Pressable>
         <Pressable style={styles.button}>
