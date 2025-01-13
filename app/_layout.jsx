@@ -21,8 +21,6 @@ export default function RootLayout() {
     >
       <Stack.Screen name='index' options={{ headerShown: false}} /> {/* remove a header on the login screen */}
       <Stack.Screen name='screens/Login' options={{ headerShown: false}} /> {/* remove a header on the login screen */}
-      <Stack.Screen name="screens/EventList" options={{ title: 'Manage Events' }} /> {/* Navigate to screens/Events */}
-      <Stack.Screen name="screens/EventEdit"  options={{ title: 'Edit Events' }}/> {/* Navigate to screens/CalendarTest */}
       <Stack.Screen name="screens/forgotPassword"  options={{ title: 'Forgot Password', headerShown: false }}/> {/* Navigate to screens/CalendarTest */}
       {/* Navigate to ManagerScreen and remove a back arrow and add two buttons*/}
       <Stack.Screen name="screens/manager/ManagerScreen"  options={{ title: '', headerBackVisible: false, 
@@ -41,6 +39,9 @@ export default function RootLayout() {
       }}/> 
       <Stack.Screen name="screens/manager/managerMore" options={{ title: 'Manager Tools'}} />
       <Stack.Screen name="screens/manager/ManagerSchedule" options={{ title: 'Manage Schedule'}} />
+      <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
+      <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
+      <Stack.Screen name="screens/manager/EventList" options={{ title: 'Event List'}} />
     </Stack>
   );
 }

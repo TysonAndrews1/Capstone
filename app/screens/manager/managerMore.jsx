@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
@@ -17,24 +17,24 @@ const ManagerMore = () => {
         </View>
       </View>
       <View style={styles.container}>
-        <Pressable style={styles.button}>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Manage Employee Schedule</Text>
-        </Pressable>        
-        <Pressable style={styles.button}>
+        </TouchableOpacity>        
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>View Employee Request</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={()=> router.push('/screens/manager/EventList')}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={()=> router.push('/screens/manager/ManageEvents')}>
           <Text style={styles.text}>Manage Events</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Manage Employee Accounts</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Employee Report</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Push Schedule Notification</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </MainLayout>
   );
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: '#3f6d89',
+    backgroundColor: '#E6F2FA',
     width: '90%',
     marginVertical: 8,
   },
@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+    color: '#000',
   },
   searchContainer: {
-    margin: 10, // 상하좌우 여백
+    marginTop: 15, 
     alignItems: 'center', // 가운데 정렬
   },
   searchBox: {
