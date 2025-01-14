@@ -1,0 +1,72 @@
+import React, { useState } from 'react';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/firebase';
+import { useNavigate } from 'react-router-dom';
+
+
+
+/* within the SignIn component, we have state and setter for the email and password fields, and error messages. */
+function SignIn() {
+  const [email, setEmail] = useState(''); 
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate(); // this function is used to navigate to the ManagerDashboard page after successful login
+
+  /* Successful login will navigate to the ManagerDashboard. Error will display an error message */
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert('Login successful!');
+      navigate('/ManagerDashboard');
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <form className="bg-white p-7 rounded-2xl shadow-lg w-80" onSubmit={handleLogin}>
+        {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+        <h1 className="text-2xl font-bold mb-4 text-center">Sign In</h1>
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full mb-4 p-2 border border-gray-300 rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full mb-2 p-2 border border-gray-300 rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button
+          type="submit"
+          className="  hover:text-blue-500"
+        >
+          Register
+        </button>
+
+        <button
+          type="submit"
+          className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue"
+        >
+          Login
+        </button>
+        
+      </form>
+    </div>
+  );
+}
+
+export default SignIn;
+
+
