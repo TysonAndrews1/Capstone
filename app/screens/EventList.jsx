@@ -39,7 +39,8 @@ export default function Events() {
   const handleSelect = (option) => {
     setSelectedOption(option);
   };
-  const CreateEvent = () =>{
+
+  const CreateEvent = () =>{ //This will navigate to the EventEdit screen without passing any event ID
     router.push('/screens/EventEdit')
   }
   
