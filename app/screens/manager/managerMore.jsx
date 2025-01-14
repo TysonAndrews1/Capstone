@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
@@ -6,35 +6,52 @@ import { useRouter } from "expo-router";
 
 const ManagerMore = () => {
 
+  // Hook for navigating to other screens
   const router = useRouter();
 
   return (
     <MainLayout>
+
+      {/* Search Bar Section */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
           <Text style={styles.searchText}>Search</Text>
           <Image source={require('../../../assets/images/search.png')} style={{ width: 24, height: 24}} />
         </View>
       </View>
+
+      {/* Main Button Section */}
       <View style={styles.container}>
-        <Pressable style={styles.button}>
+
+        {/* Button to manage employee schedules */}
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Manage Employee Schedule</Text>
-        </Pressable>        
-        <Pressable style={styles.button}>
+        </TouchableOpacity>   
+
+        {/* Button to view employee requests */}     
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>View Employee Request</Text>
-        </Pressable>
-        <Pressable style={styles.button} onPress={()=> router.push('/screens/manager/EventList')}>
+        </TouchableOpacity>
+
+        {/* Button to navigate to event management screen */}
+        <TouchableOpacity style={styles.button} onPress={()=> router.push('/screens/manager/ManageEvents')}>
           <Text style={styles.text}>Manage Events</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+
+        {/* Button to manage employee accounts */}
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Manage Employee Accounts</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+
+        {/* Button to view employee reports */}
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Employee Report</Text>
-        </Pressable>
-        <Pressable style={styles.button}>
+        </TouchableOpacity>
+
+        {/* Button to send schedule notifications */}
+        <TouchableOpacity style={styles.button}>
           <Text style={styles.text}>Push Schedule Notification</Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     </MainLayout>
   );
@@ -55,7 +72,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: '#3f6d89',
+    backgroundColor: '#E6F2FA',
     width: '90%',
     marginVertical: 8,
   },
@@ -64,24 +81,24 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+    color: '#000',
   },
   searchContainer: {
-    margin: 10, // 상하좌우 여백
-    alignItems: 'center', // 가운데 정렬
+    marginTop: 15, 
+    alignItems: 'center', 
   },
   searchBox: {
-    flexDirection: 'row', // 가로 정렬
-    alignItems: 'center', // 세로 중앙 정렬
-    backgroundColor: '#E0E0E0', // 배경색
-    borderRadius: 25, // 둥근 테두리
-    paddingVertical: 8, // 상하 패딩
-    paddingHorizontal: 12, // 좌우 패딩
-    width: '90%', // 화면 너비의 90% 차지
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    backgroundColor: '#E0E0E0', 
+    borderRadius: 25, 
+    paddingVertical: 8, 
+    paddingHorizontal: 12, 
+    width: '90%', 
   },
   searchText: {
-    flex: 1, // 텍스트 영역 확장
-    fontSize: 16, // 텍스트 크기
-    color: '#757575', // 텍스트 색상
+    flex: 1, 
+    fontSize: 16, 
+    color: '#757575', 
   },
 });
