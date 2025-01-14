@@ -89,13 +89,15 @@ const styles = StyleSheet.create({
     },
 
     searchBar: {
-        height: 40,
+        height: 50,
         backgroundColor: '#ccc',
         borderRadius: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 12,
         marginBottom: 16,
         color: '#000',
+        fontSize: 16,
     },
+      
 
     scrollContainer: {
         flex: 1,
