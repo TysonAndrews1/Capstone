@@ -5,13 +5,14 @@ import { useNavigate } from 'react-router-dom';
 
 
 
-
+/* within the SignIn component, we have state and setter for the email and password fields, and error messages. */
 function SignIn() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(''); 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // this function is used to navigate to the ManagerDashboard page after successful login
 
+  /* Successful login will navigate to the ManagerDashboard. Error will display an error message */
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -23,6 +24,7 @@ function SignIn() {
       setError(err.message);
     }
   };
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
@@ -40,23 +42,26 @@ function SignIn() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
+          className="w-full mb-2 p-2 border border-gray-300 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        <button
+          type="submit"
+          className="  hover:text-blue-500"
+        >
+          Register
+        </button>
+
         <button
           type="submit"
           className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue"
         >
           Login
         </button>
-        <button
-          type="submit"
-          className="w-full bg-green-500 text-shift-blue text-bold p-2 rounded hover:bg-green-600"
-        >
-          Register
-        </button>
+        
       </form>
     </div>
   );
