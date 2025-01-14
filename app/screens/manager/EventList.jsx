@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from 'react';
-<<<<<<<< HEAD:app/screens/manager/EventList.jsx
 import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform } from 'react-native';
 import MainLayout from '../../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
 import EventBar from '../../components/eventBar';  // Assuming this component displays the events based on filter
-========
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View, ActivityIndicator, Platform } from 'react-native';
-import MainLayout from '../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
-import EventBar from '../components/eventBar';  // Assuming this component displays the events based on filter
->>>>>>>> f88e954cbabba12efc49ed60371679e7b5b64ac1:app/screens/EventList.jsx
 import { useRouter } from 'expo-router';
 
 export default function Events() {
@@ -18,13 +12,10 @@ export default function Events() {
   const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
 
-<<<<<<<< HEAD:app/screens/manager/EventList.jsx
   /// 10.187.237.34 this ipv4 address works only for my laptop(teddy). so, you guys need to use your IP address or the one written before.
   const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
-========
-  const BASE_URL =
-  Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
->>>>>>>> f88e954cbabba12efc49ed60371679e7b5b64ac1:app/screens/EventList.jsx
+
+
 
   // Function to fetch events from the backend
   const fetchEvents = async (timeframe) => {
