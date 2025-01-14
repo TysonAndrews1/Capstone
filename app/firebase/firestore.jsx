@@ -1,38 +1,44 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "./firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "./firebaseConfig";
 import { Text, View } from "react-native";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Firestore = () => {
-  const [data, setData] = useState([]);
+  // State to store user data fetched from Firestore
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    // Function to fetch user data from Firestore
+    const fetchUserData = async (uid) => {
       try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const items = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setData(items);
+        const userRef = doc(db, "users", uid); // Reference to the user's document in Firestore
+        const userSnapshot = await getDoc(userRef);
+
+        // CHeck if the document exists in FIrestore
+        if (userSnapshot.exists()) {
+          setUserData(userSnapshot.data());
+        } else {
+          console.error("No user data found in Firestore.");
+        }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    fetchData();
+    // Subscribe to authentication state changes
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchUserData(user.uid); 
+      } else {
+        setUserData(null);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  return (
-    <View>
-      <Text>Firestore Data</Text>
-        {data.map((item) => (
-          <Text key={item.id}>
-            {item.email} - {item.role}
-          </Text>
-        ))}
-      </View>
-  );
+  return null;
 };
 
 export default Firestore;

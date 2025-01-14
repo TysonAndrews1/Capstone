@@ -15,8 +15,6 @@ export default function Events() {
   /// 10.187.237.34 this ipv4 address works only for my laptop(teddy). so, you guys need to use your IP address or the one written before.
   const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
 
-
-
   // Function to fetch events from the backend
   const fetchEvents = async (timeframe) => {
     

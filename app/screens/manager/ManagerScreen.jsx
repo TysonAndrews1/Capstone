@@ -1,51 +1,58 @@
-import { View, Text, StyleSheet,  Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "../../firebase/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
-// Backend API base URL
 const BASE_URL = 'http://10.0.2.2:8080/api/events';
 
 const ManagerScreen = () => {
-  const [user, setUser] = useState(null); // State for storing user information
-  const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the selected date
-  const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week dates
-  const [events, setEvents] = useState([]); //State for storing events fetched from the backend
-  
-  // State for handling loading and error states
+  const [user, setUser] = useState(null); // State for user date
+  const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
+  const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
+  const [events, setEvents] = useState([]); // State for storing events fetched from the backend
+  // State for handling Loading and error states
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(null);
 
-  /**
-   * Helper function to get the current week's dates.
-   * The week starts on Sunday (weekStartsOn: 0).
-   */
+  // Helper function to calculate the current week's dates
   function getCurrentWeek() {
     const start = startOfWeek(new Date(), { weekStartsOn: 0 });
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
-  };
+  }
 
-  // Fetch user data from Firestore on component mount
+  // Fetch user data from Firestore
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserData = async (uid) => {
       try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        const userData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))[0]; // Fetch the first user only
-        setUser(userData);
+        const userRef = doc(db, "users", uid);  // Reference to the user's document in Firestore
+        const userSnapshot = await getDoc(userRef);
+
+        if (userSnapshot.exists()) {
+          setUser(userSnapshot.data()); // Set user data if the document exists
+        } else {
+          console.error("No user data found in Firestore.");
+        }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserData();
+    // Fetch the UID of the currently logged-in user
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        fetchUserData(currentUser.uid); // Fetch Firestore data using the UID
+      } else {
+        setUser(null); // Clear user data if no user is logged in
+      }
+    });
+
+    return () => unsubscribe();  // Cleanup subscription
   }, []);
 
-  // Fetch events for the selected date whenever it changes
+  // Fetch events from the backend whenever the selected data changes
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
@@ -57,22 +64,20 @@ const ManagerScreen = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setEvents(data); // Store fetched events
+        setEvents(data);
       } catch (err) {
         console.error('Error fetching events:', err);
         setError('Failed to fetch events. Please try again.');
       } finally {
-        setLoading(false); // Stop loading indicator
+        setLoading(false);
       }
     };
     fetchEvents();
   }, [selectedDate]);
 
-  // Helper function to get a greeting message based on the curren time of day
+  // Helper function to display a greeting based on the time of day
   const getTimeOfDayMessage = () => {
-
     const hour = new Date().getHours();
-    
     if (hour < 12) {
       return 'Good Morning';
     } else if (hour < 18) {
@@ -82,15 +87,15 @@ const ManagerScreen = () => {
     }
   };
 
-  // Filter events to show only those occurring on the selected date
+  // Filter events to show only those happening on the selected date
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.eventStartDate); // Convert event start date to Date object
-    return isSameDay(eventDate, selectedDate); // Compare dates
+    const eventDate = new Date(event.eventStartDate);
+    return isSameDay(eventDate, selectedDate);
   });
 
   return (
     <MainLayout>
-      {/** Greeting managers depends on time */}
+      {/* Greeting for the user */}
       <View style={styles.container}>
         <Text style={styles.greeting}>{getTimeOfDayMessage()},</Text>
         <Text style={styles.name}>
@@ -107,7 +112,7 @@ const ManagerScreen = () => {
               {user ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}` : "Loading..."}
             </Text>
             <Text style={styles.cardText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum at elit non felis elementum dictum. Donec ac condimentum nisl.
+              It's gonna be announcements.
             </Text>
           </View>
         </View>
@@ -115,9 +120,9 @@ const ManagerScreen = () => {
         {/* New Employee Requests Card */}
         <TouchableOpacity style={styles.card}>
           <View style={styles.cardRequest}>
-            <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10, }} />
+            <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10 }} />
             <Text style={styles.monthText}>(3) New Employee Requests</Text>
-          </View>  
+          </View>
         </TouchableOpacity>
 
         {/* Weekly Calendar */}
@@ -125,44 +130,36 @@ const ManagerScreen = () => {
           <Text style={styles.monthText}>{format(selectedDate, 'MMMM yyyy')}</Text>
           <View style={styles.weekContainer}>
             {currentWeek.map((day) => (
-              <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay,]}
-              onPress={() => setSelectedDate(day)}>
+              <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay]}
+                onPress={() => setSelectedDate(day)}>
                 <Text style={styles.dayText}>{format(day, 'EEE')}</Text>
                 <Text style={styles.dateText}>{format(day, 'd')}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-        {/* Event Details for Selected Date */}
-        <View style={styles.detailsContainer}>
-        <ScrollView>
-            {loading ? (
-              <Text>Loading...</Text>
-            ) : filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                <View key={event.eventId} style={styles.eventContainer}>
-                  {/* Top Dotted Line */}
-                  <View style={styles.dottedLine}></View>
-
-                  {/* Event Time */}
-                  <Text style={styles.timeText}>
-                    {format(new Date(event.eventStartDate), 'hh:mm a')} -{' '}
-                    {format(new Date(event.eventEndDate), 'hh:mm a')}
-                  </Text>
-
-                  {/* Event Name and Guest Count */}
-                  <Text style={styles.eventDetails}>
-                    {event.eventName} ({event.numberOfGuests} Guests)
-                  </Text>
-
-                  {/* Bottom Dotted Line */}
-                  <View style={styles.dottedLine}></View>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.noEventsText}>No events for this date.</Text>
-            )}
-          </ScrollView>
+          {/* Event Details for the Selected Date */}
+          <View style={styles.detailsContainer}>
+            <ScrollView>
+              {loading ? (
+                <Text>Loading...</Text>
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <View key={event.eventId} style={styles.eventContainer}>
+                    <View style={styles.dottedLine}></View>
+                    <Text style={styles.timeText}>
+                      {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                    </Text>
+                    <Text style={styles.eventDetails}>
+                      {event.eventName} ({event.numberOfGuests} Guests)
+                    </Text>
+                    <View style={styles.dottedLine}></View>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noEventsText}>No events for this date.</Text>
+              )}
+            </ScrollView>
           </View>
         </View>
       </View>
@@ -171,6 +168,7 @@ const ManagerScreen = () => {
 };
 
 export default ManagerScreen;
+
 
 const styles = StyleSheet.create({
   container: {
