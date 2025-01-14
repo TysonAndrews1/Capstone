@@ -39,7 +39,6 @@ export default function Events() {
   const handleSelect = (option) => {
     setSelectedOption(option);
   };
-
   const CreateEvent = () =>{
     router.push('/screens/EventEdit')
   }
