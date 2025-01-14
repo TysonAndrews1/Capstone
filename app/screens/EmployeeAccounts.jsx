@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Alert, Platform
-} from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Alert, Platform } from 'react-native';
 import MainLayout from '../layouts/MainLayout';
 
 export default function EmployeeAccounts() {
-  const [employees, setEmployees] = useState([]);
-  const [filteredEmployees, setFilteredEmployees] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [error, setError] = useState(null);
+    const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [error, setError] = useState(null);
 
 //Platform.OS to decide which URL to use when running on an Android emulator vs iOS/web. Android emulator accesses localhost via "10.0.2.2".
-  const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events'; //copied from EventList.jsx
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events'; //copied from EventList.jsx
 
 
 /* This effect runs once when the component mounts. FetchEmployees attempts to fetch employee data from a backend endpoint,
