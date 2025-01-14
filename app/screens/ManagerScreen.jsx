@@ -13,7 +13,7 @@ const ManagerScreen = () => {
       <View style={styles.container}>
         <Text>Manager Tools</Text>
         <Pressable style={styles.button}>
-          <Text style={styles.text}>Mae's Branch</Text>
+          <Text style={styles.text}>Mae's Branch Indicator</Text>
         </Pressable> 
         <Pressable style={styles.button}>
           <Text style={styles.text}>Manage Employee Schedule</Text>
