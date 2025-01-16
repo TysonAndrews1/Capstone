@@ -40,13 +40,13 @@ const cancel = ()=>{
 
             <button
               type="submit"
-              className="w-half bg-[#457B9D] text-shift-blue text-bold p-2 rounded hover:bg-green-600"
+              className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue"
             >
               Submit
             </button>
             <button
               type="button"
-              className="w-half bg-[#457B9D] text-shift-blue text-bold p-2 rounded hover:bg-green-600"
+              className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue mt-1"
               onClick={cancel}
             >
               Go Back

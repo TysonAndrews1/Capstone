@@ -1,31 +1,36 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
+
+
+
 export default function CreateEvent(eventId){
-    let nextId = 0 
-    if (eventId) {
-        
-    }else{
-        eventId = nextId;
-    }
+  let EditingEvent = ""
+  let nextId = 1
+  let loadEvent = ""
+    eventId? EditingEvent =loadEvent(eventId) : eventId = getNextId(nextId)
+
     const [error,SetError] = useState("")
 
-    const [eventTitle, setEventTitle] = useState('');
-    // const [startTime, setStartTime] = useState(new Date());
-    // const [endTime, setEndTime] = useState(new Date());
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    const [location, setLocation] = useState('');
-    const [numberOfGuests, setNumberOfGuests] = useState('');
-    const [eventManager, setEventManager] = useState('');
-    const [specialRequirements, setSpecialRequirements] = useState('');
-
+    const [eventTitle, setEventTitle] = useState(EditingEvent.eventName ||'');
+    const [startDate, setStartDate] = useState(EditingEvent.eventStartDate||new Date());
+    const [endDate, setEndDate] = useState(EditingEvent.eventEndDate||new Date());
+    const [location, setLocation] = useState(EditingEvent.eventLocation||'');
+    const [numberOfGuests, setNumberOfGuests] = useState(EditingEvent.numberOfGuests||'');
+    const [eventManager, setEventManager] = useState(EditingEvent.assignedManager||'');
+    const [specialRequirements, setSpecialRequirements] = useState(EditingEvent.specialRequirements||'');
 
     const navigate = useNavigate();
+    
+
+  function getNextId(){
+
+  }
+
     const handleSubmit = () => {
-        // if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !numberOfGuests || !eventManager) {
-        //   Alert.alert("Error", "Please fill in all the fields");
-        //   return;
-        // }
+        if (!eventTitle || !startDate || !endDate || !location || !numberOfGuests || !eventManager) {
+          alert("Error", "Please fill in all the fields");
+          return;
+        }
 
         const BASE_URL = ""
         const newEvent = {
@@ -47,15 +52,13 @@ export default function CreateEvent(eventId){
             })
             .then((response) => response.json())
             .then((data) => {
-            //   Alert.alert("Success", "Event created successfully!");
+              alert("Success", "Event created successfully!");
               navigate('/Events');
             })
             .catch((error) => {
               console.error('Error creating event:', error);
-            //   Alert.alert("Error", "Failed to create event");
+              alert("Error", "Failed to create event");
             });
-
-
     }
 
     return(<main>

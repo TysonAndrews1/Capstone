@@ -3,7 +3,9 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase/firebase';
 import { useNavigate } from 'react-router-dom';
 
-
+//Created by Michelle and Tyson
+//With help from Chat-GPT to fine tune the Tailwind CSS
+//This is a standard Sign in page allowing for only verified users to access the webpage or redirecting to the forgot password page
 
 
 function SignIn() {
@@ -47,14 +49,14 @@ function SignIn() {
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
+          className="w-full p-2 border border-gray-300 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
         <button
           type="button"
-          className="text-shift-blue text-bold p-2 rounded text-gray-800 hover:text-[#847A7A]"
+          className="text-shift-blue text-bold p-2 rounded text-[#847A7A] hover:text-[#373333] w-full text-right"
           onClick={ToForgotPassword}
         >
           forgot password
@@ -65,12 +67,12 @@ function SignIn() {
         >
           Login
         </button>
-        <button
+        {/* <button
           type="submit"
           className="w-full bg-green-500 text-shift-blue text-bold p-2 rounded hover:bg-green-600"
         >
           (Manager)
-        </button>
+        </button> */}
 
       </form>
     </div>
