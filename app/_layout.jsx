@@ -42,6 +42,7 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
       <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
       <Stack.Screen name="screens/manager/EventList" options={{ title: 'Event List'}} />
+      <Stack.Screen name="screens/manager/EmployeeAccounts" options={{ title: 'Employee Account' }}/>
     </Stack>
   );
 }
