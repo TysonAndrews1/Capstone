@@ -1,67 +1,96 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 
+/**
+ * Custom Calendar Component
+ * Allows users to select a date, with the ability to toggle the selection on/off.
+ * @param {function} onDateSelect - Callback function to pass the selected date to the parent component. 
+ * @returns 
+ */
 const CalendarComponent = ({ onDateSelect }) => {
-  const [selectedDate, setSelectedDate] = useState('');
 
+  // Tracks the currently selected date
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  /**
+   * Handles the logic for date selection and deselection.
+   * @param {object} day - Object containing information about the selected date (e.g., dateString). 
+   */
   const onDayPress = (day) => {
-    const selected = day.dateString;  // Get date in 'YYYY-MM-DD' format
-    setSelectedDate(selected);  // Update local state
+    const selected = new Date(day.dateString); 
 
-    // Convert the selected date string to a Date object using local time zone
-    const [year, month, dayOfMonth] = selected.split('-');
-    const dateObject = new Date(year, month - 1, dayOfMonth); // month is 0-based in JavaScript Date
-
-    // Pass the Date object to the parent via callback
-    if (onDateSelect) {
-      onDateSelect(dateObject);
+    if (selectedDate && selectedDate.toISOString() === selected.toISOString()) {
+      // If the same date is selected again, deselect it
+      setSelectedDate(null);
+      onDateSelect(null); // Notify parent component of deselection
+    } else {
+      // Select a new date
+      setSelectedDate(selected);
+      onDateSelect(selected); // Pass the selected date (in UTC) to the parent component
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.selectedDateText}>
-        Selected Date: {selectedDate || 'None'}
-      </Text>
-
+    <View style={styles.calendarWrapper}>
       <Calendar
-        current={selectedDate || new Date().toISOString().split('T')[0]}
+        current={new Date().toISOString().split('T')[0]}
         minDate={'2020-01-01'}
-        maxDate={'2026-12-31'}
+        maxDate={'2030-12-31'}
         onDayPress={onDayPress}
         markedDates={{
-          [selectedDate]: { selected: true, selectedColor: 'orange', selectedTextColor: 'white' }
+          [selectedDate?.toISOString().split("T")[0]]: {
+            selected: true,
+            selectedColor: "#FFB74D",
+            selectedTextColor: "#fff",
+          },
         }}
         theme={{
-          selectedDayBackgroundColor: 'blue',
-          todayTextColor: 'green',
-          dayTextColor: 'black',
-          arrowColor: 'orange',
-          monthTextColor: 'purple',
-          textDayFontWeight: 'bold',
+          backgroundColor: '#ffffff',
+          calendarBackground: '#f9f9f9',
+          textSectionTitleColor: '#000',
+          selectedDayBackgroundColor: '#FFB74D',
+          selectedDayTextColor: '#ffffff',
+          todayTextColor: '#000',
+          dayTextColor: '#2d4150',
+          arrowColor: '#3F6D89',
+          monthTextColor: '#000',
+          textDayFontWeight: '300',
           textMonthFontWeight: 'bold',
           textDayHeaderFontWeight: 'bold',
-          textDayHeaderFontSize: 16,
+          textDayFontSize: 14,
           textMonthFontSize: 20,
+          textDayHeaderFontSize: 16,
+          'stylesheet.calendar.header': {
+            dayTextAtIndex0: { width: '14%', textAlign: 'center' }, // Sunday
+            dayTextAtIndex1: { width: '14%', textAlign: 'center' }, // Monday
+            dayTextAtIndex2: { width: '14%', textAlign: 'center' }, // Tuesday
+            dayTextAtIndex3: { width: '14%', textAlign: 'center' }, // Wednesday
+            dayTextAtIndex4: { width: '14%', textAlign: 'center' }, // Thursday
+            dayTextAtIndex5: { width: '14%', textAlign: 'center' }, // Friday
+            dayTextAtIndex6: { width: '14%', textAlign: 'center' }, // Saturday
+          },
         }}
+        style={styles.calendar}
       />
-
-      {/* You can remove this Button or customize it */}
-      <Button title="Select a Date" onPress={() => {}} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+  calendarWrapper: {
+    width: '90%',
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    alignSelf: 'center',
   },
-  selectedDateText: {
-    fontSize: 18,
-    marginBottom: 10,
+  calendar: {
+    borderRadius: 10,
   },
 });
 

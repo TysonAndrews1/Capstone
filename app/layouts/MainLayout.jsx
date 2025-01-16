@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView,} from 'react-native';
+import { View, StyleSheet, ScrollView, StatusBar} from 'react-native';
 import Footer from './Footer';
 
 export default function MainLayout({ children }) {
   return (
     <View style={styles.container}> 
+
+    {/** Customize the Status Bar globally to cover  */}
+    <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {children}
       </ScrollView>

@@ -1,18 +1,30 @@
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "./firebaseConfig";
 
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "./firebaseConfig";
-
-// Login
+// Function to handle user login
 export const handleLogin = async (email, password) => {
   try {
+
+    // Attempt to sing in the user using Firebase Authentication
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    console.log("User logged in:", userCredential.user);
-    return userCredential.user;
+
+    // Fetch the user's data from Firestore
+    const userRef = doc(db, "users", userCredential.user.uid); // Reference the user's document in FIrestore using UID
+    const userSnapshot = await getDoc(userRef);
+
+    // Check if the user data exists in Firestore
+    if (userSnapshot.exists()) {
+      const userData = userSnapshot.data();
+      return userData;
+    } else {
+      throw new Error("No user data found in Firestore.");
+    }
   } catch (error) {
     console.error("Error logging in:", error.message);
-    
-    // Error Message Mapping
-    let errorMessage =  "";
+
+    // Map Firebase Authentication error codes to custom error messages
+    let errorMessage = "";
     switch (error.code) {
       case "auth/user-not-found":
         errorMessage = "The user is not registered. Please check the email address.";
@@ -28,16 +40,4 @@ export const handleLogin = async (email, password) => {
     }
     throw new Error(errorMessage);
   }
-};
-
-// Sign Up
-export const handleSignUp = async (email, password) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    console.log("User signed up:", userCredential.user);
-    return userCredential.user;
-  } catch (error) {
-    console.error("Error signing up:", error.message);
-    throw new Error(error.message); // Send an error message
-}
 };
