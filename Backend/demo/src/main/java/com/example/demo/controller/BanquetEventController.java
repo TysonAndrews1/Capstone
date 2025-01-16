@@ -26,7 +26,7 @@ public class BanquetEventController {
 
     @GetMapping("/filter") // Filters events by timeframe (past or upcoming)
     public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {
-        
+
         // Store the loacal time and date
         LocalDateTime today = LocalDate.now().atStartOfDay();
 
@@ -44,7 +44,7 @@ public class BanquetEventController {
             }
             return false;
         })
-        .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @PostMapping // Will use this method to create new events using infomation from the frontend
@@ -53,7 +53,7 @@ public class BanquetEventController {
     }
 
     @DeleteMapping("/{eventId}") // Create a delete method by event ID
-    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId){
+    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
 
         System.out.println("Delete request received for ID: " + eventId);
         // Check if the event exists in the database

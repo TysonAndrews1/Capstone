@@ -25,17 +25,17 @@ function HamburgerMenu() {
         <nav className="absolute top-12 left-0 bg-white w-full shadow-lg z-10">
           <ul className="flex flex-col items-start p-4">
             <li className="py-2 px-4">
-              <a href="/home" className="text-gray-800 hover:text-blue-500">
+              <a href="/Home" className="text-gray-800 hover:text-blue-500">
                 Home
               </a>
             </li>
             <li className="py-2 px-4">
-              <a href="/events" className="text-gray-800 hover:text-blue-500">
+              <a href="/Events" className="text-gray-800 hover:text-blue-500">
                 Events
               </a>
             </li>
             <li className="py-2 px-4">
-              <a href="/manager" className="text-gray-800 hover:text-blue-500">
+              <a href="/ManagerDashboard" className="text-gray-800 hover:text-blue-500">
                 Manager Dashboard
               </a>
             </li>
