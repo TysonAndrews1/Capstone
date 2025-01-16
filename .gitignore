@@ -37,5 +37,4 @@ yarn-error.*
 
 app-example
 .idea/
-
-application.properties
+Backend/demo/src/main/resources/application.properties

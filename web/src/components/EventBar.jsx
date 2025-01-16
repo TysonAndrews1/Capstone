@@ -18,9 +18,6 @@ const testEvent = [{
     numberOfGuests: 10, // Number of expected guests
     assignedManager : 'bob',
 specialRequirements : 'nope' // Additional event requirement
-
-
-
 }]
 
 

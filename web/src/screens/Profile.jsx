@@ -4,11 +4,11 @@ import { useNavigate } from "react-router-dom";
 //Created By Tyson
 //The Home Page dedicated to future navigation of the page 
 
-export default function Home(){
+export default function Profile(){
 
 return (
 
 <p>
-This is the Home
+This is the Profile
 </p>)
 }
