@@ -38,4 +38,3 @@ yarn-error.*
 app-example
 .idea/
 
-Backend/demo/src/main/resources/application.properties
