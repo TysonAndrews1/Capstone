@@ -2,7 +2,8 @@ import React from 'react';
 import 'tailwindcss/tailwind.css'; 
 import HamburgerMenu from '../components/HamburgerMenu';
 
-
+// Created by 
+// The Main Layout making sure to add the header and footer too all pages that require it 
 
 function MainLayout({ children }) {
   return (
@@ -16,7 +17,7 @@ function MainLayout({ children }) {
         {children}  
       </main>
       
-      <footer className="bg-shift-blue text-white py-4 text-center">
+      <footer className="bg-hover-blue text-white py-4 text-center">
         <p>© 2025 ShiftSolutions. All rights reserved.</p>
       </footer>
     </div>

@@ -2,6 +2,28 @@ import React, { useState } from 'react';
 import MiniSchedule from './MiniSchedule';
 import { useNavigate } from 'react-router-dom';
 
+//Made By Aaron, Tyson and Michelle 
+//Converted from React Native with help from Chat-GPT
+
+//Made By:
+//Refrences
+// General Purpose 
+
+const testEvent = [{
+  eventId: 1,
+     eventName: 'Rock', // Event title
+      eventStartDate : Date.now(), // Event start date (UTC)
+      eventEndDate : Date.now(), // Event start time
+    eventLocation: 'There', // Event location
+    numberOfGuests: 10, // Number of expected guests
+    assignedManager : 'bob',
+specialRequirements : 'nope' // Additional event requirement
+
+
+
+}]
+
+
 function format(date) {
     return date.toLocaleDateString('en-US', {
       month: 'short',
@@ -18,6 +40,7 @@ export default function EventBar({ events, filterType }) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate(); // Initialize the router
 
+    events = testEvent
   const currentDate = new Date();
 
   // Filter events based on filterType ('past' or 'upcoming')
