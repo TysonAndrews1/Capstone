@@ -1,16 +1,16 @@
 import React from "react";
-import Calender from "../components/Calender";
+import CalendarComponent from "../components/Calender";
 import UpcomingEvents from "../components/UpcomingEvents";
 export default function Events (){
 
-
+let something = 0
 
 return(
 
 <main>
 
 
-<Calender/>
+<CalendarComponent OnDateSelect={something}/>
 <UpcomingEvents/>
 </main>)
 }
