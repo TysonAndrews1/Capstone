@@ -10,7 +10,7 @@ export default function UpcomingEvents(){
     const [selectedOption, setSelectedOption] = useState('upcoming');  // Default to 'upcoming'
     const [events, setEvents] = useState([]); // State to store events from the backend
     const [error, setError] = useState(null); // State for error handling
-      const navigate = useNavigate();
+    const navigate = useNavigate();
     const BASE_URL =  'http://localhost:8080/api/events';
   
     // Function to fetch events from the backend
