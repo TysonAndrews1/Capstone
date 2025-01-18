@@ -10,6 +10,7 @@ import CreateEvent from './screens/EditEvent';
 import Home from './screens/Home';
 import 'tailwindcss/tailwind.css';
 import EmployeeSchedule from './screens/EmployeeSchedule';
+import Profile from './screens/Profile';
 
 function App() {
   return (
@@ -29,8 +30,9 @@ function App() {
         <Route path="/Events" element={<MainLayout> <Events /></MainLayout>}/>
         <Route path="/EditEvent" element={<MainLayout> <CreateEvent /></MainLayout>}/>
         <Route path = "/Home" element={<MainLayout><Home/></MainLayout>}></Route>
+        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
-        <Route path="/EmployeeSchedule" element={<EmployeeSchedule />} />
+        <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
       </Routes>
     </Router>
   );
