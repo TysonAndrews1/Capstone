@@ -68,6 +68,7 @@ If there's no search query, filteredEmployees = employees (show all). */
 
             <ScrollView style={styles.scrollContainer}>
                 <Pressable style={styles.employeeCard}>
+                    {/* Add an edit button next to it. Find the logic behind putting the edit icon.*/}
                     <Text style={styles.employeeName}>Test Account</Text>
                 </Pressable>
             </ScrollView>
