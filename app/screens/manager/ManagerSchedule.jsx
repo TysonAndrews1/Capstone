@@ -2,11 +2,14 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React, {useState} from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import CalendarComponent from '../../components/Calender';
+import { useRouter } from "expo-router";
 
 const ManagerSchedule = () => {
     // State to track the selected date
     const [selectedDate, setSelectedDate] = useState(null);
 
+    const router = useRouter();
+    
     /**
      *Handles the date selection from the calendar.
      Updates the 'selectedDate' state with the selected date in UTC format.
@@ -38,7 +41,7 @@ const ManagerSchedule = () => {
                 ) : (
                     // If a date is selected, show this UI
                     <>
-                        <TouchableOpacity style={styles.infoButton}>
+                        <TouchableOpacity style={styles.infoButton} onPress={() => router.push('screens/manager/AddShift')}>
                         <Text style={styles.infoButtonText}>Add Shift</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.infoButton}>

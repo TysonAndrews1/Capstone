@@ -37,7 +37,7 @@ export default function RootLayout() {
       ), headerStyle: { backgroundColor: '#3F6D89' },
       headerTitleAlign: 'center',
       }}/> 
-      <Stack.Screen name="screens/manager/managerMore" options={{ title: 'Manager Tools'}} />
+      <Stack.Screen name="screens/manager/ManagerMore" options={{ title: 'Manager Tools'}} />
       <Stack.Screen name="screens/manager/ManagerSchedule" options={{ title: 'Manage Schedule'}} />
       <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
       <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
