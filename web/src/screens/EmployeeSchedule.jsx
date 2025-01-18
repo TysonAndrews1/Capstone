@@ -16,6 +16,30 @@ function EmployeeSchedule(){
       >
         Employee
       </button>
+      <button
+        className="bg-hover-blue text-white px-6 py-3 rounded shadow-md hover:bg-blue-600 mt-20 absolute top-0 text-center"
+        onClick={() => navigate('/EmployeeSchedule')}
+      >
+        Grabs
+      </button>
+      <button
+        className="bg-hover-blue text-white px-6 py-3 rounded shadow-md hover:bg-blue-600 mt-20 absolute top-0 text-center"
+        onClick={() => navigate('/EmployeeSchedule')}
+      >
+        View Shift
+      </button>
+      <button
+        className="bg-hover-blue text-white px-6 py-3 rounded shadow-md hover:bg-blue-600 mt-20 absolute top-0 text-center"
+        onClick={() => navigate('/EmployeeSchedule')}
+      >
+        Trade
+      </button>
+      <button
+        className="bg-hover-blue text-white px-6 py-3 rounded shadow-md hover:bg-blue-600 mt-20 absolute top-0 text-center"
+        onClick={() => navigate('/EmployeeSchedule')}
+      >
+        Change Availability 
+      </button>
     </div>
     );
 }
