@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import MainLayout from '../../layouts/MainLayout';
+import { useRouter } from 'expo-router';
 
 export default function CreateEmpAccount() {
     const [first_name, setFirstName] = useState('');
@@ -13,12 +14,48 @@ export default function CreateEmpAccount() {
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
 
-    /* handleInputChange updates the form data whenever the user types in the input fields.
-    It will be called when there is an input in any of the fields.*/
-    const handleInputChange = (field, value) => {
-        setFormData({ ...formData, [field]: value });
+    const router = useRouter();
+
+    const handleSubmit = () => {
+        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+    }
+
+    const newEmployee = { // Creates a new employee object that holds all the following details
+        first_name,
+        last_name,
+        employee_id,
+        email_address,
+        address,
+        phone_number,
+        role,
+        status,
     };
     
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
+
+    fetch(BASE_URL, { // Sends to the API endpoint
+        method: 'POST', // This is a POST request to create a new employee account for the database in JSON format
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEmployee),
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(() => {
+        Alert.alert("Success", "Employee account created successfully!");
+        router.push('/screens/manager/EmployeeAccounts'); // Navigate to the EmployeeAccounts screen after creating the employee account
+    })
+    .catch((error) => { // Error handling
+        console.error('Error creating employee:', error);
+        Alert.alert("Error", "Failed to create employee account");
+    });
+};
+
     return (
         <MainLayout>
             <ScrollView contentContainerStyle={styles.container}>
@@ -77,13 +114,21 @@ export default function CreateEmpAccount() {
                     onChangeText={setStatus}
                 />
 
-                {/* Add the save button here, researching the logic behind it for now. */}
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+                    <Text style={styles.submitButtonText}>Submit</Text>
+                </TouchableOpacity>
             </ScrollView>
         </MainLayout>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: { // This is to ensure the content is scrollable in case it overflows the screen
+        flexGrow: 1,
+        justifyContent: 'center',
+        paddingBottom: 50,
+    },
+    
     container: {
         padding: 16,
         alignItems: 'center',
@@ -125,5 +170,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 
-    // Add save button styling here
+    submitButton: {
+        backgroundColor: '#3F6D89',
+        padding: 12,
+        alignItems: 'center',
+        borderRadius: 5,
+        marginTop: 8,
+    },
+
+    submitButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
 });
