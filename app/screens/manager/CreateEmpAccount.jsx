@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Image } from 'react-native';
+import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import MainLayout from '../../layouts/MainLayout';
 
 export default function CreateEmpAccount() {
@@ -23,9 +24,7 @@ export default function CreateEmpAccount() {
             <ScrollView contentContainerStyle={styles.container}>
                 
                 <View style={styles.profileHeader}>
-                    <View style={styles.profileIcon}>
-                        {/*Display default user icon here, researching how to do it.*/}
-                    </View>
+                    <Image source={userIcon} style={styles.profileIcon} /> {/* Code partially taken from: https://www.tutorialspoint.com/react_native/react_native_images.htm */}
                     <Text style={styles.profileTitle}>New Employee</Text>
                 </View>
 
@@ -99,9 +98,6 @@ const styles = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: '#E6F2FA',
-        justifyContent: 'center',
-        alignItems: 'center',
         marginBottom: 8,
     },
 
