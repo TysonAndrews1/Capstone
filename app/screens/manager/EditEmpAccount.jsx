@@ -19,9 +19,7 @@ export default function EditEmpAccount({ route }) {
 
     useEffect(() => {
         const fetchEmployeeData = async () => {
-            const BASE_URL = Platform.OS === 'android' 
-                ? 'http://10.0.2.2:8080/api/employees' 
-                : 'http://localhost:8080/api/employees';
+            const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
             try {
                 const response = await fetch(`${BASE_URL}/${employeeId}`);
@@ -29,7 +27,6 @@ export default function EditEmpAccount({ route }) {
                     throw new Error(`Failed to fetch employee: ${response.status}`);
                 }
                 const data = await response.json();
-                // Populate state with fetched employee data
                 setFirstName(data.first_name);
                 setLastName(data.last_name);
                 setEmployeeId(data.employee_id);

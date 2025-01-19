@@ -1,62 +1,64 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import editIcon from '../../../assets/images/edit.png'; // Icon from https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=1&origin=search&related_id=1159633
-
-
-// Still incomplete, needs save button and text input fields
+import { useRouter } from 'expo-router';
 
 export default function EmpAccountDetails() {
+    const router = useRouter();
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Image source={userIcon} style={styles.profileIcon} />
-                <View style={styles.profileTextContainer}>
-                    <Text style={styles.profileName}>Employee Name</Text>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Image source={userIcon} style={styles.profileIcon} />
+                    <View style={styles.profileTextContainer}>
+                        <Text style={styles.profileName}>Employee Name</Text>
+                    </View>
+                    <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/screens/manager/EditEmpAccount')}>
+                        <Image source={editIcon} style={styles.editIcon}/>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity>
-                    <Image source={editIcon} style={styles.editButton} />
-                </TouchableOpacity>
-            </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>First Name</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>First Name</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Last Name</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Last Name</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Employee ID</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Employee ID</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Email Address</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Email Address</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Home Address</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Home Address</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Phone Number</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Phone Number</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Role</Text>
-            </View>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Role</Text>
+                </View>
 
-            <View style={styles.detailCard}>
-                <Text style={styles.detailLabel}>Status</Text>
+                <View style={styles.detailCard}>
+                    <Text style={styles.detailLabel}>Status</Text>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
+    scrollContainer: {
+        flexGrow: 1,
         padding: 16,
         backgroundColor: '#F5F5F5',
     },
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
     profileTextContainer: {
         flex: 1,
         justifyContent: 'center',
+        marginLeft: 16,
     },
 
     profileName: {
@@ -103,15 +106,15 @@ const styles = StyleSheet.create({
     },
 
     editButton: {
-        width: 30,
-        height: 30,
+        width: 35,
+        height: 35,
         justifyContent: 'center',
         alignItems: 'center',
     },
 
     editIcon: {
-        width: 18,
-        height: 18,
+        width: 23,
+        height: 23,
         tintColor: '#3F6D89',
     },
 

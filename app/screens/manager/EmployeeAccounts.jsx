@@ -3,6 +3,10 @@ import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Platform, Ima
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
 
+// Search bar may need to be reworked on when data is able to be fetched from the backend.
+
+// It will say "no employees found" if there are no employees in the database. Since the database is not connected, it will say that for now.
+
 export default function EmployeeAccounts() {
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
@@ -37,8 +41,8 @@ useEffect(() => {
     fetchEmployees(); // calling fetchEmployees will load the data
 }, []);
 
-/* This effect listens to changes in searchQuery or employees (like entering a name in the search bar).
-If there's no search query, filteredEmployees = employees (show all). */
+    /* This effect listens to changes in searchQuery or employees (like entering a name in the search bar).
+    If there's no search query, filteredEmployees = employees (show all). */
     useEffect(() => {
         if (!searchQuery.trim()) {
             setFilteredEmployees(employees); // If the search is empty, show all employees
@@ -66,6 +70,7 @@ If there's no search query, filteredEmployees = employees (show all). */
                 <Text style={styles.addButtonText}>Add Employee</Text>
             </Pressable>
 
+            {/*This will be removed when the database is connected. It is a placeholder for the test account.*/}
             <ScrollView style={styles.scrollContainer}>
                 <Pressable style={styles.employeeCard} onPress={()=> router.push('/screens/manager/EmpAccountDetails')}>
                     <Text style={styles.employeeName}>Test Account</Text>
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
     },
 
     employeeName: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#3F6D89',
     },
