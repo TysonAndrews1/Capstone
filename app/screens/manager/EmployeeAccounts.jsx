@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Platform, Image } from 'react-native';
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
 
@@ -67,8 +67,7 @@ If there's no search query, filteredEmployees = employees (show all). */
             </Pressable>
 
             <ScrollView style={styles.scrollContainer}>
-                <Pressable style={styles.employeeCard}>
-                    {/* Add an edit button next to it. Find the logic behind putting the edit icon.*/}
+                <Pressable style={styles.employeeCard} onPress={()=> router.push('/screens/manager/EmpAccountDetails')}>
                     <Text style={styles.employeeName}>Test Account</Text>
                 </Pressable>
             </ScrollView>
