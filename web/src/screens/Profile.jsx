@@ -25,24 +25,29 @@ function Profile() {
   useEffect(() => {
     const fetchEmployeeData = async () => {
       try {
+        // Sends an HTTP GET request to the API to fetch the employee data
         const response = await fetch("http://localhost:8080/api/banquet_employees/000001");
+        // Verifies the HTTP response status 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const data = await response.json();
-        setEmployeeData(data);
+        setEmployeeData(data); // If the fetch is successful, it updates the state with the fetched data
         setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
         setFetchError(false);
       } catch (error) {
         console.error("Error fetching employee data:", error);
         setAvailability(["Monday: 8:00 AM - 5:00 PM", "Tuesday: 8:00 AM - 5:00 PM", "Friday: 8:00 AM - 2:00 PM"]); // Example data
-        setFetchError(true);
+        setFetchError(true); // If the fetch fails, it sets the fetchError state to true
       }
     };
 
     fetchEmployeeData();
   }, []);
 
+  /**
+   * this function sends updated employeeData to the backend using a PUT request and saves the response.
+   */
   const handleSaveClick = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/banquet_employees/000001", {
@@ -61,6 +66,10 @@ function Profile() {
     }
   };
 
+  /**
+   * 
+   * @param {*} e 
+   */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEmployeeData((prev) => ({ ...prev, [name]: value }));
@@ -69,9 +78,10 @@ function Profile() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 p-6">
       <div className="grid grid-cols-3 gap-6 max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+
         {/* Column 1: Profile Information */}
         <div className="flex flex-col items-center space-y-4">
-          <FaUserCircle className="text-gray-400" size={100} />
+          <FaUserCircle className="text-gray-400" size={100} /> 
           <h2 className="text-xl font-bold text-gray-800">
             {employeeData.first_name || "First Name"} {employeeData.last_name || "Last Name"}
           </h2>
@@ -144,7 +154,7 @@ function Profile() {
         </div>
 
         {/* Column 3: Edit and Notifications */}
-        <div className="flex flex-col justify-between">
+        <div className="flex flex-col ">
           {/* Edit Button */}
           <button
             type="button"
@@ -154,9 +164,21 @@ function Profile() {
             <FaWrench className="mr-2" />
             {isEditing ? "Cancel" : "Edit Profile"}
           </button>
+        
 
-          {/* Notify Toggle */}
-          <div className="flex items-center space-x-4">
+          {/* Save Button */}
+          {isEditing && (
+            <button
+              type="button"
+              className=" mt-2 bg-hover-blue text-white px-4 py-2 rounded hover:bg-main-blue"
+              onClick={handleSaveClick}
+            >
+              Save Changes
+            </button>
+          )}
+
+          {/* Notification Toggle */}
+          <div className="flex items-center space-x-4 mt-4">
             <label className="text-gray-700 font-medium">Notify me on shifts:</label>
             <button
               type="button"
@@ -172,17 +194,6 @@ function Profile() {
               ></div>
             </button>
           </div>
-
-          {/* Save Button */}
-          {isEditing && (
-            <button
-              type="button"
-              className="mt-4 bg-hover-blue text-white px-4 py-2 rounded hover:bg-main-blue"
-              onClick={handleSaveClick}
-            >
-              Save Changes
-            </button>
-          )}
         </div>
       </div>
     </div>
