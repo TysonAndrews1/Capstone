@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function CreateEvent(eventId){
   let EditingEvent = ""
   let nextId = 1
-  let loadEvent = ""
+  let loadEvent = () =>{}
     eventId? EditingEvent =loadEvent(eventId) : eventId = getNextId(nextId)
 
     const [error,SetError] = useState("")
