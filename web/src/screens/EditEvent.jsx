@@ -1,11 +1,22 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const BASE_URL =  'http://localhost:8080/api/events';
 
-const formatDate = (isoString) => {
+const formatDate = (e) => {
+  const localDate = e.target.value; // "2024-12-15T22:00"
+  const fullDate = formatDate(localDate);
+  console.log("Full ISO Date:", fullDate); // Logs "2024-12-15T22:00:00.000Z"
+  return(fullDate); // Update the state
+};
+
+const isoToDateTimeLocal = (isoString) => {
   const date = new Date(isoString);
-  return date.toISOString().slice(0, 16); // Extract "YYYY-MM-DDTHH:MM"
+  const offset = date.getTimezoneOffset() * 60000; // Adjust for timezone offset
+  const localDate = new Date(date.getTime() - offset); // Localized date
+  return localDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
 };
 
 const LoadEvent = async (eventId) => {
@@ -46,8 +57,8 @@ const EditEvent =() =>{
         if (event) {
           // Update the states with the loaded event data
           setEventTitle(event.eventName );
-          setStartDate(formatDate(event.eventStartDate));
-          setEndDate(formatDate(event.eventEndDate));
+          setStartDate(isoToDateTimeLocal(event.eventStartDate));
+          setEndDate(isoToDateTimeLocal(event.eventEndDate));
           setLocation(event.eventLocation );
           setNumberOfGuests(event.numberOfGuests );
           setEventManager(event.assignedManager );
@@ -105,6 +116,8 @@ const EditEvent =() =>{
 
     return(
     <main>
+    return(
+    <main>
         <form onSubmit={handleSubmit}>
         <div>
         <input
@@ -123,6 +136,11 @@ const EditEvent =() =>{
         <label>Start Date</label>
       </div>
       <div>
+          <input
+            type="datetime-local"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
           <input
             type="datetime-local"
             value={endDate}
@@ -164,7 +182,9 @@ const EditEvent =() =>{
         <label>Description</label>
       </div>
       <button type="submit">Save</button>
+      <button type="submit">Save</button>
         </form>
     </main>)
 }
+export default EditEvent;
 export default EditEvent;

@@ -54,6 +54,7 @@ export default function EventBar({ events, filterType }) {
   const handleEdit = () => {
     // Navigate to the Edit screen
     navigate(`/EditEvent/${selectedEvent.eventId}`)
+    closeModal();
   };
 
   const handleDelete = () => {
