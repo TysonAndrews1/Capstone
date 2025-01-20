@@ -4,6 +4,7 @@ import { FaUserCircle, FaWrench } from "react-icons/fa";
 /**
  * Created by: Michelle Tran 
  * This is the Profile screen where employees can view and edit their profile information
+ * Reference: ChatGPT to help with the HandleInputChange function
  * 
  */
 function Profile() {
@@ -20,7 +21,7 @@ function Profile() {
   const [fetchError, setFetchError] = useState(false); // This state is used to handle errors when fetching data from the API
   
   /**
-   * 
+   * This function fetches the employee data from the backend API when the component mounts.
    */
   useEffect(() => {
     const fetchEmployeeData = async () => {
@@ -161,7 +162,7 @@ function Profile() {
             className="flex items-center justify-center bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-hover-blue hover:text-white mb-4"
             onClick={() => setIsEditing(!isEditing)}
           >
-            <FaWrench className="mr-2" />
+            {!isEditing && <FaWrench className="mr-2" />}
             {isEditing ? "Cancel" : "Edit Profile"}
           </button>
         

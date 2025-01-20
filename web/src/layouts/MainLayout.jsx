@@ -5,16 +5,18 @@ import { FaRegCircleUser } from 'react-icons/fa6';
 import { useNavigate } from 'react-router-dom';
 
 
-// Created by Michelle Tran
-// The Main Layout making sure to add the header and footer too all pages that require it 
-
+/**
+ * Created by: Michelle Tran
+ * The MainLayout component wraps the entire application to provide a consistent layout across all screens.
+ * 
+ */
 function MainLayout({ children }) {
   const navigate = useNavigate();
 
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <header className="bg-hover-blue text-white py-4 px-6 flex items-center">
+      <header className="bg-hover-blue text-white py-4 px-6 flex items-center justify-between">
         <div className="flex items-center">
           <HamburgerMenu />
           <h1 className="text-2xl font-bold ml-4">Shift Solutions</h1>
