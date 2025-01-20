@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ManagerDashboard from './screens/ManagerDashboard';
+import ManagerDashboard from './screens/manager/ManagerDashboard';
 import MainLayout from './layouts/MainLayout'; 
 import SignIn from './screens/SignIn';
 import RegisterPage from './screens/RegisterPage';
@@ -9,8 +9,8 @@ import Events from './screens/Events';
 import CreateEvent from './screens/EditEvent';
 import Home from './screens/Home';
 import 'tailwindcss/tailwind.css';
-import EmployeeSchedule from './screens/EmployeeSchedule';
-import Profile from './screens/Profile';
+import EmployeeSchedule from './screens/employee/EmployeeSchedule';
+import Profile from './screens/employee/Profile';
 
 function App() {
   return (
