@@ -1,30 +1,82 @@
-import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
+const BASE_URL =  'http://localhost:8080/api/events';
 
+const formatDate = (e) => {
+  const localDate = e.target.value; // "2024-12-15T22:00"
+  const fullDate = formatDate(localDate);
+  console.log("Full ISO Date:", fullDate); // Logs "2024-12-15T22:00:00.000Z"
+  return(fullDate); // Update the state
+};
 
-export default function CreateEvent(eventId){
-  let EditingEvent = ""
-  let nextId = 1
-  let loadEvent = () =>{}
-    eventId? EditingEvent =loadEvent(eventId) : eventId = getNextId(nextId)
+const isoToDateTimeLocal = (isoString) => {
+  const date = new Date(isoString);
+  const offset = date.getTimezoneOffset() * 60000; // Adjust for timezone offset
+  const localDate = new Date(date.getTime() - offset); // Localized date
+  return localDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+};
 
-    const [error,SetError] = useState("")
-
-    const [eventTitle, setEventTitle] = useState(EditingEvent.eventName ||'');
-    const [startDate, setStartDate] = useState(EditingEvent.eventStartDate||new Date());
-    const [endDate, setEndDate] = useState(EditingEvent.eventEndDate||new Date());
-    const [location, setLocation] = useState(EditingEvent.eventLocation||'');
-    const [numberOfGuests, setNumberOfGuests] = useState(EditingEvent.numberOfGuests||'');
-    const [eventManager, setEventManager] = useState(EditingEvent.assignedManager||'');
-    const [specialRequirements, setSpecialRequirements] = useState(EditingEvent.specialRequirements||'');
-
-    const navigate = useNavigate();
+const LoadEvent = async (eventId) => {
+  try {
+    const response = await fetch(`${BASE_URL}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    console.log(data);
     
-
-  function getNextId(){
-
+    return data.find((event) => event.eventId == eventId);
+  } catch (err) {
+    console.error('Error fetching events:', err);
   }
+};
+
+const EditEvent =() =>{
+
+  const navigate = useNavigate();
+  const { eventId } = useParams(); // Get the event ID from the URL
+  const [loading, setLoading] = useState(true); // For handling loading state
+  const [error, setError] = useState(""); // For handling errors
+  const [eventTitle, setEventTitle] = useState('');
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [location, setLocation] = useState('');
+  const [numberOfGuests, setNumberOfGuests] = useState('');
+  const [eventManager, setEventManager] = useState('');
+  const [specialRequirements, setSpecialRequirements] = useState('');
+  
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        const event = await LoadEvent(eventId);
+        console.log(event);
+        
+        if (event) {
+          // Update the states with the loaded event data
+          setEventTitle(event.eventName );
+          setStartDate(isoToDateTimeLocal(event.eventStartDate));
+          setEndDate(isoToDateTimeLocal(event.eventEndDate));
+          setLocation(event.eventLocation );
+          setNumberOfGuests(event.numberOfGuests );
+          setEventManager(event.assignedManager );
+          setSpecialRequirements(event.specialRequirements);
+        }
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError("Failed to load event data. Please try again later.");
+      } finally {
+        setLoading(false); // Stop loading spinner
+      }
+    };
+
+    if (eventId) {
+      fetchEvent();
+    }
+  }, [eventId]);
+  
+  if (loading) {return <div>Loading...</div>;}
+  if (error) {return <div>Error: {error}</div>;}
 
     const handleSubmit = () => {
         if (!eventTitle || !startDate || !endDate || !location || !numberOfGuests || !eventManager) {
@@ -61,7 +113,8 @@ export default function CreateEvent(eventId){
             });
     }
 
-    return(<main>
+    return(
+    <main>
         <form onSubmit={handleSubmit}>
         <div>
         <input
@@ -80,11 +133,11 @@ export default function CreateEvent(eventId){
         <label>Start Date</label>
       </div>
       <div>
-        <input
-          type="datetime-local"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+          <input
+            type="datetime-local"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
         <label>End Date</label>
       </div>
 
@@ -120,6 +173,8 @@ export default function CreateEvent(eventId){
         />
         <label>Description</label>
       </div>
+      <button type="submit">Save</button>
         </form>
     </main>)
 }
+export default EditEvent;
