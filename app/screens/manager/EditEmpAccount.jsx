@@ -15,9 +15,9 @@ export default function EditEmpAccount() {
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
-    /* Keeping this as a comment for now until the backend is connected to EmployeeAccounts and EmpAccountDetails.
+    /* Keeping this as a comment for now until the backend is connected to EmployeeAccounts and EmpAccountDetails. (to avoid errors)
 
-    const { employeeId } = route.params;
+    const { employee_id } = route.params;
 
     useEffect(() => {
         const fetchEmployeeData = async () => {
@@ -44,13 +44,7 @@ export default function EditEmpAccount() {
         };
 
         fetchEmployeeData();
-    }, [employeeId]);
-
-    const handleSubmit = async () => {
-        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
-            Alert.alert('Error', 'Please fill in all fields');
-            return;
-        }
+    }, [employee_id]);
 
         const updatedEmployee = {
             first_name,
@@ -66,7 +60,7 @@ export default function EditEmpAccount() {
         const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
         try {
-            const response = await fetch(`${BASE_URL}/${employeeId}`, {
+            const response = await fetch(`${BASE_URL}/${employee_id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedEmployee),
@@ -82,14 +76,18 @@ export default function EditEmpAccount() {
             console.error('Error updating employee:', error);
             Alert.alert('Error', 'Failed to update employee account');
         }
-    }; */
+    }; 
+    
+    // Task: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
+    // Ensure it contains a confirmation alert before deleting the account.
+    */
 
     const handleSubmit = () => {
-        if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !numberOfGuests || !eventManager) {
-          Alert.alert("Error", "Please fill in all the fields");
-          return;
+        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
         }
-    }
+    };    
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -183,6 +181,10 @@ export default function EditEmpAccount() {
 
                 <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
                     <Text style={styles.saveButtonText}>Save</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.deleteButton}> {/*add onPress={handleDelete} when handleDelete is done*/}
+                    <Text style={styles.deleteButtonText}>Delete Account</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -280,6 +282,21 @@ const styles = StyleSheet.create({
     },
 
     saveButtonText: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+
+    deleteButton: {
+        backgroundColor: '#FF6B6B',
+        paddingVertical: 14,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+
+    deleteButtonText: {
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold',
