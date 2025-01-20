@@ -77,8 +77,8 @@ function Profile() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 p-6">
-      <div className="grid grid-cols-3 gap-6 max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+    <div className="flex flex-row min-h-screen">
+      <div className="grid grid-cols-3 gap-20 w-full bg-white p-8 rounded-lg shadow-lg">
 
         {/* Column 1: Profile Information */}
         <div className="flex flex-col items-center space-y-4">

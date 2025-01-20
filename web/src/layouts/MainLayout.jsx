@@ -16,7 +16,7 @@ function MainLayout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <header className="bg-hover-blue text-white py-4 px-6 flex items-center justify-between">
+      <header className="bg-hover-blue text-white py-4 px-6 flex items-center justify-between"> 
         <div className="flex items-center">
           <HamburgerMenu />
           <h1 className="text-2xl font-bold ml-4">Shift Solutions</h1>
