@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
+import { use } from 'react';
 
 // Need to find the logic behind prefilling the fields with the employee's data. This might have to be done when backend is connected to EmployeeAccounts and EmpAccountDetails.
 
-export default function EditEmpAccount() {
+export default function EditEmpAccount({employeeId}) {
 
     const [first_name, setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
@@ -15,13 +16,10 @@ export default function EditEmpAccount() {
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
-    /* Keeping this as a comment for now until the backend is connected to EmployeeAccounts and EmpAccountDetails. (to avoid errors)
-
-    const { employee_id } = route.params;
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
     useEffect(() => {
         const fetchEmployeeData = async () => {
-            const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
             try {
                 const response = await fetch(`${BASE_URL}/${employeeId}`);
@@ -44,23 +42,16 @@ export default function EditEmpAccount() {
         };
 
         fetchEmployeeData();
-    }, [employee_id]);
+    }, [employeeId]);
 
-        const updatedEmployee = {
-            first_name,
-            last_name,
-            employee_id,
-            email_address,
-            address,
-            phone_number,
-            role,
-            status,
-        };
-
-        const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
+    const handleSubmit = async () => {
+        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
+            Alert.alert("Error", "Please fill in all fields");
+            return;
+        }
 
         try {
-            const response = await fetch(`${BASE_URL}/${employee_id}`, {
+            const response = await fetch(`${BASE_URL}/${employeeId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedEmployee),
@@ -76,18 +67,21 @@ export default function EditEmpAccount() {
             console.error('Error updating employee:', error);
             Alert.alert('Error', 'Failed to update employee account');
         }
-    }; 
+    }
+
+    const updatedEmployee = {
+        first_name,
+        last_name,
+        employee_id,
+        email_address,
+        address,
+        phone_number,
+        role,
+        status,
+    };
     
     // Task: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
     // Ensure it contains a confirmation alert before deleting the account.
-    */
-
-    const handleSubmit = () => {
-        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
-            Alert.alert("Error", "Please fill in all fields");
-            return;
-        }
-    };    
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
