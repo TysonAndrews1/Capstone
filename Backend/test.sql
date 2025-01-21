@@ -101,7 +101,7 @@ CREATE TABLE `banquet_accounts` (
 
 -- Locks the banquet_accounts table from other connections from modifying it during the insert operation
 LOCK TABLES `banquet_accounts` WRITE;
-/*!40000 ALTER TABLE `banquet_employees` DISABLE KEYS */;
+/*!40000 ALTER TABLE `banquet_accounts` DISABLE KEYS */;
 
 INSERT INTO `banquet_accounts` VALUES
 (1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', TRUE),
