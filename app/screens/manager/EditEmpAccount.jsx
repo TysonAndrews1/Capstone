@@ -19,7 +19,7 @@ export default function EditEmpAccount({employeeId}) {
     const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
     useEffect(() => {
-        const fetchEmployeeData = async () => {
+        const fetchEmployeeData = async () => { // This is to fetch the employee data from the backend and database
 
             try {
                 const response = await fetch(`${BASE_URL}/${employeeId}`);
@@ -42,15 +42,15 @@ export default function EditEmpAccount({employeeId}) {
         };
 
         fetchEmployeeData();
-    }, [employeeId]);
+    }, [employeeId]); // This will run the fetchEmployeeData function when the employeeId changes
 
-    const handleSubmit = async () => {
+    const handleSubmit = async () => { // This is to update the employee data in the backend and database, if fields are empty, an error message is displayed.
         if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
 
-        try {
+        try { // This is to update the employee data in the backend and database along with some error handling
             const response = await fetch(`${BASE_URL}/${employeeId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ export default function EditEmpAccount({employeeId}) {
         status,
     };
     
-    // Task: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
+    // TODO: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
     // Ensure it contains a confirmation alert before deleting the account.
 
     return (
