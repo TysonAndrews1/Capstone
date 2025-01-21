@@ -72,16 +72,16 @@ INSERT INTO `banquet_events` VALUES
 UNLOCK TABLES;
 
 --
--- Table structure for table `banquet_employees`
+-- Table structure for table `banquet_accounts`
 --
 
 -- Deletes banquet_events if it exists
-DROP TABLE IF EXISTS `banquet_employees`;
+DROP TABLE IF EXISTS `banquet_accounts`;
 
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
--- Creates banquet_employees table structure
-CREATE TABLE `banquet_employees` (
+-- Creates banquet_accounts table structure
+CREATE TABLE `banquet_accounts` (
   `account_id` int NOT NULL AUTO_INCREMENT,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -96,20 +96,20 @@ CREATE TABLE `banquet_employees` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `banquet_employees`
+-- Dumping data for table `banquet_accounts`
 --
 
--- Locks the banquet_employees table from other connections from modifying it during the insert operation
-LOCK TABLES `banquet_employees` WRITE;
+-- Locks the banquet_accounts table from other connections from modifying it during the insert operation
+LOCK TABLES `banquet_accounts` WRITE;
 /*!40000 ALTER TABLE `banquet_employees` DISABLE KEYS */;
 
-INSERT INTO `banquet_employees` VALUES
+INSERT INTO `banquet_accounts` VALUES
 (1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', TRUE),
 (2, 'Peter', 'Parker', '000002', 'spiderman@example.com', '456 Web Drive NE', '587-111-2222', 'Employee', TRUE),
 (3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', FALSE);
-/*!40000 ALTER TABLE `banquet_employees` ENABLE KEYS */;
+/*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
--- Unlocks the banquet_employees table
+-- Unlocks the banquet_accounts table
 UNLOCK TABLES;
 
 --
