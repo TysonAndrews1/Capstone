@@ -1,6 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
+
 /**
  * Created by: Michelle Tran
  * The EmployeeSchedule component is the main screen for employees to view their schedule, trade shifts, and change availability.
@@ -18,6 +20,7 @@ function EmployeeSchedule() {
         {/* Replace this with your actual Calendar component */}
         <div className="w-3/4 h-3/4 bg-white shadow-md rounded-lg flex items-center justify-center">
           <h2 className="text-xl text-gray-700">The Calendar will go here</h2>
+          
         </div>
       </div>
 
@@ -37,7 +40,7 @@ function EmployeeSchedule() {
         </button>
         <button
           className="bg-hover-blue text-white px-10 py-3 rounded shadow-md hover:bg-main-blue"
-          onClick={() => navigate('/EmployeeSchedule')}
+          onClick={() => navigate('/TradeShift')}
         >
           Trades
         </button>

@@ -11,6 +11,7 @@ import Home from './screens/Home';
 import 'tailwindcss/tailwind.css';
 import EmployeeSchedule from './screens/employee/EmployeeSchedule';
 import Profile from './screens/employee/Profile';
+import TradeShift from './screens/employee/TradeShift';
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
         <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
+        <Route path="/TradeShift" element={<MainLayout><TradeShift /></MainLayout>} />
       </Routes>
     </Router>
   );
