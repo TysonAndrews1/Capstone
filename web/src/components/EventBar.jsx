@@ -54,12 +54,32 @@ export default function EventBar({ events, filterType }) {
   const handleEdit = () => {
     // Navigate to the Edit screen
     navigate(`/EditEvent/${selectedEvent.eventId}`)
-    closeModal();
   };
 
   const handleDelete = () => {
     // Handle the delete action
-    alert(`Event "${selectedEvent.EventName}" deleted.`);
+  
+    fetch(`http://localhost:8080/api/events/${selectedEvent.eventId}`, {
+      method: 'DELETE',
+    })
+      .then((response) => {
+        if (response.ok) {
+          alert(`Event "${selectedEvent.eventName}" deleted.`);
+          // Remove the event from the local state to update the UI
+          const updatedEvents = events.filter((event) => event.eventId !== selectedEvent.eventId);
+          closeModal();
+        } else {
+          response.json().then((data) => {
+            console.log('Delete failed:', data); // Log error for debugging
+            alert(data.message || 'Failed to delete event.');
+          });
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting event:', error);
+        alert('An error occurred while deleting the event.');
+      });
+
     closeModal();
   };
 

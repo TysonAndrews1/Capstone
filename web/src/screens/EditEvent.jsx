@@ -3,18 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const BASE_URL =  'http://localhost:8080/api/events';
 
-const formatDate = (e) => {
-  const localDate = e.target.value; // "2024-12-15T22:00"
-  const fullDate = formatDate(localDate);
-  console.log("Full ISO Date:", fullDate); // Logs "2024-12-15T22:00:00.000Z"
-  return(fullDate); // Update the state
-};
-
-const isoToDateTimeLocal = (isoString) => {
+const formatDate = (isoString) => {
   const date = new Date(isoString);
-  const offset = date.getTimezoneOffset() * 60000; // Adjust for timezone offset
-  const localDate = new Date(date.getTime() - offset); // Localized date
-  return localDate.toISOString().slice(0, 16); // "YYYY-MM-DDTHH:MM"
+  return date.toISOString().slice(0, 16); // Extract "YYYY-MM-DDTHH:MM"
 };
 
 const LoadEvent = async (eventId) => {
@@ -55,8 +46,8 @@ const EditEvent =() =>{
         if (event) {
           // Update the states with the loaded event data
           setEventTitle(event.eventName );
-          setStartDate(isoToDateTimeLocal(event.eventStartDate));
-          setEndDate(isoToDateTimeLocal(event.eventEndDate));
+          setStartDate(formatDate(event.eventStartDate));
+          setEndDate(formatDate(event.eventEndDate));
           setLocation(event.eventLocation );
           setNumberOfGuests(event.numberOfGuests );
           setEventManager(event.assignedManager );
@@ -79,12 +70,11 @@ const EditEvent =() =>{
   if (error) {return <div>Error: {error}</div>;}
 
     const handleSubmit = () => {
-        if (!eventTitle || !startDate || !endDate || !location || !numberOfGuests || !eventManager) {
+        if (!eventTitle || !startDate  || !endDate || !location || !numberOfGuests || !eventManager) {
           alert("Error", "Please fill in all the fields");
           return;
         }
-
-        const BASE_URL = ""
+        const BASE_URL = 'http://localhost:8080/api/events';
         const newEvent = {
             eventName: eventTitle,
             eventStartDate: startDate,

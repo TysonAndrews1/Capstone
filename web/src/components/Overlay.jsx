@@ -14,7 +14,6 @@ export default function Overlay({child, headerTitle,ButtonTitle, buttonPlacement
     const toggleSidebar = () => setIsClosed(!isClosed);
 
     return(
-    
 
         <div>
         <button
@@ -26,7 +25,7 @@ export default function Overlay({child, headerTitle,ButtonTitle, buttonPlacement
 
         {/* SideBar */}
         <div
-          className={`fixed top-0 right-0 h-full w-80 bg-gray-800 transform ${
+          className={`fixed top-0 right-0 h-full w-80 bg-slate-400 transform ${
             isClosed ? "translate-x-full" : "-translate-x-0"
           } transition-transform duration-300`}
         >
@@ -42,7 +41,9 @@ export default function Overlay({child, headerTitle,ButtonTitle, buttonPlacement
       </button>
         <h1 className="text-2xl font-bold ml-4">{headerTitle}</h1> 
       </header>
+      <div className="overflow-y-auto h-[calc(100%-64px)] px-6 py-4">
         {child}
+        </div>
         </div>
       </div>
 )
