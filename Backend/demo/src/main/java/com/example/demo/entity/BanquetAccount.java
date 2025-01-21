@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "banquet_accounts") // Maps the class to the table in the database
+@Table(name = "banquet_accounts") // Maps the class to the banquet_accounts table in the database
 public class BanquetAccount {
     
     @Id
@@ -106,5 +106,20 @@ public class BanquetAccount {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "BanquetAccount{" +
+                "accountId=" + accountId +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", employeeId=" + employeeId +
+                ", email=" + email + '\'' +
+                ", address=" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", role='" + role + '\'' +
+                ", status='" + status +
+                '}';
     }
 }
