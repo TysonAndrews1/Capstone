@@ -19,7 +19,7 @@ return(
 
 <main>
 <CalendarComponent onDateSelect={dateSelected} />
-<Overlay child={<UpcomingEvents/>} headerTitle={"Upcoming Events"} ButtonTitle={"Upcoming Events"} buttonPlacement={"top-[75vh] left-[33vw]"}/>
+<Overlay child={<UpcomingEvents selectedDay={date}/>} headerTitle={"Upcoming Events"} ButtonTitle={"Upcoming Events"} buttonPlacement={"top-[75vh] left-[33vw]"}/>
 <Overlay child={<ScheduledShifts selectedDate={date}/>} headerTitle={"Scheduled Shifts"} ButtonTitle={"Scheduled Shifts"} buttonPlacement={"top-[75vh] left-[10vw]"}/>
 <Overlay child={<CreateShift/>} headerTitle={"Add Shift"} ButtonTitle={"Add Shift"} buttonPlacement={"top-[75vh] left-[55vw]"}/>
 {/* <CalendarComponent OnDateSelect={dateSelected}/> */}
