@@ -40,7 +40,7 @@ export default function UpcomingEvents(){
       setSelectedOption(option);
     };
     const CreateEvent = () =>{
-        navigate('/EditEvent')
+        navigate(`/EditEvent/${null}`)
     }
     
     return (
