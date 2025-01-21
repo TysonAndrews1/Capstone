@@ -14,7 +14,6 @@ export default function EmployeeSchedule() {
     <main>
 
       <div className="flex flex-row justify-center">
-        <TradeShift/>
       </div>
 
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
