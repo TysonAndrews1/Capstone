@@ -2,7 +2,7 @@ import React,{useState} from "react";
 
 
 
-export default function Overlay({child, headerTitle,ButtonTitle, buttonPlacement}){
+export default function Overlay({child, headerTitle, ButtonTitle, buttonPlacement}){
     //Slightly weird variable due to the sidebar being on the right side of the screen the true/False are reversed
     const [isClosed, setIsClosed]= useState(true)
 

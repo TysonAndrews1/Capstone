@@ -12,6 +12,11 @@ export default function EmployeeSchedule() {
 
   return (
     <main>
+
+      <div className="flex flex-row justify-center">
+        <TradeShift/>
+      </div>
+
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
 
       {/* Overlay for Grab Shift component */}
@@ -21,7 +26,7 @@ export default function EmployeeSchedule() {
       <Overlay child={<div>ViewShift</div>} headerTitle={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"top-[75vh] left-[45vw]"}/>
 
       {/* Overlay for TradeShift component */}
-      <Overlay child={TradeShift} headerTitle={"Trade Shifts"} ButtonTitle={"Trade Request"} buttonPlacement={"top-[75vh] left-[75vw]"}/>
+      <Overlay child={<TradeShift/>} headerTitle={"Trade Request"} ButtonTitle={"Trade Request"} buttonPlacement={"top-[75vh] left-[75vw]"}/>
 
       {/* Overlay for Change Availability component */}
       <Overlay child={<div>UpdateAvailability</div>} headerTitle={"Update Availability"} ButtonTitle={"Update Availability"} buttonPlacement={"top-[75vh] left-[10vw]"}/>
