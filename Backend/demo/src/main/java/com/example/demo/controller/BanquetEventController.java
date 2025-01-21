@@ -25,7 +25,6 @@ public class BanquetEventController {
         return repository.findAll();
     }
 
-    // New method to get an event by ID
     @GetMapping("/{eventId}") // Get a specific event by ID
     public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
         // Retrieve the event by ID using the repository
