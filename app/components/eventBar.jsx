@@ -36,9 +36,8 @@ export default function EventBar({ events, filterType }) {
   };
 
   const handleEdit = (event) => {
-    // sessionStorage.setItem('selectedEvent', JSON.stringify(event));
     // Navigate to the Edit screen
-    router.push(`/screens/EventEdit?eventId=${selectedEvent.eventId}`);
+    router.push(`/screens/manager/EventEdit/`);
     closeModal();
   };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform } from 'react-native';
 import MainLayout from '../../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
-import EventBar from '../../components/eventBar';  // Assuming this component displays the events based on filter
+import EventBar from '../../components/EventBar';  // Assuming this component displays the events based on filter
 import { useRouter } from 'expo-router';
 
 export default function Events() {

@@ -6,12 +6,12 @@ import SignIn from './screens/SignIn';
 import RegisterPage from './screens/RegisterPage';
 import ForgotPassword from './screens/ForgotPassword';
 import Events from './screens/Events';
-import CreateEvent from './screens/EditEvent';
 import Home from './screens/Home';
 import 'tailwindcss/tailwind.css';
 import EmployeeSchedule from './screens/employee/EmployeeSchedule';
 import Profile from './screens/employee/Profile';
 import TradeShift from './screens/employee/TradeShift';
+import EditEvent from './screens/EditEvent';
 
 function App() {
   return (
@@ -29,7 +29,7 @@ function App() {
 
         }  />
         <Route path="/Events" element={<MainLayout> <Events /></MainLayout>}/>
-        <Route path="/EditEvent" element={<MainLayout> <CreateEvent /></MainLayout>}/>
+        <Route path="/EditEvent/:eventId" element={<MainLayout> <EditEvent /></MainLayout>}/>
         <Route path = "/Home" element={<MainLayout><Home/></MainLayout>}></Route>
         <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
