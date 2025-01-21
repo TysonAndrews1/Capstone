@@ -39,6 +39,11 @@ function HamburgerMenu() {
                 Manager Dashboard
               </a>
             </li>
+            <li className="py-2 px-4">
+              <a href="/employeeschedule" className="text-gray-800 hover:text-blue-500">
+                Employee Schedule
+              </a>
+            </li>
           </ul>
         </nav>
       )}
