@@ -127,8 +127,8 @@ CREATE TABLE `employee_shifts` (
   `shift_id` int NOT NULL AUTO_INCREMENT,
   `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
   `event_id` int NOT NULL,   -- Foreign key referencing banquet_events
-  `shift_start_time` time NOT NULL,
-  `shift_end_time` time NOT NULL,
+  `shift_start_date` datetime NOT NULL,
+  `shift_end_date` datetime NOT NULL,
   `description` text,
   PRIMARY KEY (`shift_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -141,9 +141,9 @@ LOCK TABLES `employee_shifts` WRITE;
 /*!40000 ALTER TABLE `employee_shifts` DISABLE KEYS */;
 
 INSERT INTO `employee_shifts` VALUES
-(1, 2, 3, '14:00:00', '22:00:00', 'This is a christmas party for 250 people'),
-(2, 2, 2, '09:00:00', '17:00:00', 'This is a 300-person conference for Calgary Police Service'),
-(3, 1, NULL, '07:00:00', '15:00:00', 'Manager duties for the day');
+(1, 2, 3, '2025-12-20 14:00:00', '2025-12-20 22:00:00', 'This is a christmas party for 250 people'),
+(2, 2, 2, '2025-12-20 09:00:00', '2025-12-20 17:00:00', 'This is a 300-person conference for Calgary Police Service'),
+(3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day');
 /*!40000 ALTER TABLE `employee_shifts` ENABLE KEYS */;
 
 -- Unlocks the employee_shifts table
