@@ -25,18 +25,18 @@ public class BanquetEventController {
         return repository.findAll();
     }
 
-        // New method to get an event by ID
-        @GetMapping("/{eventId}") // Get a specific event by ID
-        public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
-            // Retrieve the event by ID using the repository
-            Optional<BanquetEvent> event = repository.findById(eventId);
-            
-            if (event.isPresent()) {
-                return ResponseEntity.ok(event.get()); // Return the event if found
-            } else {
-                return ResponseEntity.status(404).body(null); // Return 404 if event not found
-            }
+    // New method to get an event by ID
+    @GetMapping("/{eventId}") // Get a specific event by ID
+    public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
+        // Retrieve the event by ID using the repository
+        Optional<BanquetEvent> event = repository.findById(eventId);
+        
+        if (event.isPresent()) {
+            return ResponseEntity.ok(event.get()); // Return the event if found
+        } else {
+            return ResponseEntity.status(404).body(null); // Return 404 if event not found
         }
+    }
 
     @GetMapping("/filter") // Filters events by timeframe (past or upcoming)
     public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {

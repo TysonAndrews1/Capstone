@@ -43,9 +43,9 @@ export default function Footer() {
       </TouchableOpacity>
 
       {/* More Button */}
-      <TouchableOpacity onPress={() => onPress("ManagerMore")} style = {styles.navButton}>
-        <More name="more-horizontal" size={30} color={getButtonColor("ManagerMore")} />
-        <Text style={[styles.navText, { color: getButtonColor("ManagerMore") }]}>More</Text>
+      <TouchableOpacity onPress={() => onPress("managerMore")} style = {styles.navButton}>
+        <More name="more-horizontal" size={30} color={getButtonColor("managerMore")} />
+        <Text style={[styles.navText, { color: getButtonColor("managerMore") }]}>More</Text>
       </TouchableOpacity>
     </View>
   );
