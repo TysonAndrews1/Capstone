@@ -6,12 +6,14 @@ const MainLayout = ({ children }) => {
     return <div className="main-layout">{children}</div>;
   };
 
-export default function UpcomingEvents(){
-    const [selectedOption, setSelectedOption] = useState('upcoming');  // Default to 'upcoming'
+export default function UpcomingEvents({selectedDay}){
+    const [selectedDate, setSelectedDate] = useState('upcoming');  // Default to 'upcoming'
     const [events, setEvents] = useState([]); // State to store events from the backend
     const [error, setError] = useState(null); // State for error handling
     const navigate = useNavigate();
     const BASE_URL =  'http://localhost:8080/api/events';
+    console.log(selectedDay);
+    
   
     // Function to fetch events from the backend
     const fetchEvents = async (timeframe) => {
@@ -32,50 +34,39 @@ export default function UpcomingEvents(){
   
     // Fetch events whenever the selected option changes
     useEffect(() => {
-      fetchEvents(selectedOption);
-    }, [selectedOption]);
+      fetchEvents(selectedDate);
+    }, [selectedDate]);
   
     // Handle selection change
     const handleSelect = (option) => {
-      setSelectedOption(option);
+      setSelectedDate(option);
     };
     const CreateEvent = () =>{
         navigate(`/EditEvent/${eventId}`)
     }
     
     return (
-            <MainLayout>
-              <div className="container">
                 <div className="options-container">
+                  <p>{toString(selectedDay)}</p>
                   {/* Past Events Option */}
                   <button 
-                    className={`option ${selectedOption === 'past' ? 'selected-option' : ''}`} 
+                    className={`option ${selectedDate === 'past' ? 'selected-option' : ''}`} 
                     onClick={() => handleSelect('past')}
                   >
-                    <span className={`option-text ${selectedOption === 'past' ? 'selected-text' : ''}`}>
+                    <span className={`option-text ${selectedDate === 'past' ? 'selected-text' : ''}`}>
                       Past Events
                     </span>
-                    {selectedOption === 'past' && <div className="underline" />}
+                    {selectedDate === 'past' && <div className="underline" />}
                   </button>
         
                   {/* Constant underline */}
                   <div className="constant-underline" />
         
-                  {/* Upcoming Events Option */}
-                  <button 
-                    className={`option ${selectedOption === 'upcoming' ? 'selected-option' : ''}`} 
-                    onClick={() => handleSelect('upcoming')}
-                  >
-                    <span className={`option-text ${selectedOption === 'upcoming' ? 'selected-text' : ''}`}>
-                      Upcoming Events
-                    </span>
-                    {selectedOption === 'upcoming' && <div className="underline" />}
-                  </button>
-                </div>
+                  
         
                 {/* Scrollable Event List */}
                 <div className="event-list">
-                  <EventBar events={events} filterType={selectedOption} />
+                  <EventBar events={events} filterType={selectedDate} />
                 </div>
         
                 {/* Create New Event Button */}
@@ -83,6 +74,5 @@ export default function UpcomingEvents(){
                   Create New Event
                 </button>
               </div>
-            </MainLayout>
           );
   }
