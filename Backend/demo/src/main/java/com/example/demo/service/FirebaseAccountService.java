@@ -22,7 +22,7 @@ public class FirebaseAccountService {
         for (BanquetEmployee employee : employees) {
             // Clean up phone number by removing hyphens
             String cleanPhoneNumber = employee.getPhoneNumber().replaceAll("-", "");
-            String password = employee.getLastName() + cleanPhoneNumber;
+            String password = cleanPhoneNumber;
     
             try {
                 FirebaseAuth.getInstance().getUserByEmail(employee.getEmail());
