@@ -17,7 +17,7 @@ function EmployeeSchedule() {
 
       {/* Calendar Component */}
       <div className="flex-grow flex items-center justify-center w-full">
-        {/* Replace this with your actual Calendar component */}
+        {/* The Calendar component will be placed here */}
         <div className="w-3/4 h-3/4 bg-white shadow-md rounded-lg flex items-center justify-center">
           <h2 className="text-xl text-gray-700">The Calendar will go here</h2>
           
