@@ -1,103 +1,117 @@
-import React, { useState, useEffect } from 'react';
+import { set } from 'date-fns';
+import React from 'react';
+import { useState, useEffect } from 'react';
+
 
 /**
- * Created by: Michelle Tran
- * This function allows employees to trade shifts with their coworkers
+ * Personal Notes:
+ * We need to create endpoints to get the logged-in employee data which will return the currently logged-in employee's details and shifts
+ * We need to create an endpoint to get shifts for the chosen employee which will return the employee id and their scheduled shifts
+ * 
  */
-function TradeShift() {
-  const [employeeShifts, setEmployeeShifts] = useState([]);
-  const [selectedShift, setSelectedShift] = useState('');
 
-  useEffect(() => {
-    // Fetch employee shifts
-    fetchEmployeeShifts();
-  }, []);
+export default function TradeShift() {
+  const [accounts, setAccounts] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [selectedCoworker, setSelectedCoworker] = useState('');
 
-  const fetchEmployeeShifts = async () => {
+  const BASE_URL = 'http://localhost:8080/api';
+
+  // Function to fetch all banquet accounts from the backend 
+  // Will need to create a conditional to exclude Manager roles 
+  const fetchAccounts = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/employee_shifts");
+      const response = await fetch(`${BASE_URL}/accounts`);
       if (!response.ok) {
-        throw new Error("Failed to fetch employee shifts.");
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const shifts = await response.json();
-      setEmployeeShifts(shifts);
-    } catch (error) {
-      console.error("Error fetching shifts:", error.message);
+      const data = await response.json();
+      setAccounts(data); // Update the state with the fetched accounts
+      console.log("Fetched accounts:", data);
+    } catch (err) {
+      console.error('Error fetching accounts:', err);
     }
   };
 
-  const handleSubmit = async (event) => {
-    
+  const fetchShifts = async (accountId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/${accountId}/shifts`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setShifts(data); // Update the state with the fetched shifts
+      console.log("Fetched shifts:", data);
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+    }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Trade Request</h1>
-      <form>
-        {/* Select Current User's Shift */}
+
+    useEffect(() => { 
+      fetchAccounts();
+    }, []);
+
+    const handleCoworkerChange = (event) => {
+      const accountId = event.target.value;
+      setSelectedCoworker(accountId);
+      if (accountId) {
+        fetchShifts(accountId); // This will fetch the shifts for the selected coworker 
+      } else {
+        setShifts([]); // This will clear the shift if no coworker is selected 
+      }
+    };
+ 
+    return (
+      <div className="p-4">
+
+        {/* Current Logged in User */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select Shift
-          </label>
-          <select
-            value={selectedShift}
-            onChange={(e) => setSelectedShift(e.target.value)}
-            className="w-full border border-gray-300 rounded-md p-2"
+          <h1 className="text-lg font-bold mb-4">Current User</h1>
+        </div>
+
+        {/* Dropdown to select the current logged in user's shift */}
+        <div className="mb-4">
+          <h1 className="text-lg font-bold mb-4">Your Shifts</h1>
+        <select className="w-full p-2 border border-gray-300 rounded">
+          <option value="">-- Select Shift --</option>
+        </select>
+        </div>
+
+        {/* Dropdown to select coworker */}
+        <div className="mb-4">
+          <h1 className="text-lg font-bold mb-4">Select Coworker</h1>
+        <select 
+          className="w-full p-2 border border-gray-300 rounded"
+          value={selectedCoworker}
+          onChange={handleCoworkerChange}
           >
-            <option value="" disabled>
-              Select a shift
+          <option value="">-- Select Coworker --</option>
+          {accounts.map((account) => (
+            <option key={account.accountId} value={account.accountId}>
+              {account.firstName} {account.lastName}
             </option>
-            {employeeShifts.map((shift, index) => (
-              <option key={index} value={shift.id}>
-                {shift.time}
-              </option>
-            ))}
-          </select>
+          ))}
+        </select>
         </div>
 
-        {/* Select Coworker */}
+        {/* Selected coworker's shift */}
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select Coworker
-          </label>
-          <select>
-            <option value="" disabled>
-              Select a coworker
+          <h1 className="text-lg font-bold mb-4">Available Shifts</h1>
+        <select className="w-full p-2 border border-gray-300 rounded">
+          <option value="">-- Select Shift --</option>
+          {shifts.map((shift) => (
+            <option key={shift.shiftId} value={shift.shiftId}>
+              {shift.shiftDate} - {shift.shiftStartTime} to {shift.shiftEndTime}
             </option>
-          </select>
+          ))}
+        </select>
         </div>
 
-        {/* Select Coworker Shift */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Select Shift
-          </label>
-          <select
-            value={selectedShift}
-            onChange={(e) => setSelectedShift(e.target.value)}
-            className="w-full border border-gray-300 rounded-md p-2"
-          >
-            <option value="" disabled>
-              Select a shift
-            </option>
-            {employeeShifts.map((shift, index) => (
-              <option key={index} value={shift.id}>
-                {shift.time}
-              </option>
-            ))}
-          </select>
-        </div>
-        
-
-        <button
-          type="submit"
-          className="w-full bg-hover-blue text-white font-bold p-2 rounded hover:bg-main-blue"
-        >
-          Send Offer
-        </button>
-      </form>
-    </div>
-  );
+      </div>
+    );
+    
 }
 
-export default TradeShift;
+
+

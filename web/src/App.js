@@ -4,7 +4,6 @@ import ManagerDashboard from './screens/manager/ManagerDashboard';
 import MainLayout from './layouts/MainLayout'; 
 import SignIn from './screens/SignIn';
 import RegisterPage from './screens/RegisterPage';
-import ForgotPassword from './screens/ForgotPassword';
 import Events from './screens/Events';
 import Home from './screens/Home';
 import 'tailwindcss/tailwind.css';
@@ -34,7 +33,7 @@ function App() {
         <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
 
         <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
-        <Route path="/TradeShift" element={<MainLayout><TradeShift /></MainLayout>} />
+        <Route path="/TradeShift/:accountId" element={<MainLayout><TradeShift /></MainLayout>} />
       </Routes>
     </Router>
   );

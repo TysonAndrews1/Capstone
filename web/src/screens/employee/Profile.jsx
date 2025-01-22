@@ -27,7 +27,7 @@ function Profile() {
     const fetchEmployeeData = async () => {
       try {
         // Sends an HTTP GET request to the API to fetch the employee data
-        const response = await fetch("http://localhost:8080/api/banquet_employees/000001");
+        const response = await fetch("http://localhost:8080/api");
         // Verifies the HTTP response status 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -51,7 +51,7 @@ function Profile() {
    */
   const handleSaveClick = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/banquet_employees/000001", {
+      const response = await fetch("http://localhost:8080/api", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(employeeData),
@@ -60,8 +60,8 @@ function Profile() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const updatedData = await response.json();
-      setEmployeeData(updatedData);
-      setIsEditing(false);
+      setEmployeeData(updatedData); // Updated data is saved into the employeeData state
+      setIsEditing(false); // After saving the data, it sets the isEditing state to false
     } catch (error) {
       console.error("Error saving employee data:", error);
     }
@@ -69,11 +69,13 @@ function Profile() {
 
   /**
    * 
-   * @param {*} e 
+    * @param {Event} e - The event object that triggered the function
+    * This function updates the employeeData state when the user inputs new data in the input fields.
    */
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEmployeeData((prev) => ({ ...prev, [name]: value }));
+    // prev is a list of everything the profile already had {...prev} = {phone_number:"111-111-1111", email_address:"Johndoe@gmail.com"}
+    setEmployeeData((prev) => ({ ...prev, [name]: value })); // will only update the value that was changed
   };
 
   return (
