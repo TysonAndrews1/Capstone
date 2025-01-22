@@ -1,6 +1,6 @@
+import { set } from 'date-fns';
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 
 
 /**
@@ -12,12 +12,15 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 export default function TradeShift() {
   const [accounts, setAccounts] = useState([]);
-  const BASE_URL = 'http://localhost:8080/api/accounts';
+  const [shifts, setShifts] = useState([]);
+  const [selectedCoworker, setSelectedCoworker] = useState('');
+
+  const BASE_URL = 'http://localhost:8080/api';
 
   // Function to fetch all banquet accounts from the backend 
-  const fetchEvents = async () => {
+  const fetchAccounts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}`);
+      const response = await fetch(`${BASE_URL}/accounts`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -29,15 +32,34 @@ export default function TradeShift() {
     }
   };
 
-  // example date to see if working 
-  // const mockAccounts = [
-  //   {accountId: 1, firstName: 'John'},
-  //   {accountId: 2, firstName: 'Jane'},
-  // ]
+  const fetchShifts = async (accountId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/${accountId}/shifts`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setShifts(data); // Update the state with the fetched shifts
+      console.log("Fetched shifts:", data);
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+    }
+  };
+
 
     useEffect(() => { 
-      fetchEvents();
+      fetchAccounts();
     }, []);
+
+    const handleCoworkerChange = (event) => {
+      const accountId = event.target.value;
+      setSelectedCoworker(accountId);
+      if (accountId) {
+        fetchShifts(accountId); // This will fetch the shifts for the selected coworker 
+      } else {
+        setShifts([]); // This will clear the shift if no coworker is selected 
+      }
+    };
  
     return (
       <div className="p-4">
@@ -58,7 +80,11 @@ export default function TradeShift() {
         {/* Dropdown to select coworker */}
         <div className="mb-4">
           <h1 className="text-lg font-bold mb-4">Select Coworker</h1>
-        <select className="w-full p-2 border border-gray-300 rounded">
+        <select 
+          className="w-full p-2 border border-gray-300 rounded"
+          value={selectedCoworker}
+          onChange={handleCoworkerChange}
+          >
           <option value="">-- Select Coworker --</option>
           {accounts.map((account) => (
             <option key={account.accountId} value={account.accountId}>
@@ -73,6 +99,11 @@ export default function TradeShift() {
           <h1 className="text-lg font-bold mb-4">Available Shifts</h1>
         <select className="w-full p-2 border border-gray-300 rounded">
           <option value="">-- Select Shift --</option>
+          {shifts.map((shift) => (
+            <option key={shift.shiftId} value={shift.shiftId}>
+              {shift.shiftDate} - {shift.shiftStartTime} to {shift.shiftEndTime}
+            </option>
+          ))}
         </select>
         </div>
 
