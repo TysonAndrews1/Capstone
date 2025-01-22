@@ -5,11 +5,11 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "banquet_accounts") // Maps the class to the table in the database
 public class BanquetAccount {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
-    private Integer accountId;
+    private Long accountId;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
@@ -36,11 +36,11 @@ public class BanquetAccount {
     private Boolean status = true;
 
     // Getters and Setters
-    public Integer getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 
