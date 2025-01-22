@@ -18,6 +18,7 @@ export default function TradeShift() {
   const BASE_URL = 'http://localhost:8080/api';
 
   // Function to fetch all banquet accounts from the backend 
+  // Will need to create a conditional to exclude Manager roles 
   const fetchAccounts = async () => {
     try {
       const response = await fetch(`${BASE_URL}/accounts`);
