@@ -101,7 +101,7 @@ export default function EventBar({ events}) {
               X
             </button>
 
-            <h2 className="modal-title"><strong>Event Title: </strong>{selectedEvent?.eventName}</h2>
+            <h2 className="modal-title"><strong> {selectedEvent?.eventName}</strong></h2>
             <div className="modal-content flex flex-col items-start space-y-2">
   <div className="flex">
     {/* First Column */}

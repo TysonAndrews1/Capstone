@@ -7,10 +7,12 @@ import { useNavigate } from "react-router-dom";
 export default function Roster(){
     const navigate = useNavigate()
     const [employees, setEmployees] = useState([]);
+    
         const [filteredEmployees, setFilteredEmployees] = useState([]);
         const [searchQuery, setSearchQuery] = useState('');
             const [error, setError] = useState(null);
     const BASE_URL = 'http://localhost:8080/api/accounts'; //update for employees
+        const [activeOverlay, setActiveOverlay] = useState(null)
 
 useEffect(() => {
     
