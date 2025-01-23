@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import React, {useEffect, useState} from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 const BASE_URL =  'http://localhost:8080/api/events';
 
@@ -116,8 +114,6 @@ const EditEvent =() =>{
 
     return(
     <main>
-    return(
-    <main>
         <form onSubmit={handleSubmit}>
         <div>
         <input
@@ -182,9 +178,7 @@ const EditEvent =() =>{
         <label>Description</label>
       </div>
       <button type="submit">Save</button>
-      <button type="submit">Save</button>
         </form>
     </main>)
 }
-export default EditEvent;
 export default EditEvent;

@@ -42,7 +42,7 @@ export default function UpcomingEvents({selectedDay}){
       setSelectedDate(option);
     };
     const CreateEvent = () =>{
-        navigate(`/EditEvent/${eventId}`)
+        navigate(`/EditEvent/${null}`)
     }
     
     return (
