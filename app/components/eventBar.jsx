@@ -14,7 +14,7 @@ export default function EventBar({ events, filterType }) {
   const currentDate = new Date();
 
   const BASE_URL = Platform.OS === 'android' ? ( 
-    'http://10.0.0.83:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
+    'http://10.187.198.97/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
     'http://localhost:8080/api/events'; //Computer & iOS
 
   // Filter events based on filterType ('past' or 'upcoming')

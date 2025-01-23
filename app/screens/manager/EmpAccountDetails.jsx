@@ -1,11 +1,63 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import editIcon from '../../../assets/images/edit.png'; // Icon from https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=1&origin=search&related_id=1159633
 import { useRouter } from 'expo-router';
 
 export default function EmpAccountDetails() {
-    const router = useRouter();
+    const { query } = useRouter();
+    const employeeId = query;
+    console.log(employeeId);
+
+    //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
+    const BASE_URL = Platform.OS === 'android' ? ( 
+        'http://10.187.198.97:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
+        'http://localhost:8080/api/accounts'; //Computer & iOS
+
+    const [employee, setEmployee] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+        // Fetch employee details
+        useEffect(() => {
+            const fetchEmployeeDetails = async () => {
+                setLoading(true);
+                setError(null);
+    
+                try {
+                    const response = await fetch(`${BASE_URL}/${employeeId}`);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch employee details');
+                    }
+                    const data = await response.json();
+                    setEmployee(data);
+                } catch (error) {
+                    setError(error.message);
+                } finally {
+                    setLoading(false);
+                }
+            };
+    
+            if (employeeId) {
+                fetchEmployeeDetails();
+            }
+        }, [employeeId]);
+    
+        if (error) {
+            return (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>Error: {error}</Text>
+                </View>
+            );
+        }
+    
+        if (!employee) {
+            return (
+                <View style={styles.errorContainer}>
+                    <Text style={styles.errorText}>Employee not found</Text>
+                </View>
+            );
+        }
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -13,7 +65,7 @@ export default function EmpAccountDetails() {
                 <View style={styles.header}>
                     <Image source={userIcon} style={styles.profileIcon} />
                     <View style={styles.profileTextContainer}>
-                        <Text style={styles.profileName}>Employee Name</Text>
+                        <Text style={styles.profileName}>{employee.firstName} {employee.lastName}</Text>
                     </View>
                     <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/screens/manager/EditEmpAccount')}>
                         <Image source={editIcon} style={styles.editIcon}/>
@@ -21,19 +73,19 @@ export default function EmpAccountDetails() {
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>First Name</Text>
+                    <Text style={styles.detailLabel}>First Name: {employee.firstName}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Last Name</Text>
+                    <Text style={styles.detailLabel}>Last Name: {employee.lastName}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Employee ID</Text>
+                    <Text style={styles.detailLabel}>Employee ID: {employee.employeeId}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Email Address</Text>
+                    <Text style={styles.detailLabel}>Email Address: {employee.email}</Text>
                 </View>
 
                 <View style={styles.detailCard}>

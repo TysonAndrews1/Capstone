@@ -17,7 +17,7 @@ export default function EmployeeAccounts() {
 
     //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
     const BASE_URL = Platform.OS === 'android' ? ( 
-        'http://10.0.0.83:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
+        'http://10.187.198.97:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
         'http://localhost:8080/api/accounts'; //Computer & iOS
 
 
@@ -63,7 +63,11 @@ export default function EmployeeAccounts() {
         }, [searchQuery, employees]);
 
     const handleEmployeePress = (employee) => {
-        router.push(`/screens/manager/EmpAccountDetails/`);  // Pass employee ID or other data
+        router.push({
+            pathname: '/screens/manager/EmpAccountDetails',
+            query: { employeeId: employee.accountId },
+          });
+        console.log(employee.accountId);
     };
 
     return (
@@ -81,20 +85,13 @@ export default function EmployeeAccounts() {
                 <Text style={styles.addButtonText}>Add Employee</Text>
             </Pressable>
 
-            {/*This will be removed when the database is connected. It is a placeholder for the test account.*/}
-            <ScrollView style={styles.scrollContainer}>
-                <Pressable style={styles.employeeCard} onPress={()=> router.push('/screens/manager/EmpAccountDetails')}>
-                    <Text style={styles.employeeName}>Test Account</Text>
-                </Pressable>
-            </ScrollView>
-
             <ScrollView style={styles.scrollContainer}>
                 {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
                     <Pressable
-                    key={employee.id}
+                    key={employee.accountId}
                     style={styles.employeeCard}
                     onPress={() => handleEmployeePress(employee)}>
-                    <Text style={styles.employeeName}>{employee.name}</Text>
+                    <Text style={styles.employeeName}>{employee.firstName} {employee.lastName}</Text>
                     </Pressable>
                     ))
                 ) : (
