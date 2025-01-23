@@ -6,12 +6,12 @@ import SignIn from './screens/SignIn';
 import RegisterPage from './screens/RegisterPage';
 import Events from './screens/Events';
 import Home from './screens/Home';
-import 'tailwindcss/tailwind.css';
 import EmployeeSchedule from './screens/employee/EmployeeSchedule';
 import Profile from './screens/employee/Profile';
 import TradeShift from './screens/employee/TradeShift';
 import EditEvent from './screens/EditEvent';
-
+import './Styles.css'
+import ForgotPassword from './screens/ForgotPassword';
 function App() {
   return (
     /*This router component wraps the entire application to allow routing 
@@ -19,6 +19,7 @@ function App() {
     <Router>
       <Routes> 
         <Route path="/" element={<SignIn />} />
+        <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/ManagerDashboard" element={
 

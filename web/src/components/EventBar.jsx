@@ -22,24 +22,12 @@ function format(date) {
   }
 
 
-export default function EventBar({ events, filterType }) {
+export default function EventBar({ events}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate(); // Initialize the router
   const currentDate = new Date();
 
-  // Filter events based on filterType ('past' or 'upcoming')
-  const filteredEvents = events.filter((event) => {
-    const eventStartTime = new Date(event.eventStartDate);
-    const eventEndTime = new Date(event.eventEndDate);
-
-    if (filterType === 'past') {
-      return eventStartTime < currentDate;
-    } else if (filterType === 'upcoming') {
-      return eventEndTime > currentDate;
-    }
-    return true; // Default behavior if no filterType is passed
-  });
 
   const openModal = (event) => {
     setSelectedEvent(event);
@@ -91,44 +79,55 @@ export default function EventBar({ events, filterType }) {
   };
 
   return (
-    <div className="container">
-      <div className="scroll-container">
-        {filteredEvents.map((event) => (
-          <div key={event.eventId} className="event-item" onClick={() => openModal(event)}>
-            <MiniSchedule EventName={event.eventName} EventStartTime={new Date(event.eventStartDate)} />
-          </div>
-        ))}
-      </div>
+<div className="container">
+  {events.length === 0 ? (
+    <p className="text-center text-gray-500 my-4">No Events Today.</p> // Message if events is empty
+  ) : (
+    <div className="scroll-container">
+      {events.map((event) => (
+        <div key={event.eventId} className="" onClick={() => openModal(event)}>
+          <MiniSchedule EventName={event.eventName} EventStartTime={new Date(event.eventStartDate)} />
+        </div>
+      ))}
+    </div>
+  )}
 
       {/* Event Details Modal */}
       {selectedEvent && modalVisible && (
-        <div className="modal-background">
+        <div className="">
           <div className="modal-container">
             {/* Close button (X) */}
-            <button className="close-button" onClick={closeModal}>
+            <button className="close-button " onClick={closeModal}>
               X
             </button>
 
-            <h2 className="modal-title">{selectedEvent?.eventName}</h2>
-            <p className="modal-details">
-              <strong>Start Time:</strong> {formatDate(selectedEvent?.eventStartDate)}
-            </p>
-            <p className="modal-details">
-              <strong>End Time:</strong> {formatDate(selectedEvent?.eventEndDate)}
-            </p>
-            <p className="modal-details">
-              <strong>Room:</strong> {selectedEvent?.eventLocation}
-            </p>
-            <p className="modal-details">
-              <strong>Description:</strong> {selectedEvent?.specialRequirements || 'No description available'}
-            </p>
+            <h2 className="modal-title"><strong>Event Title: </strong>{selectedEvent?.eventName}</h2>
+            <div className="modal-content flex flex-col items-start space-y-2">
+  <div className="flex">
+    {/* First Column */}
+    <div className="flex-none  text-left">
+      <p><strong>Start Time:</strong></p>
+      <p><strong>End Time:</strong></p>
+      <p><strong>Room:</strong></p>
+      <p><strong>Description:</strong></p>
+    </div>
+
+    {/* Second Column */}
+    <div className="flex-grow text-left">
+      <p>{formatDate(selectedEvent?.eventStartDate)}</p>
+      <p>{formatDate(selectedEvent?.eventEndDate)}</p>
+      <p>{selectedEvent?.eventLocation}</p>
+      <p>{selectedEvent?.specialRequirements || 'No description available'}</p>
+    </div>
+  </div>
+</div>
 
             {/* Edit and Delete buttons */}
             <div className="modal-actions">
-              <button className="button" onClick={handleEdit}>
-                Edit
+              <button className="basic-button w-24" onClick={handleEdit}>
+                Edit 
               </button>
-              <button className="button delete-button" onClick={handleDelete}>
+              <button className="basic-button w-24 my-1" onClick={handleDelete}>
                 Delete
               </button>
             </div>
