@@ -11,21 +11,25 @@ export default function EmployeeAccounts() {
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const router = useRouter();
 
-//Platform.OS to decide which URL to use when running on an Android emulator vs iOS/web. Android emulator accesses localhost via "10.0.2.2".
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events'; //copied from EventList.jsx
+    //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
+    const BASE_URL = Platform.OS === 'android' ? ( 
+        'http://10.0.0.83:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
+        'http://localhost:8080/api/accounts'; //Computer & iOS
 
 
-/* This effect runs once when the component mounts. FetchEmployees attempts to fetch employee data from a backend endpoint,
-then populates employees & filteredEmployees state. */
-useEffect(() => {
-    
-    const fetchEmployees = async (timeframe) => {
+    /* This effect runs once when the component mounts. FetchEmployees attempts to fetch employee data from a backend endpoint,
+    then populates employees & filteredEmployees state. */ 
+    const fetchEmployees = async () => {
+
+        setLoading(true);
         setError(true);
+
         try {
-            const response = await fetch(`${BASE_URL}/filter?timeframe=${timeframe}`);
+            const response = await fetch(`${BASE_URL}`);
             if (!response.ok) {
                 throw new Error('Error fetching employees');
             }
@@ -35,11 +39,14 @@ useEffect(() => {
         } catch (error) {
             console.error(error);
             setError('Error', 'Failed to fetch employee accounts.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    fetchEmployees(); // calling fetchEmployees will load the data
-}, []);
+    useEffect(() => {
+        fetchEmployees(); // calling fetchEmployees will load the data
+    }, []);
 
     /* This effect listens to changes in searchQuery or employees (like entering a name in the search bar).
     If there's no search query, filteredEmployees = employees (show all). */
@@ -54,6 +61,10 @@ useEffect(() => {
             setFilteredEmployees(filtered);
         }
         }, [searchQuery, employees]);
+
+    const handleEmployeePress = (employee) => {
+        router.push(`/screens/manager/EmpAccountDetails/`);  // Pass employee ID or other data
+    };
 
     return (
         <MainLayout>
