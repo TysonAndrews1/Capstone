@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
@@ -6,13 +6,16 @@ import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
-const BASE_URL = 'http://10.0.2.2:8080/api/events';
+const BASE_URL = Platform.OS === 'android' ? ( 
+  'http://10.0.0.83:8080/api/events') : //Andriod Device & Andriod Studio (Use your personal ipv4 address)
+  'http://localhost:8080/api/events'; //Computer & iOS
 
 const ManagerScreen = () => {
   const [user, setUser] = useState(null); // State for user date
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
+
   // State for handling Loading and error states
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(null);

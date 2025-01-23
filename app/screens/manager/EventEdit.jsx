@@ -65,7 +65,9 @@ export default function CreateEvent() {
     };
 
     // API base URL, adjusted for platform
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
+    const BASE_URL = Platform.OS === 'android' ? ( 
+      'http://10.0.0.83:8080/api/events') : //Andriod Device & Andriod Studio (Use your personal ipv4 address)
+      'http://localhost:8080/api/events'; //Computer & iOS
 
     // Send POST request to create the event
     fetch(BASE_URL, {
