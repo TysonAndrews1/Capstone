@@ -11,8 +11,8 @@ export default function Roster(){
         const [filteredEmployees, setFilteredEmployees] = useState([]);
         const [searchQuery, setSearchQuery] = useState('');
             const [error, setError] = useState(null);
-    const BASE_URL = 'http://localhost:8080/api/accounts'; 
-
+    const BASE_URL = 'http://localhost:8080/api/accounts'; //update for employees
+        const [activeOverlay, setActiveOverlay] = useState(null)
 
 useEffect(() => {
     
