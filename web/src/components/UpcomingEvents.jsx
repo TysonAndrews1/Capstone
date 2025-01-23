@@ -56,7 +56,7 @@ export default function UpcomingEvents({selectedDay}){
     
     return (
               <div className="text-center">
-                  <p className="font-bold underline text-xl">{selectedDay?selectedDay.toString().split('00')[0] : 'no Date selected'}</p>
+                  <p className="font-bold underline text-xl">{selectedDay?selectedDay.toString().split(/\d{2}:/)[0] : 'no Date selected'}</p>
         
                 {/* Scrollable Event List */}
                 <div className="event-list">
