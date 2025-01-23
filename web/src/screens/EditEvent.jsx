@@ -82,9 +82,12 @@ const EditEvent =() =>{
         if (!eventTitle || !startDate  || !endDate || !location || !numberOfGuests || !eventManager) {
           alert("Error", "Please fill in all the fields");
           return;
+          
         }
+        
         const BASE_URL = 'http://localhost:8080/api/events';
         const newEvent = {
+            eventId: eventId,
             eventName: eventTitle,
             eventStartDate: startDate,
             eventEndDate: endDate,
@@ -102,14 +105,11 @@ const EditEvent =() =>{
             body: JSON.stringify(newEvent),
             })
             .then((response) => response.json())
-            .then((data) => {
-              alert("Success", "Event created successfully!");
-              navigate('/Events');
-            })
             .catch((error) => {
               console.error('Error creating event:', error);
               alert("Error", "Failed to create event");
             });
+
     }
 
     return(
@@ -132,11 +132,6 @@ const EditEvent =() =>{
         <label>Start Date</label>
       </div>
       <div>
-          <input
-            type="datetime-local"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
           <input
             type="datetime-local"
             value={endDate}
@@ -177,8 +172,9 @@ const EditEvent =() =>{
         />
         <label>Description</label>
       </div>
-      <button type="submit">Save</button>
+      <button type="submit" className="basic-button">Save</button>
         </form>
+        <button type="button" className="basic-button my-1" onClick={()=>navigate("/Events")}>Go Back</button>
     </main>)
 }
 export default EditEvent;

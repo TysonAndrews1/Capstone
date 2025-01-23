@@ -10,14 +10,14 @@ export default function Roster(){
         const [filteredEmployees, setFilteredEmployees] = useState([]);
         const [searchQuery, setSearchQuery] = useState('');
             const [error, setError] = useState(null);
-    const BASE_URL = 'http://localhost:8080/api/events'; //update for employees
+    const BASE_URL = 'http://localhost:8080/api/accounts'; //update for employees
 
 useEffect(() => {
     
-    const fetchEmployees = async (timeframe) => {
+    const fetchEmployees = async () => {
         setError(true);
         try {
-            const response = await fetch(`${BASE_URL}/filter?timeframe=${timeframe}`);
+            const response = await fetch(`${BASE_URL}`);
             if (!response.ok) {
                 throw new Error('Error fetching employees');
             }

@@ -7,8 +7,9 @@ import ScheduledShifts from "../components/ScheduledShifts";
 
 
 export default function Events (){
-    const [date, setDate]= useState(Date.now())
-
+    const [date, setDate]= useState(new Date())
+    const [activeOverlay, setActiveOverlay] = useState(null)
+    
 function dateSelected(date){
     console.log(date);
     setDate(date)
@@ -19,10 +20,13 @@ return(
 
 <main>
 <CalendarComponent onDateSelect={dateSelected} />
-<Overlay child={<UpcomingEvents selectedDay={date}/>} headerTitle={"Upcoming Events"} ButtonTitle={"Upcoming Events"} buttonPlacement={"top-[75vh] left-[33vw]"}/>
-<Overlay child={<ScheduledShifts selectedDate={date}/>} headerTitle={"Scheduled Shifts"} ButtonTitle={"Scheduled Shifts"} buttonPlacement={"top-[75vh] left-[10vw]"}/>
-<Overlay child={<CreateShift/>} headerTitle={"Add Shift"} ButtonTitle={"Add Shift"} buttonPlacement={"top-[75vh] left-[55vw]"}/>
-{/* <CalendarComponent OnDateSelect={dateSelected}/> */}
-
+<Overlay child={<UpcomingEvents selectedDay={date}/>} headerTitle={"Upcoming Events"} ButtonTitle={"Upcoming Events"} buttonPlacement={"top-[75vh] left-[33vw]"}  
+            isActive={activeOverlay === "Upcoming Events"} onToggle={setActiveOverlay}/>
+<Overlay child={<ScheduledShifts selectedDate={date}/>} headerTitle={"Scheduled Shifts"} ButtonTitle={"Scheduled Shifts"} buttonPlacement={"top-[75vh] left-[10vw]"} 
+            isActive={activeOverlay === "Scheduled Shifts"}
+        onToggle={setActiveOverlay}/>
+<Overlay child={<CreateShift/>} headerTitle={"Add Shift"} ButtonTitle={"Add Shift"} buttonPlacement={"top-[75vh] left-[55vw]"} 
+            isActive={activeOverlay === "Add Shift"} 
+        onToggle={setActiveOverlay}/>
 </main>)
 }
