@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,16 @@ function HamburgerMenu() {
             <li className="py-2 px-4">
               <a href="/ManagerDashboard" className="text-gray-800 hover:text-blue-500">
                 Manager Dashboard
+              </a>
+            </li>
+            <li className="py-2 px-4">
+              <a href="/employeeschedule" className="text-gray-800 hover:text-blue-500">
+                Employee Schedule
+              </a>
+            </li>
+            <li className="py-2 px-4">
+              <a href="/" className="text-gray-800 hover:text-blue-500">
+                Log Out
               </a>
             </li>
           </ul>

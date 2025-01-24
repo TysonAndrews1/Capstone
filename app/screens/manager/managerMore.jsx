@@ -31,7 +31,7 @@ const ManagerMore = () => {
         </TouchableOpacity>
 
         {/* Button to manage employee accounts */}
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=> router.push('/screens/manager/EmployeeAccounts')}>
           <Text style={styles.text}>Manage Employee Accounts</Text>
         </TouchableOpacity>
 

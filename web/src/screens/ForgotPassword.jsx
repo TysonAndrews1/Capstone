@@ -27,7 +27,7 @@ const cancel = ()=>{
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
           <form className="bg-white p-7 rounded-2xl shadow-lg w-80" onSubmit={handleRequest}>
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
-            <h1 className="text-2xl font-bold mb-4 text-center">Sign In</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center">Forgot Password</h1>
             <input
               type="email"
               placeholder="Registered Email"

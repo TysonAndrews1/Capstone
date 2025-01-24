@@ -1,23 +1,26 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ManagerDashboard from './screens/ManagerDashboard';
+import ManagerDashboard from './screens/manager/ManagerDashboard';
 import MainLayout from './layouts/MainLayout'; 
 import SignIn from './screens/SignIn';
 import RegisterPage from './screens/RegisterPage';
-import ForgotPassword from './screens/ForgotPassword';
 import Events from './screens/Events';
-import CreateEvent from './screens/EditEvent';
 import Home from './screens/Home';
-import 'tailwindcss/tailwind.css';
-
+import EmployeeSchedule from './screens/employee/EmployeeSchedule';
+import Profile from './screens/employee/Profile';
+import TradeShift from './screens/employee/TradeShift';
+import EditEvent from './screens/EditEvent';
+import './Styles.css'
+import ForgotPassword from './screens/ForgotPassword';
 function App() {
   return (
-
+    /*This router component wraps the entire application to allow routing 
+    in the app and navigate between different components based on the URL */
     <Router>
-      <Routes>
+      <Routes> 
         <Route path="/" element={<SignIn />} />
-        <Route path="/register" element={<RegisterPage />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/ManagerDashboard" element={
 
           <MainLayout> 
@@ -26,8 +29,12 @@ function App() {
 
         }  />
         <Route path="/Events" element={<MainLayout> <Events /></MainLayout>}/>
-        <Route path="/EditEvent" element={<MainLayout> <CreateEvent /></MainLayout>}/>
+        <Route path="/EditEvent/:eventId" element={<MainLayout> <EditEvent /></MainLayout>}/>
         <Route path = "/Home" element={<MainLayout><Home/></MainLayout>}></Route>
+        <Route path="/profile" element={<MainLayout><Profile /></MainLayout>} />
+
+        <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
+        <Route path="/TradeShift/:accountId" element={<MainLayout><TradeShift /></MainLayout>} />
       </Routes>
     </Router>
   );

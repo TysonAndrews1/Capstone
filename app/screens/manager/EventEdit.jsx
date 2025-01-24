@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../../layouts/MainLayout';  
@@ -6,6 +6,7 @@ import CalendarComponent from '../../components/Calender';
 import { useRouter } from 'expo-router';
 
 export default function CreateEvent() {
+
   // States for managing event details
   const [eventTitle, setEventTitle] = useState(''); // Event title
   const [startDate, setStartDate] = useState(null); // Event start date (UTC)
@@ -17,13 +18,13 @@ export default function CreateEvent() {
   const [eventManager, setEventManager] = useState(''); // Name of the manager who is in charge
   const [specialRequirements, setSpecialRequirements] = useState(''); // Additional event requirement
 
+  const router = useRouter(); // Navigation hook for screen transitions
+
   // States for managing UI elements
   const [showStartCalendar, setShowStartCalendar] = useState(false); // Toggles start date calendar
   const [showEndCalendar, setShowEndCalendar] = useState(false); // Toggles end date calendar
   const [showStartTimePicker, setShowStartTimePicker] = useState(false); // Toggles start time picker
   const [showEndTimePicker, setShowEndTimePicker] = useState(false); // Toggles end time picker
-
-  const router = useRouter(); // Navigation hook for screen transitions
 
   const combineDateAndTime = (date, time) => {
   

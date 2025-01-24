@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // Tells Spring to handle any HTTP requests and return a JSON format
@@ -22,6 +23,18 @@ public class BanquetEventController {
     @GetMapping // Display a list of all events in the database
     public List<BanquetEvent> getAllEvents() {
         return repository.findAll();
+    }
+
+    @GetMapping("/{eventId}") // Get a specific event by ID
+    public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
+        // Retrieve the event by ID using the repository
+        Optional<BanquetEvent> event = repository.findById(eventId);
+        
+        if (event.isPresent()) {
+            return ResponseEntity.ok(event.get()); // Return the event if found
+        } else {
+            return ResponseEntity.status(404).body(null); // Return 404 if event not found
+        }
     }
 
     @GetMapping("/filter") // Filters events by timeframe (past or upcoming)
