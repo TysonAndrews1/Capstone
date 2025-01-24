@@ -9,7 +9,7 @@ import TradeShift from './TradeShift';
  * The EmployeeSchedule component is the main screen for employees to view their schedule, trade shifts, and change availability.
  */ 
 export default function EmployeeSchedule() {
-
+    const [activeOverlay, setActiveOverlay] = useState(null)
   return (
     <main>
 
@@ -19,16 +19,20 @@ export default function EmployeeSchedule() {
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
 
       {/* Overlay for Grab Shift component */}
-      <Overlay child={<div>GrabShift</div>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}/>
+      <Overlay child={<div>GrabShift</div>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}
+      isActive={activeOverlay === "Grab Shift"} onToggle={setActiveOverlay} />
 
       {/* Overlay for View Shift component */}
-      <Overlay child={<div>ViewShift</div>} headerTitle={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"top-[75vh] left-[45vw]"}/>
+      <Overlay child={<div>ViewShift</div>} headerTitle={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"top-[75vh] left-[45vw]"}
+      isActive={activeOverlay === "View Shift"} onToggle={setActiveOverlay}/>
 
       {/* Overlay for TradeShift component */}
-      <Overlay child={<TradeShift/>} headerTitle={"Trade Request"} ButtonTitle={"Trade Request"} buttonPlacement={"top-[75vh] left-[75vw]"}/>
+      <Overlay child={<TradeShift/>} headerTitle={"Trade Request"} ButtonTitle={"Trade Request"} buttonPlacement={"top-[75vh] left-[75vw]"}
+      isActive={activeOverlay === "Trade Request"} onToggle={setActiveOverlay}/>
 
       {/* Overlay for Change Availability component */}
-      <Overlay child={<div>UpdateAvailability</div>} headerTitle={"Update Availability"} ButtonTitle={"Update Availability"} buttonPlacement={"top-[75vh] left-[10vw]"}/>
+      <Overlay child={<div>UpdateAvailability</div>} headerTitle={"Update Availability"} ButtonTitle={"Update Availability"} buttonPlacement={"top-[75vh] left-[10vw]"}
+      isActive={activeOverlay === "Update Avaliability"} onToggle={setActiveOverlay}/>
     </main>
   
   )
