@@ -25,18 +25,24 @@ export default function CreateEvent() {
 
   const router = useRouter(); // Navigation hook for screen transitions
 
-  // Combines a given date and time into a single UTC DateTime object
   const combineDateAndTime = (date, time) => {
+  
+    // Convert Local Time to UTC time zone
     const combined = new Date(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      time.getHours(),
-      time.getMinutes(),
-      time.getSeconds()
+      Date.UTC(
+        date.getUTCFullYear(),
+        date.getUTCMonth(),
+        date.getUTCDate(),
+        time.getHours(),
+        time.getMinutes(),
+        time.getSeconds()
+      )
     );
-    return combined;
+  
+    return combined; // Return the UTC data
   };
+  
+  
 
   /**
    * Handles the submission of the event form.
@@ -47,26 +53,28 @@ export default function CreateEvent() {
       Alert.alert("Error", "Please fill in all the fields");
       return;
     }
-
-    // Combine start and end dates with times into UTC DateTime
-    const startDateTime = combineDateAndTime(startDate, startTime);
-    const endDateTime = combineDateAndTime(endDate, endTime); 
-
-    // Construct the event object
+  
+    // Convert to UTC time
+    const startDateTime = combineDateAndTime(startDate, startTime); 
+    const endDateTime = combineDateAndTime(endDate, endTime);    
+  
+    // Create the object to send to the server
     const newEvent = {
       eventName: eventTitle,
-      eventStartDate: startDateTime.toISOString(),
-      eventEndDate: endDateTime.toISOString(),
+      eventStartDate: startDateTime.toISOString(), // ISO 8601 format (UTC)
+      eventEndDate: endDateTime.toISOString(),     // ISO 8601 format (UTC)
       eventLocation: location,
       numberOfGuests: parseInt(numberOfGuests, 10),
       assignedManager: eventManager,
       specialRequirements: specialRequirements,
     };
-
-    // API base URL, adjusted for platform
+  
+    console.log('Final Event Data (to be sent to server):', newEvent);
+  
+    // Set the API base URL
     const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
-
-    // Send POST request to create the event
+  
+    // Send data to the server
     fetch(BASE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -75,13 +83,14 @@ export default function CreateEvent() {
       .then((response) => response.json())
       .then(() => {
         Alert.alert("Success", "Event created successfully!");
-        router.push('/screens/manager/EventList'); // Navigate to the EventList screen
+        router.push('/screens/manager/EventList'); 
       })
       .catch((error) => {
         console.error('Error creating event:', error);
         Alert.alert("Error", "Failed to create event");
       });
   };
+  
 
   return (
     <MainLayout>
