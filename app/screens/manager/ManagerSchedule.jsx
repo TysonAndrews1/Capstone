@@ -41,7 +41,7 @@ const ManagerSchedule = () => {
                 ) : (
                     // If a date is selected, show this UI
                     <>
-                        <TouchableOpacity style={styles.infoButton} onPress={() => router.push('screens/manager/AddShift')}>
+                        <TouchableOpacity style={styles.infoButton} onPress={() => router.push({pathname: 'screens/manager/AddShift', params:  { date: selectedDate.toISOString() } })}>
                         <Text style={styles.infoButtonText}>Add Shift</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.infoButton}>

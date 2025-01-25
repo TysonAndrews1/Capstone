@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from 'react-native';
 import React, { useState } from 'react';
 import { handleLogin } from "../../firebase/auth";
 import { useRouter } from "expo-router";
@@ -7,11 +7,10 @@ const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
-    const forgotPass = ()=>{
-      router.push('/screens/forgotPassword');
 
-    }
+    const forgotPass = () => {
+        router.push('/screens/forgotPassword');
+    };
 
     const onLoginPress = async () => {
         if (!email || !password) {
@@ -20,44 +19,48 @@ const Login = () => {
         }
 
         try {
-            await handleLogin(email, password);
+            const user = await handleLogin(email, password);
+            console.log("Logged in user:", user); // Firebase user object
             router.push('/screens/manager/ManagerScreen');
         } catch (error) {
             Alert.alert("Login Failed", error.message);
         }
     };
-  return (
-    <View style={styles.container}>
-        <Text style={styles.heading}>Sign In</Text>
 
-        <View style={styles.card}>
-            
-            {/* Username Input */}
-            <Text style={styles.inputText}>Email</Text>
-            <View style={styles.inputGroup}>
-                {/* put an icon */}
-                <TextInput style={styles.input} placeholder="email" placeholderTextColor="#aaa"
-                value={email} onChangeText={setEmail} />
+    return (
+        <View style={styles.container}>
+            <Text style={styles.heading}>Sign In</Text>
+            <View style={styles.card}>
+                <Text style={styles.inputText}>Email</Text>
+                <View style={styles.inputGroup}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="email"
+                        placeholderTextColor="#aaa"
+                        value={email}
+                        onChangeText={setEmail}
+                    />
+                </View>
+                <Text style={styles.inputText}>Password</Text>
+                <View style={styles.inputGroup}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Password"
+                        placeholderTextColor="#aaa"
+                        secureTextEntry
+                        value={password}
+                        onChangeText={setPassword}
+                    />
+                </View>
+                <TouchableOpacity style={styles.button} onPress={onLoginPress}>
+                    <Text style={styles.buttonText}>Sign In</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={forgotPass}>
+                    <Text style={styles.inputText}>Forgot password?</Text>
+                </TouchableOpacity>
             </View>
-            
-            {/* Password Input */}
-            <Text style={styles.inputText}>Password</Text>
-            <View style={styles.inputGroup}>
-                {/* put an icon */}
-                <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#aaa" secureTextEntry
-                 value={password} onChangeText={setPassword} />
-            </View>
-
-            {/* Login BUtton */}
-            <TouchableOpacity style={styles.button} onPress={onLoginPress}>
-                <Text style={styles.buttonText}>Sign In</Text>
-            </TouchableOpacity>
-              <TouchableOpacity onPress={forgotPass}>
-            <Text style={styles.inputText}>Forgot password?</Text>
-            </TouchableOpacity>
         </View>
-    </View>
-  )
+    );
 };
 
 export default Login;
