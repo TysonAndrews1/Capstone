@@ -113,8 +113,8 @@ const styles = StyleSheet.create({
 
     searchBar: {
         height: 50,
-        backgroundColor: '#ccc',
-        borderRadius: 25,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 15,
         paddingHorizontal: 12,
         marginBottom: 10,
         color: '#000',
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3F6D89',
         paddingVertical: 10,
         paddingHorizontal: 16,
-        borderRadius: 4,
+        borderRadius: 2,
         alignItems: 'center',
         alignSelf: 'center',
         marginBottom: 10,
@@ -144,8 +144,10 @@ const styles = StyleSheet.create({
 
     employeeCard: {
         backgroundColor: '#E6F2FA',
-        padding: 12,
-        borderRadius: 4,
+        paddingVertical: 15,
+        paddingHorizontal: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#d9d9d9',
     },
 
     employeeName: {
