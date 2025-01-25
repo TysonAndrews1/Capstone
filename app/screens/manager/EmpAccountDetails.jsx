@@ -1,63 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform, ActivityIndicator } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import editIcon from '../../../assets/images/edit.png'; // Icon from https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=1&origin=search&related_id=1159633
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EmpAccountDetails() {
-    const { query } = useRouter();
-    const employeeId = query;
-    console.log(employeeId);
+    const [accountId, setAccountId] = useState(null); // accountId is not being used, but we will keep this to retrieve the accountId from AsyncStorage by using setAccountId.
+    const [employee, setEmployee] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
     const BASE_URL = Platform.OS === 'android' ? ( 
         'http://10.0.2.2:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
         'http://localhost:8080/api/accounts'; //Computer & iOS
 
-    const [employee, setEmployee] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-
-        // Fetch employee details
-        useEffect(() => {
-            const fetchEmployeeDetails = async () => {
-                setLoading(true);
-                setError(null);
+    // Fetch employee details
+    useEffect(() => {
+        const fetchStoredAccountIdAndDetails = async () => {
+            try {
+                // Retrieve the accountId from AsyncStorage, taken from ChatGPT
+                const storedAccountId = await AsyncStorage.getItem('selectedAccountId');
+                if (storedAccountId) {
+                    setAccountId(storedAccountId);
+                    console.log('Retrieved Account ID:', storedAccountId);
     
-                try {
-                    const response = await fetch(`${BASE_URL}/${employeeId}`);
+                    // Fetch employee details using the retrieved accountId
+                    const response = await fetch(`${BASE_URL}/${storedAccountId}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch employee details');
                     }
+                    
                     const data = await response.json();
-                    setEmployee(data);
-                } catch (error) {
-                    setError(error.message);
-                } finally {
-                    setLoading(false);
+                    console.log('Employee Data:', data);
+                    setEmployee({
+                        ...data,
+                        status: data.status === 1 || data.status === "1" || data.status === true // This will make the status display as "Active" if the status is 1 or true, and "Inactive" if the status is 0 or false.
+                            ? "Active" 
+                            : "Inactive",
+                    });
+
+                } else {
+                    console.error('No Account ID found in storage');
                 }
-            };
-    
-            if (employeeId) {
-                fetchEmployeeDetails();
+            } catch (error) {
+                console.error('Error:', error.message);
+                setError(error.message);
+            } finally {
+                setLoading(false);
             }
-        }, [employeeId]);
+        };
     
-        if (error) {
-            return (
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>Error: {error}</Text>
-                </View>
-            );
-        }
+        fetchStoredAccountIdAndDetails(); // calling fetchStoredAccountIdAndDetails will load the data
+    }, []);
     
-        if (!employee) {
-            return (
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorText}>Employee not found</Text>
-                </View>
-            );
-        }
+    
+    if (loading) {
+        return (
+            <View style={styles.errorContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
+
+    if (error) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Error: {error}</Text>
+            </View>
+        );
+    }
+
+    if (!employee) {
+        return (
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>Employee not found</Text>
+            </View>
+        );
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -89,19 +110,19 @@ export default function EmpAccountDetails() {
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Home Address</Text>
+                    <Text style={styles.detailLabel}>Home Address: {employee.address}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Phone Number</Text>
+                    <Text style={styles.detailLabel}>Phone Number: {employee.phoneNumber}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Role</Text>
+                    <Text style={styles.detailLabel}>Role: {employee.role}</Text>
                 </View>
 
                 <View style={styles.detailCard}>
-                    <Text style={styles.detailLabel}>Status</Text>
+                    <Text style={styles.detailLabel}>Status: {employee.status}</Text>
                 </View>
             </View>
         </ScrollView>

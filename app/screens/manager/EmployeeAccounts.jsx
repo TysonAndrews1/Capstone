@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Platform, Image } from 'react-native';
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Search bar may need to be reworked on when data is able to be fetched from the backend.
 
@@ -62,12 +63,17 @@ export default function EmployeeAccounts() {
         }
         }, [searchQuery, employees]);
 
-    const handleEmployeePress = (employee) => {
-        router.push({
-            pathname: '/screens/manager/EmpAccountDetails',
-            query: { employeeId: employee.accountId },
-          });
-        console.log(employee.accountId);
+    const handleEmployeePress = async (employee) => {
+        try {
+            // Save the accountId in AsyncStorage
+            await AsyncStorage.setItem('selectedAccountId', employee.accountId.toString());
+            console.log('Stored Account ID:', employee.accountId);
+    
+            // Navigate to the next screen
+            router.push('/screens/manager/EmpAccountDetails');
+        } catch (error) {
+            console.error('Error storing accountId:', error);
+        }
     };
 
     return (
