@@ -113,6 +113,36 @@ const EmployeeScreen = () => {
           </View>
         </View>
 
+        {/* four buttons */}
+        <View style={styles.fourButtonContainer}>
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/team.png')} />
+                    <Text style={styles.buttonText}>Team</Text>
+                </TouchableOpacity>
+            </View>
+            
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/event1.png')} />
+                    <Text style={styles.buttonText}>Event</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/request.png')} />
+                    <Text style={styles.buttonText}>Request</Text>    
+                </TouchableOpacity>
+            </View>
+            
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/late.png')} />
+                    <Text style={styles.buttonText}>Late</Text>    
+                </TouchableOpacity>
+            </View>
+        </View>
 
         {/* Weekly Calendar */}
         <View style={styles.card}>
@@ -271,4 +301,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
+  fourButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 16, 
+    paddingVertical: 16, 
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+},
+fourButton: {
+    alignItems: 'center',
+},
+fourButtonImages: {
+    width: 50,
+    height: 50,
+    marginBottom: 4,
+},
+buttonText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    textAlign: 'center',
+},
 });
