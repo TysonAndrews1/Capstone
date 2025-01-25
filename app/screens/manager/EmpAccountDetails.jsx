@@ -11,7 +11,7 @@ export default function EmpAccountDetails() {
 
     //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
     const BASE_URL = Platform.OS === 'android' ? ( 
-        'http://10.187.198.97:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
+        'http://10.0.2.2:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
         'http://localhost:8080/api/accounts'; //Computer & iOS
 
     const [employee, setEmployee] = useState(null);

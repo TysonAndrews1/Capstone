@@ -13,7 +13,7 @@ export default function Events() {
   const router = useRouter(); // Initialize the router
 
   const BASE_URL = Platform.OS === 'android' ? ( 
-    'http://10.187.198.97:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
+    'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
     'http://localhost:8080/api/events'; //Computer & iOS
 
   // Function to fetch events from the backend
