@@ -7,21 +7,50 @@ const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    const BASE_URL = 'http://10.0.2.2:8080/api';
 
     const forgotPass = () => {
         router.push('/screens/forgotPassword');
     };
 
     const onLoginPress = async () => {
+    
         if (!email || !password) {
             Alert.alert("Error", "Please enter both email and password.");
             return;
         }
 
         try {
-            const user = await handleLogin(email, password);
-            console.log("Logged in user:", user); // Firebase user object
-            router.push('/screens/manager/ManagerScreen');
+            // Using Firebase Authentication
+            const firebaseUser = await handleLogin(email, password);
+            console.log("Logged in user:", firebaseUser); // Firebase user object
+            
+            // Fetching role from the MySQL
+            const fetchUserRole = async (email) => {
+                const response = await fetch(`${BASE_URL}/user?email=${email}`);
+
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user role: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.role;
+            };
+
+            // Checking the role, then navigate each screen.
+            const role = await fetchUserRole(email);
+            console.log("User role:", role);
+
+            if (role === 'Manager') {
+                router.push('/screens/manager/ManagerScreen');
+            } else if (role === 'Employee') {
+                router.push('/screens/employee/EmployeeScreen');
+            } else {
+                Alert.alert("Error", "Unknown role. Please contact support.");
+            }
+            
+            
         } catch (error) {
             Alert.alert("Login Failed", error.message);
         }

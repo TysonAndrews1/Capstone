@@ -30,12 +30,8 @@ const AddShift = () => {
   const [attachEventItems, setAttachEventItems] = useState([]);
   const [description, setDescription] = useState('');
 
-  const EMPLOYEE_URL = Platform.OS === 'android'
-    ? 'http://10.0.2.2:8080/api/employees'
-    : 'http://localhost:8080/api/employees';
-  const EVENTS_URL = Platform.OS === 'android'
-    ? 'http://10.0.2.2:8080/api/events'
-    : 'http://localhost:8080/api/events';
+  const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/employees': 'http://localhost:8080/api/employees';
+  const EVENTS_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/events': 'http://localhost:8080/api/events';
 
   // Fetch employees
   useEffect(() => {
@@ -46,9 +42,12 @@ const AddShift = () => {
           label: `${employee.firstName} ${employee.lastName}`,
           value: employee.accountId,
         }));
+
         setItems(employeeData);
+
       } catch (error) {
         Alert.alert('Error', 'Failed to load employees. Please try again later.');
+
       } finally {
         setLoading(false);
       }
@@ -73,8 +72,7 @@ const AddShift = () => {
             selectedDateObject.getUTCDate()
           );
     
-          const eventData = response.data
-            .filter(event => {
+          const eventData = response.data.filter(event => {
               const startDate = new Date(event.eventStartDate);
               const endDate = new Date(event.eventEndDate);
     
@@ -96,6 +94,7 @@ const AddShift = () => {
               );
               return selectedDateUTC >= startDateUTC && selectedDateUTC <= endDateUTC;
             })
+
             .map(event => ({
               label: event.eventName,
               value: event.eventId,
@@ -104,15 +103,13 @@ const AddShift = () => {
     
           console.log('Filtered Events:', eventData);
           setAttachEventItems(eventData); // Set filtered data
+
         } catch (error) {
           console.error('Error fetching events:', error);
           Alert.alert('Error', 'Failed to load events for the selected date.');
         }
       }
     };
-    
-    
-    
     
     fetchEvents();
   }, [attachEventOpen, selectedDate]);
@@ -141,21 +138,9 @@ const AddShift = () => {
         <Text style={styles.dateText}>{monthName} {day}, {year}</Text>
 
         {/* DropDownPicker */}
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          multiple={true}
-          listMode="SCROLLVIEW"
-          placeholder="Select Employee(s)"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          arrowIconStyle={{ width: 20, height: 20 }}
-          showArrowIcon={true}
-        />
+        <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} multiple={true}
+          listMode="SCROLLVIEW" placeholder="Select Employee(s)" style={styles.dropdown} dropDownContainerStyle={styles.dropdownContainer}
+          arrowIconStyle={{ width: 20, height: 20 }} showArrowIcon={true} />
 
         {/* Selected Employee Names */}
         <View style={styles.selectedContainer}>
@@ -201,29 +186,12 @@ const AddShift = () => {
         )}
 
         {/* Attach Event */}
-        <DropDownPicker
-          open={attachEventOpen}
-          value={attachEventValue}
-          items={attachEventItems}
-          setOpen={setAttachEventOpen}
-          setValue={setAttachEventValue}
-          listMode="SCROLLVIEW"
-          placeholder="Attach Event"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          placeholderStyle={{ color: 'red' }}
-        />
+        <DropDownPicker open={attachEventOpen} value={attachEventValue} items={attachEventItems} setOpen={setAttachEventOpen} setValue={setAttachEventValue}
+          listMode="SCROLLVIEW" placeholder="Attach Event" style={styles.dropdown} dropDownContainerStyle={styles.dropdownContainer} placeholderStyle={{ color: 'red' }} />
 
         {/* Description */}
         <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={styles.textInput}
-          multiline
-          numberOfLines={10}
-          placeholder="Enter description here"
-          value={description}
-          onChangeText={setDescription}
-        />
+        <TextInput style={styles.textInput} multiline numberOfLines={10} placeholder="Enter description here" value={description} onChangeText={setDescription} />
 
         {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

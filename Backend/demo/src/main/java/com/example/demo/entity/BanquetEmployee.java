@@ -3,7 +3,7 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "banquet_employees")
+@Table(name = "banquet_accounts") // 일단 테이블 이름만 바꿔서 테스트 하고 나중에 처리 
 public class BanquetEmployee {
 
     @Id
