@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
-import { use } from 'react';
 
 // Need to find the logic behind prefilling the fields with the employee's data. This might have to be done when backend is connected to EmployeeAccounts and EmpAccountDetails.
 
@@ -44,13 +43,13 @@ export default function EditEmpAccount({employeeId}) {
         fetchEmployeeData();
     }, [employeeId]); // This will run the fetchEmployeeData function when the employeeId changes
 
-    const handleSubmit = async () => { // This is to update the employee data in the backend and database, if fields are empty, an error message is displayed.
+    const handleSubmit = async () => { // To update the employee data in the backend and database, if fields are empty, an error message is displayed.
         if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
 
-        try { // This is to update the employee data in the backend and database along with some error handling
+        try { // To update the employee data in the backend and database along with some error handling
             const response = await fetch(`${BASE_URL}/${employeeId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -63,13 +62,14 @@ export default function EditEmpAccount({employeeId}) {
 
             Alert.alert('Success', 'Employee updated successfully!');
             router.push('/screens/manager/EmployeeAccounts');
+
         } catch (error) {
             console.error('Error updating employee:', error);
             Alert.alert('Error', 'Failed to update employee account');
         }
     }
 
-    const updatedEmployee = {
+    const updatedEmployee = { // The updated employee data that will be sent to the backend and database
         first_name,
         last_name,
         employee_id,

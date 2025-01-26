@@ -69,13 +69,15 @@ export default function CreateEvent() {
       assignedManager: eventManager,
       specialRequirements: specialRequirements,
     };
-  
+    
     console.log('Final Event Data (to be sent to server):', newEvent);
-  
-    // Set the API base URL
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
-  
-    // Send data to the server
+
+    // API base URL, adjusted for platform
+    const BASE_URL = Platform.OS === 'android' ? ( 
+      'http://10.0.2.2/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
+      'http://localhost:8080/api/events'; //Computer & iOS
+
+    // Send POST request to create the event
     fetch(BASE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

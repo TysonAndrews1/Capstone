@@ -1,18 +1,23 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
-const BASE_URL = 'http://10.0.2.2:8080/api';
+const BASE_URL = Platform.OS === 'android' ? ( 
+  'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
+  'http://localhost:8080/api/events'; //Computer & iOS
+
 const ManagerScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
-  const [loading, setLoading] = useState(false); // State for handling Loading
-  const [error, setError] = useState(null); // State for handling errors
+
+  // State for handling Loading and error states
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
