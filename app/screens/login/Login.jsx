@@ -28,14 +28,20 @@ const Login = () => {
             
             // Fetching role from the MySQL
             const fetchUserRole = async (email) => {
-                const response = await fetch(`${BASE_URL}/user?email=${email}`);
-
-            if (!response.ok) {
-                throw new Error(`Failed to fetch user role: ${response.status}`);
-            }
+                
+                try {
+                    const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
             
-            const data = await response.json();
-            return data.role;
+                    if (!response.ok) {
+                        throw new Error(`Failed to fetch user role: ${response.status}`);
+                    }
+            
+                    const data = await response.json();
+                    return data.role;
+                } catch (error) {
+                    console.error("Error fetching user role:", error.message);
+                    throw error;
+                }
             };
 
             // Checking the role, then navigate each screen.

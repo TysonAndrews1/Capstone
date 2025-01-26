@@ -24,7 +24,7 @@ const EmployeeScreen = () => {
   useEffect(() => {
     const fetchUserData = async (email) => {
       try {
-        const response = await fetch(`${BASE_URL}/user?email=${email}`);
+        const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

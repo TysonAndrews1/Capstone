@@ -30,8 +30,14 @@ const AddShift = () => {
   const [attachEventItems, setAttachEventItems] = useState([]);
   const [description, setDescription] = useState('');
 
-  const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/employees': 'http://localhost:8080/api/employees';
+  const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/accounts': 'http://localhost:8080/api/accounts';
   const EVENTS_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/events': 'http://localhost:8080/api/events';
+
+  const [accountId, setAccountId] = useState('');
+  const [eventId, setEventId] = useState('');
+  const [shiftStartDate, setShiftStartDate] = useState('');
+  const [shiftEndDate, setShiftEndDate] = useState('');
+
 
   // Fetch employees
   useEffect(() => {
@@ -114,10 +120,42 @@ const AddShift = () => {
     fetchEvents();
   }, [attachEventOpen, selectedDate]);
 
-  const handleSave = () => {
-    console.log('Attach Event:', attachEventValue);
-    console.log('Selected Employees:', value);
-    console.log('Description:', description);
+  const handleSave = async () => {
+    const selectedAccountId = value.length > 0 ? value[0] : null;
+
+    const shiftData = {
+        accountId: selectedAccountId, // 선택한 직원의 ID 배열
+        eventId: attachEventValue, // 선택한 이벤트 ID
+        shiftStartDate: startTime ? `${selectedDate.slice(0, 10)}T${startTime.toTimeString().slice(0, 5)}:00` : null, // 시작 시간
+        shiftEndDate: endTime ? `${selectedDate.slice(0, 10)}T${endTime.toTimeString().slice(0, 5)}:00` : null, // 종료 시간
+        description: description.trim(), // 설명
+    };
+
+    if (!shiftData.accountId || !shiftData.eventId || !shiftData.shiftStartDate || !shiftData.shiftEndDate || !shiftData.description) {
+      Alert.alert("Error", "All fields are required.");
+      return;
+  }
+
+    try {
+        // 서버로 POST 요청
+        const response = await fetch('http://10.0.0.244:8080/api/shifts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(shiftData),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to save shift: ${response.status}`);
+        }
+
+        const message = await response.text();
+        Alert.alert("Success", message);
+
+        resetFields();
+
+    } catch (error) {
+        Alert.alert("Error", error.message);
+    }
   };
 
   if (loading) {
@@ -129,7 +167,15 @@ const AddShift = () => {
   }
 
   const selectedLabels = items.filter(item => value.includes(item.value)).map(item => item.label);
-
+  
+  // reset all the data.
+  const resetFields = () => {
+    setValue([]); 
+    setAttachEventValue(null); 
+    setStartTime(null); 
+    setEndTime(null); 
+    setDescription(''); 
+};
   
   return (
     <MainLayout>
@@ -140,7 +186,7 @@ const AddShift = () => {
         {/* DropDownPicker */}
         <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} multiple={true}
           listMode="SCROLLVIEW" placeholder="Select Employee(s)" style={styles.dropdown} dropDownContainerStyle={styles.dropdownContainer}
-          arrowIconStyle={{ width: 20, height: 20 }} showArrowIcon={true} />
+          arrowIconStyle={{ width: 20, height: 20 }} showArrowIcon={true}  />
 
         {/* Selected Employee Names */}
         <View style={styles.selectedContainer}>

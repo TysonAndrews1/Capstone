@@ -6,6 +6,7 @@ import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
 const BASE_URL = 'http://10.0.2.2:8080/api';
+
 const ManagerScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
@@ -24,7 +25,7 @@ const ManagerScreen = () => {
   useEffect(() => {
     const fetchUserData = async (email) => {
       try {
-        const response = await fetch(`${BASE_URL}/user?email=${email}`);
+        const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

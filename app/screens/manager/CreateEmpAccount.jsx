@@ -32,7 +32,7 @@ export default function CreateEmpAccount() {
         status,
     };
     
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/accounts' : 'http://localhost:8080/api/accounts';
 
     fetch(BASE_URL, { // Sends to the API endpoint
         method: 'POST', // This is a POST request to create a new employee account for the database in JSON format
