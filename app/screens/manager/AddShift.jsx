@@ -7,6 +7,7 @@ import axios from 'axios';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const AddShift = () => {
+  // Extract selected date from parameters
   const params = useGlobalSearchParams();
   const selectedDate = params?.date || '2000-01-01T00:00:00.000Z';
   const year = selectedDate.slice(0, 4);
@@ -15,31 +16,29 @@ const AddShift = () => {
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const monthName = monthNames[parseInt(month, 10) - 1];
 
+  // State for time pickers
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-
+  
+  // State for employee dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // State for event dropdown
   const [attachEventOpen, setAttachEventOpen] = useState(false);
   const [attachEventValue, setAttachEventValue] = useState(null);
   const [attachEventItems, setAttachEventItems] = useState([]);
   const [description, setDescription] = useState('');
 
+  // Backend API endpoints
   const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/accounts': 'http://localhost:8080/api/accounts';
   const EVENTS_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/events': 'http://localhost:8080/api/events';
 
-  const [accountId, setAccountId] = useState('');
-  const [eventId, setEventId] = useState('');
-  const [shiftStartDate, setShiftStartDate] = useState('');
-  const [shiftEndDate, setShiftEndDate] = useState('');
-
-
-  // Fetch employees
+  // Fetch employee data from the backend
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -120,44 +119,64 @@ const AddShift = () => {
     fetchEvents();
   }, [attachEventOpen, selectedDate]);
 
+  // Handle shift save functionality
   const handleSave = async () => {
-    const selectedAccountId = value.length > 0 ? value[0] : null;
 
-    const shiftData = {
-        accountId: selectedAccountId, // 선택한 직원의 ID 배열
-        eventId: attachEventValue, // 선택한 이벤트 ID
-        shiftStartDate: startTime ? `${selectedDate.slice(0, 10)}T${startTime.toTimeString().slice(0, 5)}:00` : null, // 시작 시간
-        shiftEndDate: endTime ? `${selectedDate.slice(0, 10)}T${endTime.toTimeString().slice(0, 5)}:00` : null, // 종료 시간
-        description: description.trim(), // 설명
-    };
+    // Validate input fields
+    if (value.length === 0 || !attachEventValue || !startTime || !endTime || !description.trim()) {
+        Alert.alert("Error", "All fields are required.");
+        return;
+    }
 
-    if (!shiftData.accountId || !shiftData.eventId || !shiftData.shiftStartDate || !shiftData.shiftEndDate || !shiftData.description) {
-      Alert.alert("Error", "All fields are required.");
-      return;
-  }
+    // Create shift for each selected employee
+    const shiftPromises = value.map((accountId) => {
+        const shiftData = {
+            accountId, 
+            eventId: attachEventValue,
+            shiftStartDate: `${selectedDate.slice(0, 10)}T${startTime.toTimeString().slice(0, 5)}:00`,
+            shiftEndDate: `${selectedDate.slice(0, 10)}T${endTime.toTimeString().slice(0, 5)}:00`,
+            description: description.trim(),
+        };
 
-    try {
-        // 서버로 POST 요청
-        const response = await fetch('http://10.0.0.244:8080/api/shifts', {
+        // Post each shift to all selected employees
+        return fetch('http://10.0.0.244:8080/api/shifts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(shiftData),
         });
+    });
 
-        if (!response.ok) {
-            throw new Error(`Failed to save shift: ${response.status}`);
+    try {
+      // Wait for all the POST requests (one for each employee) to complete
+      // shiftPromises is an array of fetch requests, and Promise.all runs them in parallel
+        const responses = await Promise.all(shiftPromises); 
+
+        // Check for any failed requests by filtering the responses
+        // A response is considered failed if the 'ok' property is false
+        const failedResponses = responses.filter((response) => !response.ok);
+
+        if (failedResponses.length > 0) {
+            Alert.alert(
+                "Error",
+                `${failedResponses.length} shifts failed to save. Please try again.`
+            );
+        } else {
+            Alert.alert("Success", "Shifts assigned successfully to all selected employees.");
+            resetFields();
         }
-
-        const message = await response.text();
-        Alert.alert("Success", message);
-
-        resetFields();
-
     } catch (error) {
-        Alert.alert("Error", error.message);
+        Alert.alert("Error", "An error occurred while saving shifts.");
     }
-  };
+};
 
+  // reset all the data.
+  const resetFields = () => {
+    setValue([]); 
+    setAttachEventValue(null); 
+    setStartTime(null); 
+    setEndTime(null); 
+    setDescription(''); 
+};
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -168,14 +187,7 @@ const AddShift = () => {
 
   const selectedLabels = items.filter(item => value.includes(item.value)).map(item => item.label);
   
-  // reset all the data.
-  const resetFields = () => {
-    setValue([]); 
-    setAttachEventValue(null); 
-    setStartTime(null); 
-    setEndTime(null); 
-    setDescription(''); 
-};
+
   
   return (
     <MainLayout>
