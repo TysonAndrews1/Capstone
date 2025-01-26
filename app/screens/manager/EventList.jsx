@@ -12,8 +12,9 @@ export default function Events() {
   const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
 
-  /// 10.187.237.34 this ipv4 address works only for my laptop(teddy). so, you guys need to use your IP address or the one written before.
-  const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/events' : 'http://localhost:8080/api/events';
+  const BASE_URL = Platform.OS === 'android' ? ( 
+    'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
+    'http://localhost:8080/api/events'; //Computer & iOS
 
   // Function to fetch events from the backend
   const fetchEvents = async (timeframe) => {
@@ -45,6 +46,7 @@ export default function Events() {
   const handleSelect = (option) => {
     setSelectedOption(option);
   };
+  
   const CreateEvent = () =>{
     router.push('/screens/manager/EventEdit')
   }
