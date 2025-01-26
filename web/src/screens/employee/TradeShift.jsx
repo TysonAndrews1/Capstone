@@ -25,7 +25,8 @@ export default function TradeShift() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setAccounts(data); // Update the state with the fetched accounts
+      const employeeAccounts = data.filter(account => account.role === 'Employee');
+      setAccounts(employeeAccounts); // Update the state with the fetched accounts - filtered to only fetch the employee accounts
       console.log("Fetched accounts:", data);
     } catch (err) {
       console.error('Error fetching accounts:', err);

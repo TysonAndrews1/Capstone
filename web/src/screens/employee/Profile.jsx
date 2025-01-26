@@ -20,6 +20,8 @@ function Profile() {
   const [notifyShifts, setNotifyShifts] = useState(false); // This state allows employees to determine if they want to receive notification for their upcoming shifts
   const [fetchError, setFetchError] = useState(false); // This state is used to handle errors when fetching data from the API
   
+  const BASE_URL = 'http://localhost:8080/api';
+
   /**
    * This function fetches the employee data from the backend API when the component mounts.
    */
@@ -27,7 +29,7 @@ function Profile() {
     const fetchEmployeeData = async () => {
       try {
         // Sends an HTTP GET request to the API to fetch the employee data
-        const response = await fetch("http://localhost:8080/api");
+        const response = await fetch('${BASE_URL}/accounts');
         // Verifies the HTTP response status 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
