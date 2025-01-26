@@ -1,25 +1,14 @@
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "./firebaseConfig";
+import { auth } from "./firebaseConfig";
 
 // Function to handle user login
 export const handleLogin = async (email, password) => {
   try {
-
-    // Attempt to sing in the user using Firebase Authentication
+    // Attempt to sign in the user using Firebase Authentication
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-    // Fetch the user's data from Firestore
-    const userRef = doc(db, "users", userCredential.user.uid); // Reference the user's document in FIrestore using UID
-    const userSnapshot = await getDoc(userRef);
-
-    // Check if the user data exists in Firestore
-    if (userSnapshot.exists()) {
-      const userData = userSnapshot.data();
-      return userData;
-    } else {
-      throw new Error("No user data found in Firestore.");
-    }
+    // If login is successful, return the user object from Firebase
+    return userCredential.user;
   } catch (error) {
     console.error("Error logging in:", error.message);
 

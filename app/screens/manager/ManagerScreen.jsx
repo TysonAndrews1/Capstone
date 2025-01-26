@@ -2,8 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform }
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
-import { doc, getDoc } from "firebase/firestore";
-import { db, auth } from "../../firebase/firebaseConfig";
+import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 
 const BASE_URL = Platform.OS === 'android' ? ( 
@@ -11,7 +10,7 @@ const BASE_URL = Platform.OS === 'android' ? (
   'http://localhost:8080/api/events'; //Computer & iOS
 
 const ManagerScreen = () => {
-  const [user, setUser] = useState(null); // State for user date
+  const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
@@ -26,43 +25,42 @@ const ManagerScreen = () => {
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   }
 
-  // Fetch user data from Firestore
+  // Fetch user data from MySQL using Firebase Authentication email
   useEffect(() => {
-    const fetchUserData = async (uid) => {
+    const fetchUserData = async (email) => {
       try {
-        const userRef = doc(db, "users", uid);  // Reference to the user's document in Firestore
-        const userSnapshot = await getDoc(userRef);
-
-        if (userSnapshot.exists()) {
-          setUser(userSnapshot.data()); // Set user data if the document exists
-        } else {
-          console.error("No user data found in Firestore.");
+        const response = await fetch(`${BASE_URL}/user?email=${email}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
+        const data = await response.json();
+        setUser(data); // Set user data from MySQL
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Failed to fetch user data. Please try again.");
       }
     };
 
-    // Fetch the UID of the currently logged-in user
+    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        fetchUserData(currentUser.uid); // Fetch Firestore data using the UID
+        fetchUserData(currentUser.email); // Fetch user data using email
       } else {
         setUser(null); // Clear user data if no user is logged in
       }
     });
 
-    return () => unsubscribe();  // Cleanup subscription
+    return () => unsubscribe(); // Cleanup subscription
   }, []);
 
-  // Fetch events from the backend whenever the selected data changes
+  // Fetch events from the backend whenever the selected date changes
   useEffect(() => {
     const fetchEvents = async () => {
       setLoading(true);
       setError(null);
       try {
         const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const response = await fetch(`${BASE_URL}?date=${formattedDate}`);
+        const response = await fetch(`${BASE_URL}/events?date=${formattedDate}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -98,8 +96,8 @@ const ManagerScreen = () => {
 
   return (
     <MainLayout>
-      {/* Greeting for the user */}
       <View style={styles.container}>
+        {/* Greeting for the user */}
         <Text style={styles.greeting}>{getTimeOfDayMessage()},</Text>
         <Text style={styles.name}>
           {user ? `${user.firstName}` : "Loading..."}
@@ -112,7 +110,7 @@ const ManagerScreen = () => {
               {user ? `${user.firstName} ${user.lastName}` : "Loading..."}
             </Text>
             <Text style={styles.cardSubtitle}>
-              {user ? `${user.role.charAt(0).toUpperCase()}${user.role.slice(1)}` : "Loading..."}
+              {user ? `${user.role}` : "Loading..."}
             </Text>
             <Text style={styles.cardText}>
               It's gonna be announcements.
@@ -171,7 +169,6 @@ const ManagerScreen = () => {
 };
 
 export default ManagerScreen;
-
 
 const styles = StyleSheet.create({
   container: {

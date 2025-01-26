@@ -19,7 +19,6 @@ function SignIn() {
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      alert('Login successful!');
       navigate('/ManagerDashboard');
     } catch (err) {
       setError(err.message);
@@ -67,13 +66,6 @@ function SignIn() {
         >
           Login
         </button>
-        {/*<button
-          type="submit"
-          className="w-full bg-green-500 text-shift-blue text-bold p-2 rounded hover:bg-green-600"
-        >
-          (Manager)
-        </button>*/}
-
       </form>
     </div>
   );

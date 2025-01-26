@@ -12,14 +12,6 @@ const ManagerMore = () => {
   return (
     <MainLayout>
 
-      {/* Search Bar Section */}
-      <View style={styles.searchContainer}>
-        <View style={styles.searchBox}>
-          <Text style={styles.searchText}>Search</Text>
-          <Image source={require('../../../assets/images/search.png')} style={{ width: 24, height: 24}} />
-        </View>
-      </View>
-
       {/* Main Button Section */}
       <View style={styles.container}>
 
