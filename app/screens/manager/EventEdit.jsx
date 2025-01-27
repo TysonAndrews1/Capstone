@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../../layouts/MainLayout';  
 import CalendarComponent from '../../components/Calender';  
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
 
 export default function CreateEvent() {
 
@@ -17,6 +17,7 @@ export default function CreateEvent() {
   const [numberOfGuests, setNumberOfGuests] = useState(''); // Number of expected guests
   const [eventManager, setEventManager] = useState(''); // Name of the manager who is in charge
   const [specialRequirements, setSpecialRequirements] = useState(''); // Additional event requirement
+  const navigation = useNavigation(); // Navigation hook for screen transitions
 
   const router = useRouter(); // Navigation hook for screen transitions
 
@@ -93,7 +94,6 @@ export default function CreateEvent() {
         Alert.alert("Error", "Failed to create event");
       });
   };
-  
 
   return (
     <MainLayout>
@@ -227,8 +227,17 @@ export default function CreateEvent() {
 }
 
 const styles = StyleSheet.create({
-  form: { padding: 20, paddingBottom: 80 },
-  label: { fontSize: 16, marginBottom: 8, fontWeight: 'bold' },
+  form: {
+    padding: 20,
+    paddingBottom: 80,
+  },
+
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+
   inputField: {
     height: 40,
     borderColor: '#3F6D89',
@@ -238,6 +247,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     textAlign: 'center',
   },
+
   submitButton: {
     backgroundColor: '#3F6D89',
     padding: 12,
@@ -245,5 +255,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 20,
   },
-  submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
