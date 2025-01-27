@@ -53,7 +53,7 @@ export default function EditEmpAccount({}) {
             setAddress(data.address);
             setPhoneNumber(data.phoneNumber);
             setRole(data.role);
-            setStatus(data.status ? 'Active' : 'Inactive'); // Convert status to 'Active' or 'Inactive', not sure if this is the best way yet. Will experiment.
+            setStatus(data.status ? 'Active' : 'Inactive'); // Convert status to 'Active' or 'Inactive' depending on the boolean value in the database.
         } catch (error) {
             console.error('Error fetching employee data:', error);
             Alert.alert('Error', 'Failed to load employee data.');
@@ -66,15 +66,20 @@ export default function EditEmpAccount({}) {
             return;
         }
 
-        if (!/^\d{6}$/.test(employeeId)) {
+        if (!/^\d{6}$/.test(employeeId)) { // This will ensure that the employee ID is a 6-digit number
             Alert.alert('Error', 'Employee ID must be a 6-digit number.');
             return;
         }
 
-        if (!/^\d{10}$/.test(phoneNumber)) {
+        if (!/^\d{10}$/.test(phoneNumber)) { // This will ensure that the phone number is a 10-digit number, WILL CONFIRM WITH TEAM ON HOW TO FORMAT IT.
             Alert.alert('Error', 'Phone Number must be a 10-digit number.');
             return;
         }
+
+        if (!status || status === 'placeholder') { // This will ensure that the user selects a status
+            Alert.alert('Error', 'Please select a valid status.');
+            return;
+        }        
 
         try { // To update the employee data in the backend and database along with some error handling
             const response = await fetch(`${BASE_URL}/${accountId}`, {
@@ -113,7 +118,7 @@ export default function EditEmpAccount({}) {
                 <View style={styles.header}>
                     <Image source={userIcon} style={styles.profileIcon} />
                     <View style={styles.profileTextContainer}>
-                        <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text>
+                        <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text> {/*Replaces the placeholder text with the employee's first and last name*/}
                     </View>
                 </View>
 
@@ -191,14 +196,17 @@ export default function EditEmpAccount({}) {
 
                 <View style={styles.detailCard}>
                     <Text style={styles.detailLabel}>Status</Text>
-                    <Picker // Reference for code: https://archive.reactnative.dev/docs/picker
-                        selectedValue={status}
-                        style={styles.picker}
-                        onValueChange={(itemValue) => setStatus(itemValue)}
-                    >
-                        <Picker.Item label="Active" value="1" />
-                        <Picker.Item label="Inactive" value="0" />
-                    </Picker>
+                    <View style={styles.pickerContainer}>
+                        <Picker // Reference for code: https://archive.reactnative.dev/docs/picker
+                            selectedValue={status || ''} // This will set the default value to the employee's status
+                            style={styles.picker}
+                            onValueChange={(itemValue) => setStatus(itemValue)}
+                        >
+                            <Picker.Item label="Select Status" value="" />
+                            <Picker.Item label="Active" value="1" />
+                            <Picker.Item label="Inactive" value="0" />
+                        </Picker>
+                    </View>
                 </View>
 
 
@@ -298,12 +306,17 @@ const styles = StyleSheet.create({
     picker: {
         height: 50,
         backgroundColor: '#fff',
-        borderRadius: 10,
+        borderColor: '#ccc',
+        justifyContent: 'center',
+    },
+
+    pickerContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
         borderColor: '#ccc',
         borderWidth: 1,
-        marginBottom: 16,
         justifyContent: 'center',
-    },    
+    },
 
     saveButton: {
         backgroundColor: '#3F6D89',
