@@ -56,17 +56,17 @@ export default function UpcomingEvents({selectedDay}){
     
     return (
               <div className="text-center">
-                  <p className="font-bold underline text-xl">{selectedDay?selectedDay.toString().split('00')[0] : 'no Date selected'}</p>
+                  {/* <p className="font-bold underline text-xl">{selectedDay?selectedDay.toString().split('00')[0] : 'no Date selected'}</p> */}
         
                 {/* Scrollable Event List */}
                 <div className="event-list">
                   <EventBar events={filteredEvents} />
                 </div>
         
-                {/* Create New Event Button */}
+                {/* Create New Event Button
                 <button className="basic-button" onClick={CreateEvent}>
                   Create New Event
-                </button>
+                </button> */}
               </div>
           );
   }

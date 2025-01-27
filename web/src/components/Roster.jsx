@@ -24,7 +24,7 @@ useEffect(() => {
                 throw new Error('Error fetching employees');
             }
             const data = await response.json();
-            console.log(data);
+            // console.log(data);
             
             setEmployees(data);
             setFilteredEmployees(data);
@@ -60,12 +60,15 @@ This is the Roster
 
 <div>
     {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
+                        <div>
                         <button
-                        key={employee.id}
-                        onPress={() => handleEmployeePress(employee)}>
-                        <p >{employee.name}</p>
+                        key={employee.accountId}
+                        onClick={() => handleEmployeePress(employee)}>
+                            
+                        <p >{employee.firstName}{employee.accountId}</p>
                         <p >Role: {employee.role}</p>
                         </button>
+                        </div>
                         ))
                     ) : (
                         <p>

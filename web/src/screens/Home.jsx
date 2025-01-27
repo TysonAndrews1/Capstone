@@ -2,6 +2,8 @@ import React,{useState} from "react";
 import { useNavigate } from "react-router-dom";
 import Overlay from "../components/Overlay";
 import Roster from "../components/Roster";
+import WeeklyCalender from "../components/WeeklyCalender";
+import UpcomingEvents from "../components/UpcomingEvents";
 
 
 //Created By Tyson
@@ -15,7 +17,8 @@ return (
     <p>
 This is the Home
 </p>
-<Overlay child={<Roster/>} headerTitle={"View Roster"} ButtonTitle={"View Roster"} buttonPlacement={"top-[75vh] left-[55vw]"} isActive={activeOverlay === "View Roster"} onToggle={setActiveOverlay}/>
+<WeeklyCalender child={<UpcomingEvents/>}/>
+{/* <Overlay child={<Roster/>} headerTitle={"View Roster"} ButtonTitle={"View Roster"} buttonPlacement={"top-[75vh] left-[55vw]"} isActive={activeOverlay === "View Roster"} onToggle={setActiveOverlay}/> */}
 
 </div>)
 }
