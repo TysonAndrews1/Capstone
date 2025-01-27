@@ -120,7 +120,7 @@ const ManageEvents = () => {
             <Text style={styles.noDateText}>Select a day to view events</Text>
             <TouchableOpacity
               style={styles.createButton}
-              onPress={() => router.push('screens/manager/EventEdit')} // Navigate to the event creation screen
+              onPress={() => router.push('screens/manager/CreateEvent')} // Navigate to the event creation screen
             >
               <Text style={styles.createButtonText}>Create new event</Text>
             </TouchableOpacity>

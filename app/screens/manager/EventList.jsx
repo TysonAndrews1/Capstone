@@ -51,7 +51,7 @@ export default function Events() {
   };
   
   const CreateEvent = () =>{
-    router.push('/screens/manager/EventEdit')
+    router.push('/screens/manager/CreateEvent')
   }
 
   useEffect(() => {
