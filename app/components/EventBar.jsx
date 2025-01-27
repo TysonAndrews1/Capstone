@@ -44,7 +44,7 @@ export default function EventBar({ events, filterType }) {
   const handleEdit = (event) => {
     // Navigate to the Edit screen
     router.push({
-      pathname: '/screens/manager/EventEdit',
+      pathname: '/screens/manager/EditEvent',
       query: { eventId: selectedEvent.eventId}
     });
     closeModal();
