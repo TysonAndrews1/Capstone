@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import { useRouter } from 'expo-router';
+import { Picker } from '@react-native-picker/picker';
 
 export default function CreateEmpAccount() {
     const [firstName, setFirstName] = useState('');
@@ -21,11 +22,6 @@ export default function CreateEmpAccount() {
             return;
     }
 
-    if (status !== '1' && status !== '0') {
-        Alert.alert("Error", "Status must be 1 (Active) or 0 (Inactive)");
-        return;
-    }
-
     const newEmployee = { // Creates a new employee object that holds all the following details
         firstName,
         lastName,
@@ -34,7 +30,7 @@ export default function CreateEmpAccount() {
         address,
         phoneNumber,
         role,
-        status: status === '1' ? true : false, // This will convert the status to a boolean value
+        status: status === '1', // Convert "1" (Active) to true and "0" (Inactive) to false
     };
     
     const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/accounts' : 'http://localhost:8080/api/accounts';
@@ -144,14 +140,16 @@ export default function CreateEmpAccount() {
     
                     <View style={styles.detailCard}>
                         <Text style={styles.detailLabel}>Status</Text>
-                        <TextInput
-                            style={styles.textInput}
-                            value={status}
-                            onChangeText={setStatus}
-                            placeholder="Enter status (1 for Active, 0 for Inactive)"
-                            keyboardType="numeric" // This will ensure it is either 1 or 0
-                        />
-                    </View>
+                        <Picker
+                            selectedValue={status}
+                            onValueChange={(itemValue) => setStatus(itemValue)}
+                            style={styles.picker}
+                        >
+                            <Picker.Item label="Select Status" value="" />
+                            <Picker.Item label="Active" value="1" />
+                            <Picker.Item label="Inactive" value="0" />
+                    </Picker>
+                </View>
     
                     <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
                         <Text style={styles.saveButtonText}>Create Employee Account</Text>
@@ -240,6 +238,14 @@ export default function CreateEmpAccount() {
         detailValue: {
             fontSize: 16,
             color: '#333',
+        },
+
+        picker: {
+            height: 70,
+            color: '#333',
+            borderColor: '#3F6D89',
+            borderWidth: 1,
+            borderRadius: 10,
         },
     
         saveButton: {
