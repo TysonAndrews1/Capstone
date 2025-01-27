@@ -16,8 +16,7 @@ export default function TradeShift() {
 
   const BASE_URL = 'http://localhost:8080/api';
 
-  // Function to fetch all banquet accounts from the backend 
-  // Will need to create a conditional to exclude Manager roles 
+  // Function to fetch all employee banquet accounts from the backend 
   const fetchAccounts = async () => {
     try {
       const response = await fetch(`${BASE_URL}/accounts`);
@@ -25,7 +24,9 @@ export default function TradeShift() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const employeeAccounts = data.filter(account => account.role === 'Employee');
+      const employeeAccounts = data.filter(function(account) {
+        return account.role === 'Employee'; 
+      });
       setAccounts(employeeAccounts); // Update the state with the fetched accounts - filtered to only fetch the employee accounts
       console.log("Fetched accounts:", data);
     } catch (err) {
@@ -35,12 +36,15 @@ export default function TradeShift() {
 
   const fetchShifts = async (accountId) => {
     try {
-      const response = await fetch(`${BASE_URL}/${accountId}/shifts`);
+      const response = await fetch(`${BASE_URL}/shifts`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setShifts(data); // Update the state with the fetched shifts
+      const filteredShifts = data.filter(function(shift) {
+        return shift.accountId === accountId;
+      });
+      setShifts(filteredShifts); // Update the state with the fetched shifts
       console.log("Fetched shifts:", data);
     } catch (err) {
       console.error('Error fetching shifts:', err);
@@ -53,7 +57,7 @@ export default function TradeShift() {
     }, []);
 
     const handleCoworkerChange = (event) => {
-      const accountId = event.target.value;
+      const accountId = parseInt(event.target.value, 10);
       setSelectedCoworker(accountId);
       if (accountId) {
         fetchShifts(accountId); // This will fetch the shifts for the selected coworker 
@@ -102,7 +106,7 @@ export default function TradeShift() {
           <option value="">-- Select Shift --</option>
           {shifts.map((shift) => (
             <option key={shift.shiftId} value={shift.shiftId}>
-              {shift.shiftDate} - {shift.shiftStartTime} to {shift.shiftEndTime}
+              {shift.shiftStartDate} to {shift.shiftEndDate}
             </option>
           ))}
         </select>
