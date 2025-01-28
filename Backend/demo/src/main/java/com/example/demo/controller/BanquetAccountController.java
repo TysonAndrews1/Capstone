@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.entity.BanquetAccount;
-import com.example.demo.entity.BanquetEvent;
 import com.example.demo.repository.BanquetAccountRepository;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
