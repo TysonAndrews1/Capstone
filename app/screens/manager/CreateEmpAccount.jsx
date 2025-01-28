@@ -34,6 +34,8 @@ export default function CreateEmpAccount() {
         role,
         status: status === '1', // Convert "1" (Active) to true and "0" (Inactive) to false
     };
+    
+    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/accounts' : 'http://localhost:8080/api/accounts';
 
     fetch(`${BASE_URL}/accounts`, { // Sends to the API endpoint
         method: 'POST', // This is a POST request to create a new employee account for the database in JSON format

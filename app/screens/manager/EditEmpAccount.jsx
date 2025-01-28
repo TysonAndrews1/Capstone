@@ -28,6 +28,7 @@ export default function EditEmpAccount({}) {
                     fetchEmployeeData(storedAccountId); // Fetch employee data
                 } else {
                     Alert.alert('Error', 'No account ID found in storage.');
+                }
                 const response = await fetch(`${BASE_URL}/accounts/${employeeId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch employee: ${response.status}`);

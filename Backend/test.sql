@@ -131,7 +131,7 @@ CREATE TABLE `employee_shifts` (
   `shift_end_date` datetime NOT NULL,
   `description` text,
   PRIMARY KEY (`shift_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`event_id`) REFERENCES `banquet_events` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

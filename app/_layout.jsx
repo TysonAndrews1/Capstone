@@ -37,6 +37,20 @@ export default function RootLayout() {
       ), headerStyle: { backgroundColor: '#3F6D89' },
       headerTitleAlign: 'center',
       }}/> 
+      <Stack.Screen name="screens/employee/EmployeeScreen"  options={{ title: '', headerBackVisible: false, 
+      headerRight: () => (
+        <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+            {/* tintColor can change a image(png or svg) color */}
+            <Image source={require('../assets/images/account.png')} style={ styles.icon } />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+           <Image source={require('../assets/images/notifications.png')} style={ styles.icon } />
+          </TouchableOpacity>
+        </View>
+      ), headerStyle: { backgroundColor: '#3F6D89' },
+      headerTitleAlign: 'center',
+      }}/> 
       <Stack.Screen name="screens/manager/ManagerMore" options={{ title: 'Manager Tools'}} />
       <Stack.Screen name="screens/manager/ManagerSchedule" options={{ title: 'Manage Schedule'}} />
 
@@ -46,7 +60,6 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/EditEvent" options={{ title: 'Edit Event'}} />
 
       <Stack.Screen name="screens/manager/AddShift" options={{ title: 'Add Shift'}} />
-
       <Stack.Screen name="screens/manager/EmployeeAccounts" options={{ title: 'Manage Employee Accounts' }}/>
       <Stack.Screen name="screens/manager/EmpAccountDetails" options={{ title: 'Employee Details' }}/>
       <Stack.Screen name="screens/manager/EditEmpAccount" options={{ title: 'Edit Employee Details' }}/>
