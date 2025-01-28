@@ -5,6 +5,8 @@ import { getEvents } from "./FetchData";
 
 
 
+
+
 function filterEvents(day,events){
   if (events) {
     console.log(events);
