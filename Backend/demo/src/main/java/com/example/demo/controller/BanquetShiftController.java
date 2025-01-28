@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,11 +32,12 @@ public class BanquetShiftController {
     public ResponseEntity<BanquetShift> getShiftById(@PathVariable Long shiftId) {
         // Retrieve the shift by ID using the repository
         Optional<BanquetShift> shift = repository.findById(shiftId);
-        
+
         if (shift.isPresent()) {
             return ResponseEntity.ok(shift.get()); // Return the event if found
         } else {
             return ResponseEntity.status(404).body(null); // Return 404 if event not found
         }
     }
+
 }
