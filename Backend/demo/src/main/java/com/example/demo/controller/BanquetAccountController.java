@@ -34,4 +34,5 @@ public class BanquetAccountController {
             return ResponseEntity.status(404).body(null); // Return 404 if event not found
         }
     }
+
 }

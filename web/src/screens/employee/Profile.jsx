@@ -86,8 +86,6 @@ function Profile() {
     try {
       // Convert data to backend format
       const backendData = {
-        firstName: employeeData.first_name,
-        lastName: employeeData.last_name,
         phoneNumber: employeeData.phone_number,
         email: employeeData.email_address
       };
@@ -105,9 +103,6 @@ function Profile() {
       // Convert response back to frontend format
       const updatedAccount = await response.json();
       setEmployeeData({
-        ...employeeData,
-        first_name: updatedAccount.firstName,
-        last_name: updatedAccount.lastName,
         phone_number: updatedAccount.phoneNumber,
         email_address: updatedAccount.email
       });
@@ -119,6 +114,9 @@ function Profile() {
       alert("Failed to save changes. Please try again.");
     }
   };
+
+  
+  
 
   /**
    * 
