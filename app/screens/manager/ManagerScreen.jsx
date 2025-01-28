@@ -5,16 +5,14 @@ import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { doc, getDoc } from "firebase/firestore";
 import { db, auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-
-const BASE_URL = Platform.OS === 'android' ? ( 
-  'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-  'http://localhost:8080/api/events'; //Computer & iOS
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 const ManagerScreen = () => {
   const [user, setUser] = useState(null); // State for user date
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
+  const BASE_URL = BaseURLConfig();
 
   // State for handling Loading and error states
   const [loading, setLoading] = useState(false); 
@@ -62,7 +60,7 @@ const ManagerScreen = () => {
       setError(null);
       try {
         const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const response = await fetch(`${BASE_URL}?date=${formattedDate}`);
+        const response = await fetch(`${BASE_URL}/events?date=${formattedDate}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

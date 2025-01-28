@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
-
-// Need to find the logic behind prefilling the fields with the employee's data. This might have to be done when backend is connected to EmployeeAccounts and EmpAccountDetails.
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function EditEmpAccount({employeeId}) {
 
@@ -15,13 +14,13 @@ export default function EditEmpAccount({employeeId}) {
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
+    const BASE_URL = BaseURLConfig();
 
     useEffect(() => {
         const fetchEmployeeData = async () => { // This is to fetch the employee data from the backend and database
 
             try {
-                const response = await fetch(`${BASE_URL}/${employeeId}`);
+                const response = await fetch(`${BASE_URL}/accounts/${employeeId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch employee: ${response.status}`);
                 }

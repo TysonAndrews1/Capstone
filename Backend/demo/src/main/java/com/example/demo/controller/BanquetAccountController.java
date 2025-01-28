@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.entity.BanquetAccount;
+import com.example.demo.entity.BanquetEvent;
 import com.example.demo.repository.BanquetAccountRepository;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -32,5 +33,10 @@ public class BanquetAccountController {
         } else {
             return ResponseEntity.status(404).body(null); // Return 404 if event not found
         }
+    }
+
+    @PostMapping // Will use this method to create new events using infomation from the frontend
+    public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
+        return repository.save(account);
     }
 }
