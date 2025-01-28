@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Overlay from '../../components/Overlay';
 import TradeShift from './TradeShift';
+import ShiftDetails from '../../components/Shifts/ShiftDetails';
+import ShiftGrabs from '../../components/Shifts/ShiftGrabs';
 
 
 
@@ -19,11 +21,11 @@ export default function EmployeeSchedule() {
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
 
       {/* Overlay for Grab Shift component */}
-      <Overlay child={<div>GrabShift</div>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}
+      <Overlay child={<ShiftGrabs/>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}
       isActive={activeOverlay === "Grab Shift"} onToggle={setActiveOverlay} />
 
       {/* Overlay for View Shift component */}
-      <Overlay child={<div>ViewShift</div>} headerTitle={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"top-[75vh] left-[45vw]"}
+      <Overlay child={<ShiftDetails/>} headerTitle={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"top-[75vh] left-[45vw]"}
       isActive={activeOverlay === "View Shift"} onToggle={setActiveOverlay}/>
 
       {/* Overlay for TradeShift component */}

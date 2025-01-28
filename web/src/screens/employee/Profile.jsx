@@ -8,64 +8,115 @@ import { FaUserCircle, FaWrench } from "react-icons/fa";
  * 
  */
 function Profile() {
-  const [isEditing, setIsEditing] = useState(false); // This state allows users to edit their profile information; default is false
-  const [employeeData, setEmployeeData] = useState({ // This is an object that contains the employee's data; the data provided are placeholders
-    employee_id: "000000",
-    first_name: "John",
-    last_name: "Doe",
-    phone_number: "111-111-1111",
-    email_address: "JohnDoe@gmail.com",
+  const [isEditing, setIsEditing] = useState(false); 
+  const [employeeData, setEmployeeData] = useState({
+    employee_id: '',
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    email_address: '',
   });
-  const [availability, setAvailability] = useState([]); // This is an array that contains the employee's availability; the data provided are placeholders
-  const [notifyShifts, setNotifyShifts] = useState(false); // This state allows employees to determine if they want to receive notification for their upcoming shifts
-  const [fetchError, setFetchError] = useState(false); // This state is used to handle errors when fetching data from the API
+  const [availability, setAvailability] = useState([]); 
+  const [notifyShifts, setNotifyShifts] = useState(false); 
+  const [fetchError, setFetchError] = useState(false); 
   
+  const BASE_URL = 'http://localhost:8080/api';
+
   /**
    * This function fetches the employee data from the backend API when the component mounts.
    */
-  useEffect(() => {
-    const fetchEmployeeData = async () => {
-      try {
-        // Sends an HTTP GET request to the API to fetch the employee data
-        const response = await fetch("http://localhost:8080/api");
-        // Verifies the HTTP response status 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setEmployeeData(data); // If the fetch is successful, it updates the state with the fetched data
-        setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
-        setFetchError(false);
-      } catch (error) {
-        console.error("Error fetching employee data:", error);
-        setAvailability(["Monday: 8:00 AM - 5:00 PM", "Tuesday: 8:00 AM - 5:00 PM", "Friday: 8:00 AM - 2:00 PM"]); // Example data
-        setFetchError(true); // If the fetch fails, it sets the fetchError state to true
+  const fetchEmployeeData = async () => {
+    try{
+      const response = await fetch(`${BASE_URL}/accounts`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      const data = await response.json();
+      const account = data.find((account) => account.role === 'Employee');
+      setAvailability([]); 
+      setEmployeeData({
+        employee_id: account.accountId,
+        first_name: account.firstName,
+        last_name: account.lastName,
+        phone_number: account.phoneNumber,
+        email_address: account.email,
+      });
+      setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
+    } catch (error) {
+      setFetchError(error.message);
+      
+    }
+  };
 
+  useEffect(() => {
     fetchEmployeeData();
   }, []);
 
   /**
    * this function sends updated employeeData to the backend using a PUT request and saves the response.
    */
-  const handleSaveClick = async () => {
+  // const handleSaveClick = async () => {
+  //   try {
+
+  //     const response = await fetch(`http://localhost:8080/api/accounts/${employeeData.employee_id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(employeeData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     const updatedData = await response.json();
+  //     setEmployeeData(updatedData); // Updated data is saved into the employeeData state
+  //     setIsEditing(false); // After saving the data, it sets the isEditing state to false
+  //     alert("profile updated successfully!");
+
+  //   } catch (error) {
+  //     console.error("Error saving employee data:", error);
+  //     alert("Failed to save changes. Please try again.");
+  //   }
+  // };
+
+   /**
+   * Updated save handler with proper API structure
+   */
+   const handleSaveClick = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api", {
+      // Convert data to backend format
+      const backendData = {
+        phoneNumber: employeeData.phone_number,
+        email: employeeData.email_address
+      };
+
+      const response = await fetch(`${BASE_URL}/accounts/${employeeData.employee_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(employeeData),
+        body: JSON.stringify(backendData),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const updatedData = await response.json();
-      setEmployeeData(updatedData); // Updated data is saved into the employeeData state
-      setIsEditing(false); // After saving the data, it sets the isEditing state to false
+
+      // Convert response back to frontend format
+      const updatedAccount = await response.json();
+      setEmployeeData({
+        phone_number: updatedAccount.phoneNumber,
+        email_address: updatedAccount.email
+      });
+      
+      setIsEditing(false);
+      alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error saving employee data:", error);
+      alert("Failed to save changes. Please try again.");
     }
   };
+
+  
+  
 
   /**
    * 
@@ -87,16 +138,19 @@ function Profile() {
           <FaUserCircle className="text-gray-400" size={100} /> 
           <h2 className="text-xl font-bold text-gray-800">
             {employeeData.first_name || "First Name"} {employeeData.last_name || "Last Name"}
+            
           </h2>
           {fetchError && (
             <p className="text-red-500 text-center">
               Unable to fetch employee data. Showing default or previously loaded values.
             </p>
           )}
+
           <div className="w-full">
             <p className="text-gray-700 font-medium">Employee ID:</p>
             <p className="text-gray-900">{employeeData.employee_id}</p>
           </div>
+
           {!isEditing ? (
             <>
               <div className="w-full">
@@ -111,7 +165,7 @@ function Profile() {
           ) : (
             <>
               <div className="w-full">
-                <label className="text-gray-700 font-medium" htmlFor="phone_number">
+                <label className="text-gray-700 font-medium">
                   Phone:
                 </label>
                 <input
@@ -123,8 +177,9 @@ function Profile() {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
+
               <div className="w-full">
-                <label className="text-gray-700 font-medium" htmlFor="email_address">
+                <label className="text-gray-700 font-medium">
                   Email:
                 </label>
                 <input
