@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform } from 'react-native';
+import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Platform, Image } from 'react-native';
 import MainLayout from '../../layouts/MainLayout';  // Assuming you are using MainLayout for global styling
 import EventBar from '../../components/EventBar';  // Assuming this component displays the events based on filter
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from 'expo-router';
+import listIcon from "../../../assets/images/list.png"; // Icon from https://www.flaticon.com/free-icon/list_151917?term=list&page=1&position=1&origin=search&related_id=151917
 import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function Events() {
@@ -12,7 +13,9 @@ export default function Events() {
   const [loading, setLoading] = useState(true); // State for loading
   const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
+  const navigation = useNavigation(); // Navigation hook for screen transitions
   const BASE_URL = BaseURLConfig();
+
 
   // Function to fetch events from the backend
   const fetchEvents = async (timeframe) => {
@@ -46,8 +49,22 @@ export default function Events() {
   };
   
   const CreateEvent = () =>{
-    router.push('/screens/manager/EventEdit')
+    router.push('/screens/manager/CreateEvent')
   }
+
+  useEffect(() => {
+    navigation.setOptions({
+        headerStyle: {
+            backgroundColor: "#3F6D89",
+        },
+        headerTintColor: "#fff",
+        headerRight: () => ( // This adds the "list.png" icon to the header. When clicked, it navigates to the EventList screen.
+            <TouchableOpacity onPress={() => router.push("screens/manager/ManageEvents")}>
+                <Image source={listIcon} style={styles.listIcon} />
+            </TouchableOpacity>
+        ),
+    });
+  }, [navigation, router]);
 
   return (
     <MainLayout>
@@ -92,6 +109,13 @@ export default function Events() {
 }
 
 const styles = StyleSheet.create({
+  listIcon: {
+    width: 24,
+    height: 24,
+    tintColor: "#fff",
+    marginRight: 8,
+  },
+
   container: {
     flex: 1,
     justifyContent: 'flex-start',  // Align items at the top of the screen
@@ -99,24 +123,30 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingBottom: 80, // Ensure space for the button above the footer
   },
+
   optionsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20, // Added margin to separate from the button
+    marginBottom: 20,
   },
+
   option: {
     marginHorizontal: 20,
   },
+
   optionText: {
     fontSize: 18,
     fontWeight: 'normal',
   },
+
   selectedText: {
     fontWeight: 'bold', // Make text bold when selected
   },
+
   selectedOption: {
     paddingBottom: 5, // Add space for underline
   },
+
   underline: {
     height: 2,
     backgroundColor: '#3F6D89', // Underline color
@@ -125,16 +155,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
   },
+
   constantUnderline: {
     height: 2,
     backgroundColor: '#3F6D89', // Constant underline color
     flex: 1,
     marginHorizontal: 10,
   },
+
   eventList: {
     flexGrow: 1,  // Allow the event list to grow and fill available space
     marginBottom: 20, // Space before the "Create New Event" button
   },
+
   button: {
     width: '90%',  // Button takes 90% of the screen width
     paddingVertical: 15,
@@ -149,6 +182,7 @@ const styles = StyleSheet.create({
     elevation: 5,  // Elevation for Android (drop shadow effect)
     marginTop: 20,  // Added margin to separate from the options
   },
+
   buttonText: {
     fontSize: 16,  
     fontWeight: 'bold', 

@@ -39,9 +39,11 @@ export default function RootLayout() {
       }}/> 
       <Stack.Screen name="screens/manager/ManagerMore" options={{ title: 'Manager Tools'}} />
       <Stack.Screen name="screens/manager/ManagerSchedule" options={{ title: 'Manage Schedule'}} />
+
       <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
-      <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
+      <Stack.Screen name="screens/manager/CreateEvent" options={{ title: 'Create Event'}} />
       <Stack.Screen name="screens/manager/EventList" options={{ title: 'Event List'}} />
+      <Stack.Screen name="screens/manager/EditEvent" options={{ title: 'Edit Event'}} />
 
       <Stack.Screen name="screens/manager/AddShift" options={{ title: 'Add Shift'}} />
 
@@ -49,6 +51,8 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/EmpAccountDetails" options={{ title: 'Employee Details' }}/>
       <Stack.Screen name="screens/manager/EditEmpAccount" options={{ title: 'Edit Employee Details' }}/>
       <Stack.Screen name="screens/manager/CreateEmpAccount" options={{ title: 'Create Employee Account' }}/>
+
+      <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
 
     </Stack>
   );

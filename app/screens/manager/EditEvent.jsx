@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, View, Alert, Platform } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Platform, Image } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../../layouts/MainLayout';  
-import CalendarComponent from '../../components/Calender';  
-import { useRouter } from 'expo-router';
+import CalendarComponent from '../../components/Calender';
+import { useRouter, useNavigation } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function CreateEvent() {
-
+export default function EditEvent() {
   // States for managing event details
+  const [eventId, setEventId] = useState(null); // To store the eventId
   const [eventTitle, setEventTitle] = useState(''); // Event title
   const [startDate, setStartDate] = useState(null); // Event start date (UTC)
   const [endDate, setEndDate] = useState(null); // Event end date (UTC)
@@ -18,7 +19,11 @@ export default function CreateEvent() {
   const [eventManager, setEventManager] = useState(''); // Name of the manager who is in charge
   const [specialRequirements, setSpecialRequirements] = useState(''); // Additional event requirement
 
+  const navigation = useNavigation(); // Navigation hook for screen transitions
   const router = useRouter(); // Navigation hook for screen transitions
+
+   // API base URL, adjusted for platform
+  const BASE_URL = Platform.OS === 'android' ? ( 'http://10.0.2.2/api/events') : 'http://localhost:8080/api/events';
 
   // States for managing UI elements
   const [showStartCalendar, setShowStartCalendar] = useState(false); // Toggles start date calendar
@@ -26,8 +31,48 @@ export default function CreateEvent() {
   const [showStartTimePicker, setShowStartTimePicker] = useState(false); // Toggles start time picker
   const [showEndTimePicker, setShowEndTimePicker] = useState(false); // Toggles end time picker
 
+  useEffect(() => {
+    const fetchEventIdAndData = async () => { // Method to fetch the event ID
+      try {
+        const storedEventId = await AsyncStorage.getItem('selectedEventId');
+        if (storedEventId) {
+          setEventId(storedEventId);
+          fetchEventDetails(storedEventId);
+        } else {
+          Alert.alert('Error', 'No event ID found in storage.');
+        }
+      } catch (error) {
+        console.error('Error fetching event ID from AsyncStorage:', error);
+        Alert.alert('Error', 'Failed to retrieve event ID.');
+      }
+    };
+    
+    fetchEventIdAndData();
+  }, []);
+
+  const fetchEventDetails = async (id) => { // Method to fetch the event details 
+    try {
+      const response = await fetch(`${BASE_URL}/${id}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch event details: ${response.status}`);
+      }
+      const data = await response.json();
+      setEventTitle(data.eventName);
+      setStartDate(new Date(data.eventStartDate));
+      setEndDate(new Date(data.eventEndDate));
+      setStartTime(new Date(data.eventStartDate));
+      setEndTime(new Date(data.eventEndDate));
+      setLocation(data.eventLocation);
+      setNumberOfGuests(data.numberOfGuests.toString());
+      setEventManager(data.assignedManager);
+      setSpecialRequirements(data.specialRequirements || '');
+    } catch (error) {
+      console.error('Error fetching event details:', error);
+      Alert.alert('Error', 'Failed to load event details.');
+    }
+  };
+
   const combineDateAndTime = (date, time) => {
-  
     // Convert Local Time to UTC time zone
     const combined = new Date(
       Date.UTC(
@@ -39,17 +84,10 @@ export default function CreateEvent() {
         time.getSeconds()
       )
     );
-  
     return combined; // Return the UTC data
   };
-  
-  
 
-  /**
-   * Handles the submission of the event form.
-   * Validates inputs, combines dates and times, and sends a POST request to the backend API.
-   */
-  const handleSubmit = () => {
+  const handleSubmit = async () => { // Method to update the event
     if (!eventTitle || !startDate || !endDate || !startTime || !endTime || !location || !numberOfGuests || !eventManager) {
       Alert.alert("Error", "Please fill in all the fields");
       return;
@@ -60,40 +98,36 @@ export default function CreateEvent() {
     const endDateTime = combineDateAndTime(endDate, endTime);    
   
     // Create the object to send to the server
-    const newEvent = {
+    const updatedEvent = {
       eventName: eventTitle,
       eventStartDate: startDateTime.toISOString(), // ISO 8601 format (UTC)
       eventEndDate: endDateTime.toISOString(),     // ISO 8601 format (UTC)
       eventLocation: location,
       numberOfGuests: parseInt(numberOfGuests, 10),
       assignedManager: eventManager,
-      specialRequirements: specialRequirements,
+      specialRequirements,
     };
     
-    console.log('Final Event Data (to be sent to server):', newEvent);
+    console.log('Final Event Data (to be sent to server):', updatedEvent); // This sends a message to the console with the updated event data
 
-    // API base URL, adjusted for platform
-    const BASE_URL = Platform.OS === 'android' ? ( 
-      'http://10.0.2.2/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-      'http://localhost:8080/api/events'; //Computer & iOS
-
-    // Send POST request to create the event
-    fetch(BASE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newEvent),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        Alert.alert("Success", "Event created successfully!");
-        router.push('/screens/manager/EventList'); 
-      })
-      .catch((error) => {
-        console.error('Error creating event:', error);
-        Alert.alert("Error", "Failed to create event");
+    try {
+      const response = await fetch(`${BASE_URL}/${eventId}`, { // Update the event using the PUT method
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedEvent),
       });
+
+      if (!response.ok) {
+        throw new Error(`Failed to update event: ${response.status}`);
+      }
+
+      Alert.alert('Success', 'Event updated successfully!');
+      router.push('/screens/manager/EventList');
+    } catch (error) {
+      console.error('Error updating event:', error);
+      Alert.alert('Error', 'Failed to update event');
+    }
   };
-  
 
   return (
     <MainLayout>
@@ -227,8 +261,17 @@ export default function CreateEvent() {
 }
 
 const styles = StyleSheet.create({
-  form: { padding: 20, paddingBottom: 80 },
-  label: { fontSize: 16, marginBottom: 8, fontWeight: 'bold' },
+  form: {
+    padding: 20,
+    paddingBottom: 80,
+  },
+
+  label: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontWeight: 'bold',
+  },
+
   inputField: {
     height: 40,
     borderColor: '#3F6D89',
@@ -238,6 +281,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     textAlign: 'center',
   },
+
   submitButton: {
     backgroundColor: '#3F6D89',
     padding: 12,
@@ -245,5 +289,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 20,
   },
-  submitButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+
+  submitButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });

@@ -11,7 +11,10 @@ export default function EmpAccountDetails() {
     const [employee, setEmployee] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const router = useRouter();
     const BASE_URL = BaseURLConfig();
+
 
     // Fetch employee details
     useEffect(() => {
@@ -83,8 +86,18 @@ export default function EmpAccountDetails() {
                     <View style={styles.profileTextContainer}>
                         <Text style={styles.profileName}>{employee.firstName} {employee.lastName}</Text>
                     </View>
-                    <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/screens/manager/EditEmpAccount')}>
-                        <Image source={editIcon} style={styles.editIcon}/>
+                    <TouchableOpacity 
+                        style={styles.editButton} 
+                        onPress={async () => {
+                            try {
+                                await AsyncStorage.setItem('selectedAccountId', employee.accountId.toString()); // Save accountId in AsyncStorage
+                                router.push('/screens/manager/EditEmpAccount'); // Navigate to the edit screen
+                            } catch (error) {
+                                console.error('Error saving account ID to AsyncStorage:', error);
+                                Alert.alert('Error', 'Failed to navigate to the edit screen.');
+                            }
+                        }}>
+                        <Image source={editIcon} style={styles.editIcon} />
                     </TouchableOpacity>
                 </View>
 
