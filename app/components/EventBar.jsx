@@ -5,7 +5,6 @@ import MiniSchedule from './MiniSchedule';
 import { format } from 'date-fns'; // For date formatting
 import { useNavigation } from '@react-navigation/native';
 import BaseURLConfig from '../config/BaseURLConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EventBar({ events, filterType }) {
   const [modalVisible, setModalVisible] = useState(false);
@@ -15,7 +14,7 @@ export default function EventBar({ events, filterType }) {
   const BASE_URL = BaseURLConfig();
 
   const currentDate = new Date();
-
+  
   // Filter events based on filterType ('past' or 'upcoming')
   const filteredEvents = events.filter((event) => {
 
@@ -40,14 +39,13 @@ export default function EventBar({ events, filterType }) {
     setSelectedEvent(null);
   };
 
-  const handleEdit = async (employee) => {
-    try {
-      await AsyncStorage.setItem('eventId', events.eventId.toStrin());
-
-      router.push('/screens/manager/EventEdit');
-    } catch (error) {
-      console.error('Error storing eventId:', error);
-    }
+  const handleEdit = (event) => {
+    // Navigate to the Edit screen
+    router.push({
+      pathname: '/screens/manager/EventEdit',
+      query: { eventId: selectedEvent.eventId}
+    });
+    closeModal();
   };
 
   const handleDelete = () => { // Method to delete an event

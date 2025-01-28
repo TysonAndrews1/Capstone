@@ -42,10 +42,14 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
       <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
       <Stack.Screen name="screens/manager/EventList" options={{ title: 'Event List'}} />
+
+      <Stack.Screen name="screens/manager/AddShift" options={{ title: 'Add Shift'}} />
+
       <Stack.Screen name="screens/manager/EmployeeAccounts" options={{ title: 'Manage Employee Accounts' }}/>
       <Stack.Screen name="screens/manager/EmpAccountDetails" options={{ title: 'Employee Details' }}/>
       <Stack.Screen name="screens/manager/EditEmpAccount" options={{ title: 'Edit Employee Details' }}/>
       <Stack.Screen name="screens/manager/CreateEmpAccount" options={{ title: 'Create Employee Account' }}/>
+
     </Stack>
   );
 }

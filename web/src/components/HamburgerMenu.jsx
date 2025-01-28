@@ -45,6 +45,11 @@ function HamburgerMenu() {
                 Employee Schedule
               </a>
             </li>
+            <li className="py-2 px-4">
+              <a href="/" className="text-gray-800 hover:text-blue-500">
+                Log Out
+              </a>
+            </li>
           </ul>
         </nav>
       )}
