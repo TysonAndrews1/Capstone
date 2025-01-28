@@ -14,11 +14,12 @@ import com.example.demo.repository.BanquetAccountRepository;
 @RequestMapping("/api/accounts") // Any HTTP request to this endpoint will be routed to this controller
 public class BanquetAccountController {
 
-    @Autowired // Allows Spring to use BanquetAccountRepository automatically into the controller
+    @Autowired // Allows Spring to use BanquetAccountRepository automatically into the
+               // controller
     private BanquetAccountRepository repository;
 
     @GetMapping // Display a list of all accounts in the database
-    public List<BanquetAccount> getAllAccounts(){
+    public List<BanquetAccount> getAllAccounts() {
         return repository.findAll();
     }
 
@@ -26,7 +27,7 @@ public class BanquetAccountController {
     public ResponseEntity<BanquetAccount> getAccountById(@PathVariable Long accountId) {
         // Retrieve the account by ID using the repository
         Optional<BanquetAccount> account = repository.findById(accountId);
-        
+
         if (account.isPresent()) {
             return ResponseEntity.ok(account.get()); // Return the event if found
         } else {

@@ -41,9 +41,10 @@ function Profile() {
         phone_number: account.phoneNumber,
         email_address: account.email,
       });
+      setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
     } catch (error) {
       setFetchError(error.message);
-      setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
+      
     }
   };
 
@@ -54,21 +55,68 @@ function Profile() {
   /**
    * this function sends updated employeeData to the backend using a PUT request and saves the response.
    */
-  const handleSaveClick = async () => {
+  // const handleSaveClick = async () => {
+  //   try {
+
+  //     const response = await fetch(`http://localhost:8080/api/accounts/${employeeData.employee_id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(employeeData),
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     const updatedData = await response.json();
+  //     setEmployeeData(updatedData); // Updated data is saved into the employeeData state
+  //     setIsEditing(false); // After saving the data, it sets the isEditing state to false
+  //     alert("profile updated successfully!");
+
+  //   } catch (error) {
+  //     console.error("Error saving employee data:", error);
+  //     alert("Failed to save changes. Please try again.");
+  //   }
+  // };
+
+   /**
+   * Updated save handler with proper API structure
+   */
+   const handleSaveClick = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/accounts", {
+      // Convert data to backend format
+      const backendData = {
+        firstName: employeeData.first_name,
+        lastName: employeeData.last_name,
+        phoneNumber: employeeData.phone_number,
+        email: employeeData.email_address
+      };
+
+      const response = await fetch(`${BASE_URL}/accounts/${employeeData.employee_id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(employeeData),
+        body: JSON.stringify(backendData),
       });
+
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      const updatedData = await response.json();
-      setEmployeeData(updatedData); // Updated data is saved into the employeeData state
-      setIsEditing(false); // After saving the data, it sets the isEditing state to false
+
+      // Convert response back to frontend format
+      const updatedAccount = await response.json();
+      setEmployeeData({
+        ...employeeData,
+        first_name: updatedAccount.firstName,
+        last_name: updatedAccount.lastName,
+        phone_number: updatedAccount.phoneNumber,
+        email_address: updatedAccount.email
+      });
+      
+      setIsEditing(false);
+      alert("Profile updated successfully!");
     } catch (error) {
       console.error("Error saving employee data:", error);
+      alert("Failed to save changes. Please try again.");
     }
   };
 
