@@ -3,8 +3,7 @@ import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import { Picker } from '@react-native-picker/picker';
-
-// Need to find the logic behind prefilling the fields with the employee's data. This might have to be done when backend is connected to EmployeeAccounts and EmpAccountDetails.
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function EditEmpAccount({}) {
     const [accountId, setAccountId] = useState(null);
@@ -17,7 +16,7 @@ export default function EditEmpAccount({}) {
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/accounts' : 'http://localhost:8080/api/accounts';
+    const BASE_URL = BaseURLConfig();
 
     useEffect(() => {
         const fetchAccountIdAndData = async () => {
@@ -29,6 +28,9 @@ export default function EditEmpAccount({}) {
                     fetchEmployeeData(storedAccountId); // Fetch employee data
                 } else {
                     Alert.alert('Error', 'No account ID found in storage.');
+                const response = await fetch(`${BASE_URL}/accounts/${employeeId}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch employee: ${response.status}`);
                 }
             } catch (error) {
                 console.error('Error fetching account ID from AsyncStorage:', error);

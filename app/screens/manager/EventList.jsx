@@ -4,6 +4,7 @@ import MainLayout from '../../layouts/MainLayout';  // Assuming you are using Ma
 import EventBar from '../../components/EventBar';  // Assuming this component displays the events based on filter
 import { useRouter, useNavigation } from 'expo-router';
 import listIcon from "../../../assets/images/list.png"; // Icon from https://www.flaticon.com/free-icon/list_151917?term=list&page=1&position=1&origin=search&related_id=151917
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function Events() {
 
@@ -13,11 +14,8 @@ export default function Events() {
   const [error, setError] = useState(null); // State for error handling
   const router = useRouter(); // Initialize the router
   const navigation = useNavigation(); // Navigation hook for screen transitions
-  
+  const BASE_URL = BaseURLConfig();
 
-  const BASE_URL = Platform.OS === 'android' ? ( 
-    'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-    'http://localhost:8080/api/events'; //Computer & iOS
 
   // Function to fetch events from the backend
   const fetchEvents = async (timeframe) => {
@@ -26,7 +24,7 @@ export default function Events() {
     setError(true); // Reset error state
 
     try {
-      const response = await fetch(`${BASE_URL}/filter?timeframe=${timeframe}`);
+      const response = await fetch(`${BASE_URL}/events/filter?timeframe=${timeframe}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

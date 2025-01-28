@@ -5,6 +5,7 @@ import CalendarComponent from "../../components/Calender";
 import MiniSchedule from "../../components/MiniSchedule";
 import { useRouter, useNavigation } from "expo-router";
 import listIcon from "../../../assets/images/list.png"; // Icon from https://www.flaticon.com/free-icon/list_151917?term=list&page=1&position=1&origin=search&related_id=151917
+import BaseURLConfig from "../../config/BaseURLConfig";
 
 const ManageEvents = () => {
   
@@ -15,6 +16,7 @@ const ManageEvents = () => {
   const [error, setError] = useState(null); // Error state to handle API fetch errors
   const router = useRouter(); // For navigating to other screens
   const navigation = useNavigation(); // For setting header options
+  const BASE_URL = BaseURLConfig();
 
   /**
    * Fetch all events from the backend API.
@@ -25,7 +27,7 @@ const ManageEvents = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.0.2.2:8080/api/events"); // API call to fetch events
+      const response = await fetch(`${BASE_URL}/events`); // API call to fetch events
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
