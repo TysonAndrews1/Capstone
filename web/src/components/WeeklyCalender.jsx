@@ -1,9 +1,12 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import UpcomingEvents from "./UpcomingEvents";
-
-export default function WeeklyCalender({child}){
+import MiniShift from "./Shifts/MiniShift";
+import ShiftDetails from "./Shifts/ShiftDetails";
+import Overlay from "./Overlay";
+export default function WeeklyCalender(){
     const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0])
+    const [activeOverlay,setActiveOverlay] =useState(false)
     const navigate = useNavigate()
 
     const CreateEvent = () =>{
@@ -78,6 +81,7 @@ export default function WeeklyCalender({child}){
             <p className="font-bold text-lg mb-2">{new Date(day).toDateString()}</p>
             <div className="flex-1 w-full">
               <UpcomingEvents selectedDay={new Date(day)}/>
+              <MiniShift selectedDay={new Date(day)}/>
             </div>
           </div>
         ))}
@@ -86,9 +90,8 @@ export default function WeeklyCalender({child}){
       {/* Footer */}
       <div className="mt-4 py-4 text-center bg-gray-100 border-t">
         <p className="text-sm text-gray-500">Footer (if needed)</p>
-        <button className="basic-button" onClick={CreateEvent}>
-                  Create New Event
-                </button>
+        <button className="basic-button" onClick={CreateEvent}>Create New Event</button>
+        <Overlay  headerTitle ={"test"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
       </div>
     </div>
 )

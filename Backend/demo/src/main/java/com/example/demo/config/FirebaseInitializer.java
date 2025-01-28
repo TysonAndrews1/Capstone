@@ -18,8 +18,8 @@ public class FirebaseInitializer {
             logger.info("Initializing Firebase...");
 
             // Load the service account key file
-            FileInputStream serviceAccount =
-                    new FileInputStream("C:\\Capstone\\Backend\\demo\\src\\main\\resources\\serviceAccountKey.json");
+            FileInputStream serviceAccount = new FileInputStream(
+                    "Backend\\demo\\src\\main\\resources\\serviceAccountKey.json");
 
             // Set Firebase options using the service account key
             FirebaseOptions options = FirebaseOptions.builder()
