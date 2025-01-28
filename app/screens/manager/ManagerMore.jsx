@@ -21,7 +21,7 @@ const ManagerMore = () => {
         </TouchableOpacity>   
 
         {/* Button to view employee requests */}     
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=> router.push('/screens/manager/RequestList')}>
           <Text style={styles.text}>View Employee Request</Text>
         </TouchableOpacity>
 

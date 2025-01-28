@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MiniSchedule from './MiniSchedule';
 import { useNavigate } from 'react-router-dom';
-
+import Overlay from './Overlay';
 //Made By Aaron, Tyson and Michelle 
 //Converted from React Native with help from Chat-GPT
 
@@ -23,26 +23,24 @@ function format(date) {
 
 
 export default function EventBar({ events}) {
-  const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate(); // Initialize the router
-  const currentDate = new Date();
+  const [activeOverlay, setActiveOverlay]= useState(false)
 
-
-  const openModal = (event) => {
+  const openOverlay = (event) => {
     setSelectedEvent(event);
-    setModalVisible(true);
+    setActiveOverlay(true);
   };
 
-  const closeModal = () => {
-    setModalVisible(false);
+  const closeOverlay = () => {
     setSelectedEvent(null);
+    setActiveOverlay(false);
   };
 
   const handleEdit = () => {
     // Navigate to the Edit screen
     navigate(`/EditEvent/${selectedEvent.eventId}`)
-    closeModal();
+    closeOverlay();
   };
 
   const handleDelete = () => {
@@ -56,7 +54,7 @@ export default function EventBar({ events}) {
           alert(`Event "${selectedEvent.eventName}" deleted.`);
           // Remove the event from the local state to update the UI
           const updatedEvents = events.filter((event) => event.eventId !== selectedEvent.eventId);
-          closeModal();
+          closeOverlay();
         } else {
           response.json().then((data) => {
             console.log('Delete failed:', data); // Log error for debugging
@@ -69,7 +67,7 @@ export default function EventBar({ events}) {
         alert('An error occurred while deleting the event.');
       });
 
-    closeModal();
+    closeOverlay();
   };
 
   // Format date safely, return fallback text if invalid date
@@ -85,7 +83,7 @@ export default function EventBar({ events}) {
   ) : (
     <div className="scroll-container">
       {events.map((event) => (
-        <div key={event.eventId} className="" onClick={() => openModal(event)}>
+        <div key={event.eventId} className=""  onClick={() => openOverlay(event)}>
           <MiniSchedule EventName={event.eventName} EventStartTime={new Date(event.eventStartDate)} />
         </div>
       ))}
@@ -93,14 +91,10 @@ export default function EventBar({ events}) {
   )}
 
       {/* Event Details Modal */}
-      {selectedEvent && modalVisible && (
+      {selectedEvent && activeOverlay && (
+        <Overlay  headerTitle ={selectedEvent.eventName} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
         <div className="">
           <div className="modal-container">
-            {/* Close button (X) */}
-            <button className="close-button " onClick={closeModal}>
-              X
-            </button>
-
             <h2 className="modal-title"><strong> {selectedEvent?.eventName}</strong></h2>
             <div className="modal-content flex flex-col items-start space-y-2">
   <div className="flex">
@@ -133,7 +127,7 @@ export default function EventBar({ events}) {
             </div>
           </div>
         </div>
-      )}
+      }    />)}
     </div>
   );
 }

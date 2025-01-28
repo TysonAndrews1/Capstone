@@ -4,6 +4,7 @@ import userIcon from '../../../assets/images/usericon.png'; // Icon from https:/
 import editIcon from '../../../assets/images/edit.png'; // Icon from https://www.flaticon.com/free-icon/edit_1159633?term=edit&page=1&position=1&origin=search&related_id=1159633
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function EmpAccountDetails() {
     const [accountId, setAccountId] = useState(null); // accountId is not being used, but we will keep this to retrieve the accountId from AsyncStorage by using setAccountId.
@@ -11,10 +12,9 @@ export default function EmpAccountDetails() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
-    const BASE_URL = Platform.OS === 'android' ? ( 
-        'http://10.0.2.2:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
-        'http://localhost:8080/api/accounts'; //Computer & iOS
+    const router = useRouter();
+    const BASE_URL = BaseURLConfig();
+
 
     // Fetch employee details
     useEffect(() => {
@@ -24,16 +24,14 @@ export default function EmpAccountDetails() {
                 const storedAccountId = await AsyncStorage.getItem('selectedAccountId');
                 if (storedAccountId) {
                     setAccountId(storedAccountId);
-                    console.log('Retrieved Account ID:', storedAccountId);
     
                     // Fetch employee details using the retrieved accountId
-                    const response = await fetch(`${BASE_URL}/${storedAccountId}`);
+                    const response = await fetch(`${BASE_URL}/accounts/${storedAccountId}`);
                     if (!response.ok) {
                         throw new Error('Failed to fetch employee details');
                     }
                     
                     const data = await response.json();
-                    console.log('Employee Data:', data);
                     setEmployee({
                         ...data,
                         status: data.status === 1 || data.status === "1" || data.status === true // This will make the status display as "Active" if the status is 1 or true, and "Inactive" if the status is 0 or false.
@@ -88,8 +86,18 @@ export default function EmpAccountDetails() {
                     <View style={styles.profileTextContainer}>
                         <Text style={styles.profileName}>{employee.firstName} {employee.lastName}</Text>
                     </View>
-                    <TouchableOpacity style={styles.editButton} onPress={()=> router.push('/screens/manager/EditEmpAccount')}>
-                        <Image source={editIcon} style={styles.editIcon}/>
+                    <TouchableOpacity 
+                        style={styles.editButton} 
+                        onPress={async () => {
+                            try {
+                                await AsyncStorage.setItem('selectedAccountId', employee.accountId.toString()); // Save accountId in AsyncStorage
+                                router.push('/screens/manager/EditEmpAccount'); // Navigate to the edit screen
+                            } catch (error) {
+                                console.error('Error saving account ID to AsyncStorage:', error);
+                                Alert.alert('Error', 'Failed to navigate to the edit screen.');
+                            }
+                        }}>
+                        <Image source={editIcon} style={styles.editIcon} />
                     </TouchableOpacity>
                 </View>
 

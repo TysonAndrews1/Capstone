@@ -3,31 +3,29 @@ import { ScrollView, Pressable, StyleSheet, Text, View, Modal, TouchableOpacity,
 import { useRouter } from 'expo-router';
 import MiniSchedule from './MiniSchedule';
 import { format } from 'date-fns'; // For date formatting
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import BaseURLConfig from '../config/BaseURLConfig';
 
 export default function EventBar({ events, filterType }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const router = useRouter(); // Initialize the router
   const navigation = useNavigation();
+  const BASE_URL = BaseURLConfig();
 
   const currentDate = new Date();
-
-  const BASE_URL = Platform.OS === 'android' ? ( 
-    'http://10.187.198.97/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-    'http://localhost:8080/api/events'; //Computer & iOS
-
+  
   // Filter events based on filterType ('past' or 'upcoming')
   const filteredEvents = events.filter((event) => {
+    const eventStartTime = new Date(event.eventStartDate);
+    const eventEndTime = new Date(event.eventEndDate);
 
-  const eventStartTime = new Date(event.eventStartDate);
-  const eventEndTime = new Date(event.eventEndDate);
-
-  if (filterType === 'past') {
-      return eventStartTime < currentDate;
-  } else if (filterType === 'upcoming') {
-      return eventEndTime > currentDate;
-  }
+    if (filterType === 'past') {
+        return eventStartTime < currentDate;
+    } else if (filterType === 'upcoming') {
+        return eventEndTime > currentDate;
+    }
     return true; // Default behavior if no filterType is passed
   });
 
@@ -41,19 +39,26 @@ export default function EventBar({ events, filterType }) {
     setSelectedEvent(null);
   };
 
-  const handleEdit = (event) => {
-    // Navigate to the Edit screen
-    router.push({
-      pathname: '/screens/manager/EventEdit',
-      query: { eventId: selectedEvent.eventId}
-    });
-    closeModal();
+  const handleEdit = async (event) => {
+    try {
+      // Save the selected event ID in AsyncStorage
+      await AsyncStorage.setItem('selectedEventId', event.eventId.toString());
+      console.log('Event ID saved to AsyncStorage:', event.eventId);
+
+      // Navigate to the EditEvent screen
+      router.push('/screens/manager/EditEvent');
+    } catch (error) {
+      console.error('Error saving event ID to AsyncStorage:', error);
+      Alert.alert('Error', 'Failed to navigate to the edit screen.');
+    } finally {
+      closeModal(); // Close the modal after navigating
+    }
   };
 
   const handleDelete = () => { // Method to delete an event
     if (!selectedEvent) return;
   
-    fetch(`${BASE_URL}/${selectedEvent.eventId}`, {
+    fetch(`${BASE_URL}/events/${selectedEvent.eventId}`, {
       method: 'DELETE',
     })
       .then((response) => {

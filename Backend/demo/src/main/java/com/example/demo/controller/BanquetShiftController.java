@@ -34,7 +34,7 @@ public class BanquetShiftController {
     public ResponseEntity<BanquetShift> getShiftById(@PathVariable Long shiftId) {
         // Retrieve the shift by ID using the repository
         Optional<BanquetShift> shift = repository.findById(shiftId);
-        
+
         if (shift.isPresent()) {
             return ResponseEntity.ok(shift.get()); // Return the event if found
         } else {

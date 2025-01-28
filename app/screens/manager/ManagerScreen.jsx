@@ -4,14 +4,14 @@ import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-
-const BASE_URL = 'http://10.0.2.2:8080/api';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 const ManagerScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
+  const BASE_URL = BaseURLConfig();
 
   // State for handling Loading and error states
   const [loading, setLoading] = useState(false); 

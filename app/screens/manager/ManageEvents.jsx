@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from "react-native";
 import MainLayout from "../../layouts/MainLayout";
 import CalendarComponent from "../../components/Calender";
 import MiniSchedule from "../../components/MiniSchedule";
-import { useRouter } from 'expo-router';
+import { useRouter, useNavigation } from "expo-router";
+import listIcon from "../../../assets/images/list.png"; // Icon from https://www.flaticon.com/free-icon/list_151917?term=list&page=1&position=1&origin=search&related_id=151917
+import BaseURLConfig from "../../config/BaseURLConfig";
 
 const ManageEvents = () => {
   
@@ -13,6 +15,8 @@ const ManageEvents = () => {
   const [loading, setLoading] = useState(false); // Loading state to show spinner or message during data fetching
   const [error, setError] = useState(null); // Error state to handle API fetch errors
   const router = useRouter(); // For navigating to other screens
+  const navigation = useNavigation(); // For setting header options
+  const BASE_URL = BaseURLConfig();
 
   /**
    * Fetch all events from the backend API.
@@ -23,7 +27,7 @@ const ManageEvents = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.0.2.2:8080/api/events"); // API call to fetch events
+      const response = await fetch(`${BASE_URL}/events`); // API call to fetch events
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -70,6 +74,16 @@ const ManageEvents = () => {
     fetchEvents(); // Call the fetchEvents function
   }, []);
 
+  useEffect(() => { // This adds the "list.png" icon to the header. When clicked, it navigates to the EventList screen.
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity onPress={() => router.push("screens/manager/EventList")}>
+          <Image source={listIcon} style={styles.listIcon} />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation]);
+
   return (
     <MainLayout>
       <View style={styles.container}>
@@ -108,7 +122,7 @@ const ManageEvents = () => {
             <Text style={styles.noDateText}>Select a day to view events</Text>
             <TouchableOpacity
               style={styles.createButton}
-              onPress={() => router.push('screens/manager/EventEdit')} // Navigate to the event creation screen
+              onPress={() => router.push('screens/manager/CreateEvent')} // Navigate to the event creation screen
             >
               <Text style={styles.createButtonText}>Create new event</Text>
             </TouchableOpacity>
@@ -122,23 +136,33 @@ const ManageEvents = () => {
 export default ManageEvents;
 
 const styles = StyleSheet.create({
+  listIcon: {
+    width: 24,
+    height: 24,
+    marginRight: 16,
+    tintColor: "#fff",
+  },
+  
   container: {
     flex: 1,
     padding: 10,
     backgroundColor: "#ffffff",
   },
+
   noDateContainer: {
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 10,
   },
+
   noDateText: {
     fontSize: 18,
     color: "#F4A261",
     textAlign: "center",
     marginBottom: 10, 
   },
+
   createButton: {
     marginTop: 10, 
     paddingVertical: 12,
@@ -149,11 +173,13 @@ const styles = StyleSheet.create({
     width: "90%",
     alignSelf: "center",
   },
+
   createButtonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
   },
+
   calendarWrapper: {
     marginBottom: 10, 
   },

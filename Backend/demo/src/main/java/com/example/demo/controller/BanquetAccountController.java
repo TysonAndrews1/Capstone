@@ -89,7 +89,11 @@ public class BanquetAccountController {
         if (employee != null) {
             return ResponseEntity.ok(employee); // Return 200 with employee data
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Return 404 if no employee found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } // Return 404 if no employee found
         }
+    @PostMapping // Will use this method to create new events using infomation from the frontend
+    public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
+        return repository.save(account);
     }
 }
