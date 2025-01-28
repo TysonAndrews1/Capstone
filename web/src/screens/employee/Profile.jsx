@@ -39,7 +39,7 @@ function Profile() {
         first_name: account.firstName,
         last_name: account.lastName,
         phone_number: account.phoneNumber,
-        email_address: account.emailAddress,
+        email_address: account.email,
       });
     } catch (error) {
       setFetchError(error.message);
@@ -119,7 +119,7 @@ function Profile() {
           ) : (
             <>
               <div className="w-full">
-                <label className="text-gray-700 font-medium" htmlFor="phone_number">
+                <label className="text-gray-700 font-medium">
                   Phone:
                 </label>
                 <input
@@ -133,7 +133,7 @@ function Profile() {
               </div>
 
               <div className="w-full">
-                <label className="text-gray-700 font-medium" htmlFor="email_address">
+                <label className="text-gray-700 font-medium">
                   Email:
                 </label>
                 <input
