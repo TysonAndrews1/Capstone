@@ -4,6 +4,7 @@ import MainLayout from "../../layouts/MainLayout";
 import CalendarComponent from "../../components/Calender";
 import MiniSchedule from "../../components/MiniSchedule";
 import { useRouter } from 'expo-router';
+import BaseURLConfig from "../../config/BaseURLConfig";
 
 const ManageEvents = () => {
   
@@ -13,6 +14,7 @@ const ManageEvents = () => {
   const [loading, setLoading] = useState(false); // Loading state to show spinner or message during data fetching
   const [error, setError] = useState(null); // Error state to handle API fetch errors
   const router = useRouter(); // For navigating to other screens
+  const BASE_URL = BaseURLConfig();
 
   /**
    * Fetch all events from the backend API.
@@ -23,7 +25,7 @@ const ManageEvents = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await fetch("http://10.0.2.2:8080/api/events"); // API call to fetch events
+      const response = await fetch(`${BASE_URL}/events`); // API call to fetch events
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }

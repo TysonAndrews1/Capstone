@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert } from 'react-native';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import { useRouter } from 'expo-router';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function CreateEmpAccount() {
     const [first_name, setFirstName] = useState('');
@@ -12,6 +13,7 @@ export default function CreateEmpAccount() {
     const [phone_number, setPhoneNumber] = useState('');
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
+    const BASE_URL = BaseURLConfig();
 
     const router = useRouter();
 
@@ -31,10 +33,8 @@ export default function CreateEmpAccount() {
         role,
         status,
     };
-    
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
 
-    fetch(BASE_URL, { // Sends to the API endpoint
+    fetch(`${BASE_URL}/accounts`, { // Sends to the API endpoint
         method: 'POST', // This is a POST request to create a new employee account for the database in JSON format
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEmployee),

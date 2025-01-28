@@ -4,19 +4,17 @@ import { useRouter } from 'expo-router';
 import MiniSchedule from './MiniSchedule';
 import { format } from 'date-fns'; // For date formatting
 import { useNavigation } from '@react-navigation/native';
+import BaseURLConfig from '../config/BaseURLConfig';
 
 export default function EventBar({ events, filterType }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const router = useRouter(); // Initialize the router
   const navigation = useNavigation();
+  const BASE_URL = BaseURLConfig();
 
   const currentDate = new Date();
-
-  const BASE_URL = Platform.OS === 'android' ? ( 
-    'http://10.187.198.97/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-    'http://localhost:8080/api/events'; //Computer & iOS
-
+  
   // Filter events based on filterType ('past' or 'upcoming')
   const filteredEvents = events.filter((event) => {
 
@@ -53,7 +51,7 @@ export default function EventBar({ events, filterType }) {
   const handleDelete = () => { // Method to delete an event
     if (!selectedEvent) return;
   
-    fetch(`${BASE_URL}/${selectedEvent.eventId}`, {
+    fetch(`${BASE_URL}/events/${selectedEvent.eventId}`, {
       method: 'DELETE',
     })
       .then((response) => {

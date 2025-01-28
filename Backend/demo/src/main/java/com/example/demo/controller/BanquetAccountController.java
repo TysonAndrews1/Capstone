@@ -33,4 +33,9 @@ public class BanquetAccountController {
             return ResponseEntity.status(404).body(null); // Return 404 if event not found
         }
     }
+
+    @PostMapping // Will use this method to create new events using infomation from the frontend
+    public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
+        return repository.save(account);
+    }
 }
