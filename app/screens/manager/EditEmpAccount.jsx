@@ -1,59 +1,102 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, Image, TouchableOpacity, Alert, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
+import { Picker } from '@react-native-picker/picker';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
-// Need to find the logic behind prefilling the fields with the employee's data. This might have to be done when backend is connected to EmployeeAccounts and EmpAccountDetails.
-
-export default function EditEmpAccount({employeeId}) {
-
-    const [first_name, setFirstName] = useState('');
-    const [last_name, setLastName] = useState('');
-    const [employee_id, setEmployeeId] = useState('');
-    const [email_address, setEmailAddress] = useState('');
+export default function EditEmpAccount({}) {
+    const [accountId, setAccountId] = useState(null);
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [employeeId, setEmployeeId] = useState('');
+    const [emailAddress, setEmailAddress] = useState('');
     const [address, setAddress] = useState('');
-    const [phone_number, setPhoneNumber] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
-    const BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:8080/api/employees' : 'http://localhost:8080/api/employees';
+    const BASE_URL = BaseURLConfig();
 
     useEffect(() => {
-        const fetchEmployeeData = async () => { // This is to fetch the employee data from the backend and database
-
+        const fetchAccountIdAndData = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/${employeeId}`);
+                // Retrieve accountId from AsyncStorage
+                const storedAccountId = await AsyncStorage.getItem('selectedAccountId');
+                if (storedAccountId) {
+                    setAccountId(storedAccountId); // Set accountId in state
+                    fetchEmployeeData(storedAccountId); // Fetch employee data
+                } else {
+                    Alert.alert('Error', 'No account ID found in storage.');
+                }
+                const response = await fetch(`${BASE_URL}/accounts/${employeeId}`);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch employee: ${response.status}`);
                 }
-                const data = await response.json();
-                setFirstName(data.first_name);
-                setLastName(data.last_name);
-                setEmployeeId(data.employee_id);
-                setEmailAddress(data.email_address);
-                setAddress(data.address);
-                setPhoneNumber(data.phone_number);
-                setRole(data.role);
-                setStatus(data.status);
             } catch (error) {
-                console.error('Error fetching employee data:', error);
-                Alert.alert('Error', 'Failed to load employee data');
+                console.error('Error fetching account ID from AsyncStorage:', error);
+                Alert.alert('Error', 'Failed to retrieve account ID.');
             }
         };
 
-        fetchEmployeeData();
-    }, [employeeId]); // This will run the fetchEmployeeData function when the employeeId changes
+        fetchAccountIdAndData();
+    }, []);
+
+    const fetchEmployeeData = async (id) => {
+        try {
+            const response = await fetch(`${BASE_URL}/${id}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch employee data: ${response.status}`);
+            }
+            const data = await response.json();
+            setFirstName(data.firstName);
+            setLastName(data.lastName);
+            setEmployeeId(data.employeeId);
+            setEmailAddress(data.email);
+            setAddress(data.address);
+            setPhoneNumber(data.phoneNumber);
+            setRole(data.role);
+            setStatus(data.status ? 'Active' : 'Inactive'); // Convert status to 'Active' or 'Inactive' depending on the boolean value in the database.
+        } catch (error) {
+            console.error('Error fetching employee data:', error);
+            Alert.alert('Error', 'Failed to load employee data.');
+        }
+    };
 
     const handleSubmit = async () => { // To update the employee data in the backend and database, if fields are empty, an error message is displayed.
-        if (!first_name || !last_name || !employee_id || !email_address || !address || !phone_number || !role || !status) {
+        if (!firstName || !lastName || !employeeId || !emailAddress || !address || !phoneNumber || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
 
+        if (!/^\d{6}$/.test(employeeId)) { // This will ensure that the employee ID is a 6-digit number
+            Alert.alert('Error', 'Employee ID must be a 6-digit number.');
+            return;
+        }
+
+        if (!/^\d{10}$/.test(phoneNumber)) { // This will ensure that the phone number is a 10-digit number, WILL CONFIRM WITH TEAM ON HOW TO FORMAT IT.
+            Alert.alert('Error', 'Phone Number must be a 10-digit number.');
+            return;
+        }
+
+        if (!status || status === 'placeholder') { // This will ensure that the user selects a status
+            Alert.alert('Error', 'Please select a valid status.');
+            return;
+        }        
+
         try { // To update the employee data in the backend and database along with some error handling
-            const response = await fetch(`${BASE_URL}/${employeeId}`, {
+            const response = await fetch(`${BASE_URL}/${accountId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedEmployee),
+                body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email: emailAddress,
+                    address,
+                    phoneNumber,
+                    role,
+                    status: status === '1', // This will convert "1" to true, "0" to false
+                }),
             });
 
             if (!response.ok) {
@@ -69,17 +112,6 @@ export default function EditEmpAccount({employeeId}) {
         }
     }
 
-    const updatedEmployee = { // The updated employee data that will be sent to the backend and database
-        first_name,
-        last_name,
-        employee_id,
-        email_address,
-        address,
-        phone_number,
-        role,
-        status,
-    };
-    
     // TODO: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
     // Ensure it contains a confirmation alert before deleting the account.
 
@@ -89,7 +121,7 @@ export default function EditEmpAccount({employeeId}) {
                 <View style={styles.header}>
                     <Image source={userIcon} style={styles.profileIcon} />
                     <View style={styles.profileTextContainer}>
-                        <Text style={styles.profileName}>Employee Name</Text>
+                        <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text> {/*Replaces the placeholder text with the employee's first and last name*/}
                     </View>
                 </View>
 
@@ -97,7 +129,7 @@ export default function EditEmpAccount({employeeId}) {
                     <Text style={styles.detailLabel}>First Name</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={first_name}
+                        value={firstName}
                         onChangeText={setFirstName}
                         placeholder="Enter first name"
                     />
@@ -107,7 +139,7 @@ export default function EditEmpAccount({employeeId}) {
                     <Text style={styles.detailLabel}>Last Name</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={last_name}
+                        value={lastName}
                         onChangeText={setLastName}
                         placeholder="Enter last name"
                     />
@@ -117,9 +149,10 @@ export default function EditEmpAccount({employeeId}) {
                     <Text style={styles.detailLabel}>Employee ID</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={employee_id}
+                        value={employeeId}
                         onChangeText={setEmployeeId}
-                        placeholder="Enter employee ID"
+                        placeholder="Enter employee ID (6 digits)"
+                        keyboardType="numeric" // Ensure it is a number
                     />
                 </View>
 
@@ -127,7 +160,7 @@ export default function EditEmpAccount({employeeId}) {
                     <Text style={styles.detailLabel}>Email Address</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={email_address}
+                        value={emailAddress}
                         onChangeText={setEmailAddress}
                         placeholder="Enter email address"
                     />
@@ -147,9 +180,10 @@ export default function EditEmpAccount({employeeId}) {
                     <Text style={styles.detailLabel}>Phone Number</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={phone_number}
+                        value={phoneNumber}
                         onChangeText={setPhoneNumber}
                         placeholder="Enter phone number"
+                        keyboardType="phone-pad" // This will ensure it is a phone number
                     />
                 </View>
 
@@ -165,13 +199,19 @@ export default function EditEmpAccount({employeeId}) {
 
                 <View style={styles.detailCard}>
                     <Text style={styles.detailLabel}>Status</Text>
-                    <TextInput
-                        style={styles.textInput}
-                        value={status}
-                        onChangeText={setStatus}
-                        placeholder="Enter status"
-                    />
+                    <View style={styles.pickerContainer}>
+                        <Picker // Reference for code: https://archive.reactnative.dev/docs/picker
+                            selectedValue={status || ''} // This will set the default value to the employee's status
+                            style={styles.picker}
+                            onValueChange={(itemValue) => setStatus(itemValue)}
+                        >
+                            <Picker.Item label="Select Status" value="" />
+                            <Picker.Item label="Active" value="1" />
+                            <Picker.Item label="Inactive" value="0" />
+                        </Picker>
+                    </View>
                 </View>
+
 
                 <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
                     <Text style={styles.saveButtonText}>Save</Text>
@@ -264,6 +304,21 @@ const styles = StyleSheet.create({
     detailValue: {
         fontSize: 16,
         color: '#333',
+    },
+
+    picker: {
+        height: 50,
+        backgroundColor: '#fff',
+        borderColor: '#ccc',
+        justifyContent: 'center',
+    },
+
+    pickerContainer: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        justifyContent: 'center',
     },
 
     saveButton: {

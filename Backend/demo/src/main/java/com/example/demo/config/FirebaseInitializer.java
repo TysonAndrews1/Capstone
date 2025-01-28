@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileInputStream;
+import java.io.InputStream;
 
 @Configuration
 public class FirebaseInitializer {
@@ -17,9 +17,11 @@ public class FirebaseInitializer {
         try {
             logger.info("Initializing Firebase...");
 
-            // Load the service account key file
-            FileInputStream serviceAccount =
-                    new FileInputStream("C:\\Capstone\\Backend\\demo\\src\\main\\resources\\serviceAccountKey.json");
+            // Load the service account key file using ClassLoader
+            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
+            if (serviceAccount == null) {
+                throw new RuntimeException("Can't find serviceAccountKey.json, Please check the file path at 'src/main/resources'.");
+            }
 
             // Set Firebase options using the service account key
             FirebaseOptions options = FirebaseOptions.builder()

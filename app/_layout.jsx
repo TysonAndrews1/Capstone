@@ -37,18 +37,35 @@ export default function RootLayout() {
       ), headerStyle: { backgroundColor: '#3F6D89' },
       headerTitleAlign: 'center',
       }}/> 
+      <Stack.Screen name="screens/employee/EmployeeScreen"  options={{ title: '', headerBackVisible: false, 
+      headerRight: () => (
+        <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+            {/* tintColor can change a image(png or svg) color */}
+            <Image source={require('../assets/images/account.png')} style={ styles.icon } />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+           <Image source={require('../assets/images/notifications.png')} style={ styles.icon } />
+          </TouchableOpacity>
+        </View>
+      ), headerStyle: { backgroundColor: '#3F6D89' },
+      headerTitleAlign: 'center',
+      }}/> 
       <Stack.Screen name="screens/manager/ManagerMore" options={{ title: 'Manager Tools'}} />
       <Stack.Screen name="screens/manager/ManagerSchedule" options={{ title: 'Manage Schedule'}} />
+
       <Stack.Screen name="screens/manager/ManageEvents" options={{ title: 'Manage Events' }} />
-      <Stack.Screen name="screens/manager/EventEdit" options={{ title: 'Event Edit'}} />
+      <Stack.Screen name="screens/manager/CreateEvent" options={{ title: 'Create Event'}} />
       <Stack.Screen name="screens/manager/EventList" options={{ title: 'Event List'}} />
+      <Stack.Screen name="screens/manager/EditEvent" options={{ title: 'Edit Event'}} />
 
       <Stack.Screen name="screens/manager/AddShift" options={{ title: 'Add Shift'}} />
-
       <Stack.Screen name="screens/manager/EmployeeAccounts" options={{ title: 'Manage Employee Accounts' }}/>
       <Stack.Screen name="screens/manager/EmpAccountDetails" options={{ title: 'Employee Details' }}/>
       <Stack.Screen name="screens/manager/EditEmpAccount" options={{ title: 'Edit Employee Details' }}/>
       <Stack.Screen name="screens/manager/CreateEmpAccount" options={{ title: 'Create Employee Account' }}/>
+
+      <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
 
     </Stack>
   );

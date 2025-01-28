@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, ScrollView, Pressable, Platform, Ima
 import MainLayout from '../../layouts/MainLayout';
 import { useRouter } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 // Search bar may need to be reworked on when data is able to be fetched from the backend.
 
@@ -15,12 +16,7 @@ export default function EmployeeAccounts() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const router = useRouter();
-
-    //Platform.OS to decide which URL to use when running on an Android/Android emulator vs iOS/web.
-    const BASE_URL = Platform.OS === 'android' ? ( 
-        'http://10.0.2.2:8080/api/accounts') : //Android Device & Android Studio (Use your personal ipv4 address)
-        'http://localhost:8080/api/accounts'; //Computer & iOS
-
+    const BASE_URL = BaseURLConfig();
 
     /* This effect runs once when the component mounts. FetchEmployees attempts to fetch employee data from a backend endpoint,
     then populates employees & filteredEmployees state. */ 
@@ -30,7 +26,7 @@ export default function EmployeeAccounts() {
         setError(true);
 
         try {
-            const response = await fetch(`${BASE_URL}`);
+            const response = await fetch(`${BASE_URL}/accounts`);
             if (!response.ok) {
                 throw new Error('Error fetching employees');
             }
@@ -67,7 +63,6 @@ export default function EmployeeAccounts() {
         try {
             // Save the accountId in AsyncStorage
             await AsyncStorage.setItem('selectedAccountId', employee.accountId.toString());
-            console.log('Stored Account ID:', employee.accountId);
     
             // Navigate to the next screen
             router.push('/screens/manager/EmpAccountDetails');

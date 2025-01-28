@@ -1,21 +1,18 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import BaseURLConfig from '../../config/BaseURLConfig';
 
-const ManagerScreen = () => {
+const BASE_URL = 'http://10.0.2.2:8080/api';
+const EmployeeScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
-  const BASE_URL = BaseURLConfig();
-
-  // State for handling Loading and error states
-  const [loading, setLoading] = useState(false); 
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // State for handling Loading
+  const [error, setError] = useState(null); // State for handling errors
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -116,13 +113,36 @@ const ManagerScreen = () => {
           </View>
         </View>
 
-        {/* New Employee Requests Card */}
-        <TouchableOpacity style={styles.card}>
-          <View style={styles.cardRequest}>
-            <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10 }} />
-            <Text style={styles.monthText}>(3) New Employee Requests</Text>
-          </View>
-        </TouchableOpacity>
+        {/* four buttons */}
+        <View style={styles.fourButtonContainer}>
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/team.png')} />
+                    <Text style={styles.buttonText}>Team</Text>
+                </TouchableOpacity>
+            </View>
+            
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/event1.png')} />
+                    <Text style={styles.buttonText}>Event</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/request.png')} />
+                    <Text style={styles.buttonText}>Request</Text>    
+                </TouchableOpacity>
+            </View>
+            
+            <View style={styles.fourButton}>
+                <TouchableOpacity style={styles.buttonWithBackground}>
+                    <Image style={styles.fourButtonImages} source={require('../../../assets/images/late.png')} />
+                    <Text style={styles.buttonText}>Late</Text>    
+                </TouchableOpacity>
+            </View>
+        </View>
 
         {/* Weekly Calendar */}
         <View style={styles.card}>
@@ -136,37 +156,13 @@ const ManagerScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-
-          {/* Event Details for the Selected Date */}
-          <View style={styles.detailsContainer}>
-            <ScrollView>
-              {loading ? (
-                <Text>Loading...</Text>
-              ) : filteredEvents.length > 0 ? (
-                filteredEvents.map((event) => (
-                  <View key={event.eventId} style={styles.eventContainer}>
-                    <View style={styles.dottedLine}></View>
-                    <Text style={styles.timeText}>
-                      {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
-                    </Text>
-                    <Text style={styles.eventDetails}>
-                      {event.eventName} ({event.numberOfGuests} Guests)
-                    </Text>
-                    <View style={styles.dottedLine}></View>
-                  </View>
-                ))
-              ) : (
-                <Text style={styles.noEventsText}>No events for this date.</Text>
-              )}
-            </ScrollView>
-          </View>
         </View>
-      </View>
+    </View>
     </MainLayout>
   );
 };
 
-export default ManagerScreen;
+export default EmployeeScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -305,4 +301,32 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
+  fourButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    borderRadius: 16, 
+    paddingVertical: 16, 
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+},
+fourButton: {
+    alignItems: 'center',
+},
+fourButtonImages: {
+    width: 50,
+    height: 50,
+    marginBottom: 4,
+},
+buttonText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: '500',
+    textAlign: 'center',
+},
 });

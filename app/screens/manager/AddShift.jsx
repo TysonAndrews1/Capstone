@@ -7,6 +7,7 @@ import axios from 'axios';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 const AddShift = () => {
+  // Extract selected date from parameters
   const params = useGlobalSearchParams();
   const selectedDate = params?.date || '2000-01-01T00:00:00.000Z';
   const year = selectedDate.slice(0, 4);
@@ -15,29 +16,29 @@ const AddShift = () => {
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const monthName = monthNames[parseInt(month, 10) - 1];
 
+  // State for time pickers
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
-
+  
+  // State for employee dropdown
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // State for event dropdown
   const [attachEventOpen, setAttachEventOpen] = useState(false);
   const [attachEventValue, setAttachEventValue] = useState(null);
   const [attachEventItems, setAttachEventItems] = useState([]);
   const [description, setDescription] = useState('');
 
-  const EMPLOYEE_URL = Platform.OS === 'android'
-    ? 'http://10.0.2.2:8080/api/employees'
-    : 'http://localhost:8080/api/employees';
-  const EVENTS_URL = Platform.OS === 'android'
-    ? 'http://10.0.2.2:8080/api/events'
-    : 'http://localhost:8080/api/events';
+  // Backend API endpoints
+  const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/accounts': 'http://localhost:8080/api/accounts';
+  const EVENTS_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/events': 'http://localhost:8080/api/events';
 
-  // Fetch employees
+  // Fetch employee data from the backend
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -46,9 +47,12 @@ const AddShift = () => {
           label: `${employee.firstName} ${employee.lastName}`,
           value: employee.accountId,
         }));
+
         setItems(employeeData);
+
       } catch (error) {
         Alert.alert('Error', 'Failed to load employees. Please try again later.');
+
       } finally {
         setLoading(false);
       }
@@ -73,8 +77,7 @@ const AddShift = () => {
             selectedDateObject.getUTCDate()
           );
     
-          const eventData = response.data
-            .filter(event => {
+          const eventData = response.data.filter(event => {
               const startDate = new Date(event.eventStartDate);
               const endDate = new Date(event.eventEndDate);
     
@@ -96,6 +99,7 @@ const AddShift = () => {
               );
               return selectedDateUTC >= startDateUTC && selectedDateUTC <= endDateUTC;
             })
+
             .map(event => ({
               label: event.eventName,
               value: event.eventId,
@@ -104,6 +108,7 @@ const AddShift = () => {
     
           console.log('Filtered Events:', eventData);
           setAttachEventItems(eventData); // Set filtered data
+
         } catch (error) {
           console.error('Error fetching events:', error);
           Alert.alert('Error', 'Failed to load events for the selected date.');
@@ -111,18 +116,67 @@ const AddShift = () => {
       }
     };
     
-    
-    
-    
     fetchEvents();
   }, [attachEventOpen, selectedDate]);
 
-  const handleSave = () => {
-    console.log('Attach Event:', attachEventValue);
-    console.log('Selected Employees:', value);
-    console.log('Description:', description);
-  };
+  // Handle shift save functionality
+  const handleSave = async () => {
 
+    // Validate input fields
+    if (value.length === 0 || !attachEventValue || !startTime || !endTime || !description.trim()) {
+        Alert.alert("Error", "All fields are required.");
+        return;
+    }
+
+    // Create shift for each selected employee
+    const shiftPromises = value.map((accountId) => {
+        const shiftData = {
+            accountId, 
+            eventId: attachEventValue,
+            shiftStartDate: `${selectedDate.slice(0, 10)}T${startTime.toTimeString().slice(0, 5)}:00`,
+            shiftEndDate: `${selectedDate.slice(0, 10)}T${endTime.toTimeString().slice(0, 5)}:00`,
+            description: description.trim(),
+        };
+
+        // Post each shift to all selected employees
+        return fetch('http://10.0.0.244:8080/api/shifts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(shiftData),
+        });
+    });
+
+    try {
+      // Wait for all the POST requests (one for each employee) to complete
+      // shiftPromises is an array of fetch requests, and Promise.all runs them in parallel
+        const responses = await Promise.all(shiftPromises); 
+
+        // Check for any failed requests by filtering the responses
+        // A response is considered failed if the 'ok' property is false
+        const failedResponses = responses.filter((response) => !response.ok);
+
+        if (failedResponses.length > 0) {
+            Alert.alert(
+                "Error",
+                `${failedResponses.length} shifts failed to save. Please try again.`
+            );
+        } else {
+            Alert.alert("Success", "Shifts assigned successfully to all selected employees.");
+            resetFields();
+        }
+    } catch (error) {
+        Alert.alert("Error", "An error occurred while saving shifts.");
+    }
+};
+
+  // reset all the data.
+  const resetFields = () => {
+    setValue([]); 
+    setAttachEventValue(null); 
+    setStartTime(null); 
+    setEndTime(null); 
+    setDescription(''); 
+};
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -132,6 +186,7 @@ const AddShift = () => {
   }
 
   const selectedLabels = items.filter(item => value.includes(item.value)).map(item => item.label);
+  
 
   
   return (
@@ -141,21 +196,9 @@ const AddShift = () => {
         <Text style={styles.dateText}>{monthName} {day}, {year}</Text>
 
         {/* DropDownPicker */}
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          multiple={true}
-          listMode="SCROLLVIEW"
-          placeholder="Select Employee(s)"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          arrowIconStyle={{ width: 20, height: 20 }}
-          showArrowIcon={true}
-        />
+        <DropDownPicker open={open} value={value} items={items} setOpen={setOpen} setValue={setValue} setItems={setItems} multiple={true}
+          listMode="SCROLLVIEW" placeholder="Select Employee(s)" style={styles.dropdown} dropDownContainerStyle={styles.dropdownContainer}
+          arrowIconStyle={{ width: 20, height: 20 }} showArrowIcon={true}  />
 
         {/* Selected Employee Names */}
         <View style={styles.selectedContainer}>
@@ -201,29 +244,12 @@ const AddShift = () => {
         )}
 
         {/* Attach Event */}
-        <DropDownPicker
-          open={attachEventOpen}
-          value={attachEventValue}
-          items={attachEventItems}
-          setOpen={setAttachEventOpen}
-          setValue={setAttachEventValue}
-          listMode="SCROLLVIEW"
-          placeholder="Attach Event"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          placeholderStyle={{ color: 'red' }}
-        />
+        <DropDownPicker open={attachEventOpen} value={attachEventValue} items={attachEventItems} setOpen={setAttachEventOpen} setValue={setAttachEventValue}
+          listMode="SCROLLVIEW" placeholder="Attach Event" style={styles.dropdown} dropDownContainerStyle={styles.dropdownContainer} placeholderStyle={{ color: 'red' }} />
 
         {/* Description */}
         <Text style={styles.label}>Description</Text>
-        <TextInput
-          style={styles.textInput}
-          multiline
-          numberOfLines={10}
-          placeholder="Enter description here"
-          value={description}
-          onChangeText={setDescription}
-        />
+        <TextInput style={styles.textInput} multiline numberOfLines={10} placeholder="Enter description here" value={description} onChangeText={setDescription} />
 
         {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

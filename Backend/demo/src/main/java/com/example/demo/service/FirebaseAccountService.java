@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.BanquetEmployee;
-import com.example.demo.repository.BanquetEmployeeRepository;
+import com.example.demo.entity.BanquetAccount;
+import com.example.demo.repository.BanquetAccountRepository;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +13,13 @@ import java.util.List;
 public class FirebaseAccountService {
 
     @Autowired
-    private BanquetEmployeeRepository employeeRepository;
+    private BanquetAccountRepository employeeRepository;
 
     // Synchronize all employees in MySQL to Firebase
     public void syncFirebaseAccounts() {
-        List<BanquetEmployee> employees = employeeRepository.findAll();
+        List<BanquetAccount> employees = employeeRepository.findAll();
     
-        for (BanquetEmployee employee : employees) {
+        for (BanquetAccount employee : employees) {
             // Clean up phone number by removing hyphens
             String cleanPhoneNumber = employee.getPhoneNumber().replaceAll("-", "");
             String password = cleanPhoneNumber;
