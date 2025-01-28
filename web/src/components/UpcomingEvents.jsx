@@ -2,6 +2,8 @@ import React, {useState,useEffect}from "react";
 import { useNavigate } from "react-router-dom";
 import EventBar from "./EventBar";
 
+
+
 function filterEvents(day,events){
   if (events) {
   const eventList = events.filter(event => event.eventStartDate.split("T")[0] == day.toISOString().split("T")[0])
