@@ -127,8 +127,8 @@ function getName(empID) {
               <Overlay  headerTitle ={shift.accountId} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
               <div className="flex space-x-2 mt-2">
                 <ShiftDetails/>
-                <button className="basic-button bg-blue-500 text-white"onClick={() => handleEdit(shift.shiftId)}>Edit</button>
-                <button className="basic-button bg-red-500 text-white"onClick={() => handleDelete(shift.shiftId)}>Delete</button>
+                <button className="basic-button "onClick={() => handleEdit(shift.shiftId)}>Edit</button>
+                <button className="basic-button "onClick={() => handleDelete(shift.shiftId)}>Delete</button>
               </div>}/>
             </div>
           ))}

@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+
+//
+
 const BASE_URL =  'http://localhost:8080/api/events';
 
 const formatDate = (e) => {
@@ -50,7 +53,7 @@ const EditEvent =() =>{
     const fetchEvent = async () => {
       try {
         const event = await LoadEvent(eventId);
-        console.log(event);
+        // console.log(event);
         
         if (event) {
           // Update the states with the loaded event data

@@ -21,12 +21,7 @@ function App() {
         <Route path="/" element={<SignIn />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/ManagerDashboard" element={
-
-          <MainLayout> 
-            <ManagerDashboard />
-          </MainLayout>
-
+        <Route path="/ManagerDashboard" element={<MainLayout> <ManagerDashboard /></MainLayout>
         }  />
         <Route path="/Events" element={<MainLayout> <Events /></MainLayout>}/>
         <Route path="/EditEvent/:eventId" element={<MainLayout> <EditEvent /></MainLayout>}/>

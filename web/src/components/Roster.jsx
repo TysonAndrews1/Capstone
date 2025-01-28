@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
 //Created By Tyson
@@ -7,11 +7,10 @@ import { useNavigate } from "react-router-dom";
 export default function Roster(){
     const navigate = useNavigate()
     const [employees, setEmployees] = useState([]);
-    
-        const [filteredEmployees, setFilteredEmployees] = useState([]);
-        const [searchQuery, setSearchQuery] = useState('');
-            const [error, setError] = useState(null);
-    const BASE_URL = 'http://localhost:8080/api/accounts'; //update for employees
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [error, setError] = useState(null);
+    const BASE_URL = 'http://localhost:8080/api/accounts';
         const [activeOverlay, setActiveOverlay] = useState(null)
 
 useEffect(() => {
