@@ -5,6 +5,7 @@ import MainLayout from '../../layouts/MainLayout';
 import CalendarComponent from '../../components/Calender';
 import { useRouter, useNavigation } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function EditEvent() {
   // States for managing event details
@@ -23,7 +24,7 @@ export default function EditEvent() {
   const router = useRouter(); // Navigation hook for screen transitions
 
    // API base URL, adjusted for platform
-  const BASE_URL = Platform.OS === 'android' ? ( 'http://10.0.2.2/api/events') : 'http://localhost:8080/api/events';
+  const BASE_URL = BaseURLConfig();
 
   // States for managing UI elements
   const [showStartCalendar, setShowStartCalendar] = useState(false); // Toggles start date calendar
@@ -52,7 +53,7 @@ export default function EditEvent() {
 
   const fetchEventDetails = async (id) => { // Method to fetch the event details 
     try {
-      const response = await fetch(`${BASE_URL}/${id}`);
+      const response = await fetch(`${BASE_URL}/events/${id}`);
       if (!response.ok) {
         throw new Error(`Failed to fetch event details: ${response.status}`);
       }
