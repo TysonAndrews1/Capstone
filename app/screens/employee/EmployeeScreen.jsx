@@ -88,7 +88,7 @@ const EmployeeScreen = () => {
 
       try {
         const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const response = await fetch(`${BASE_URL}/shifts/${user.accountId}?date=${formattedDate}`);
+        const response = await fetch(`${BASE_URL}/shifts/account/${user.accountId}?date=${formattedDate}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -199,35 +199,41 @@ const EmployeeScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
-
-        {/* Event Details for the Selected Date
+          {/* Event Details for the Selected Date
         Some of this code was generated with assistance from chatGPT
         Prompt: Write a React Native component that displays a list of shifts fetched from an API.
         Use a ScrollView to allow scrolling and display a loading indicator while fetching data. 
          */}
-        <View style={styles.detailsContainer}>
-        <ScrollView>
+          <ScrollView>
           {loading ? (
           <Text>Loading...</Text>
-          ) : filteredShifts.length > 0 ? (
-              filteredShifts.map((shift) => (
-              <View key={shift.shiftId} style={styles.eventContainer}>
-                <View style={styles.dottedLine}></View>
-                  <Text style={styles.timeText}>
-                    {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
-                  </Text>
-                  <Text style={styles.eventDetails}>
-                    {shift.description} 
-                  </Text>
-                  <View style={styles.dottedLine}></View>
-              </View>
+          ) : filteredEvents.length > 0 ? (
+              filteredEvents.map((event) => (
+                  <View key={event.eventId} style={styles.eventContainer}>
+                    <Text style={styles.eventText}>Events</Text>
+                    <View style={styles.dottedLine}></View>
+                      <Text style={styles.eventText}>
+                      {event.eventName} ({event.numberOfGuests} Guests)
+                      </Text>
+                      <Text style={styles.eventText}>
+                        {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                      </Text>
+                      <View style={styles.dottedLine}></View>
+                  </View>
             ))
             ) : (
-                <Text style={styles.noEventsText}>No Shifts for this date.</Text>
+              <View style = {styles.detailsContainer}>
+                <View style = {styles.childContainer}>
+                  <Text style = {styles.orange}>{format(selectedDate, 'd')}</Text>
+                  <Text style={styles.bold}>{format(selectedDate, 'EEE')} </Text>
+                </View>
+                <View style = {styles.childContainer}>
+                  <Text style={styles.bold}> No Shifts for this date.</Text>
+                </View>
+              </View>
                 )}
           </ScrollView>
-          </View>
+        </View>
     </View>
     </MainLayout>
   );
@@ -313,6 +319,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
@@ -321,6 +328,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    marginBottom: 10,
+    alignItems: 'center',
   },
   detailsTitle: {
     fontSize: 18,
@@ -344,6 +353,14 @@ const styles = StyleSheet.create({
     color: '#555',
   },
   eventContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
     marginBottom: 10,
     alignItems: 'center',
   },
@@ -354,17 +371,11 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     borderColor: '#999',
   },
-  timeText: {
+  eventText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
-  },
-  eventDetails: {
-    fontSize: 14,
-    color: '#555',
-    textAlign: 'center',
-    marginBottom: 5,
+    color: '#000',
+    marginBottom: 2,
   },
   noEventsText: {
     fontSize: 16,
@@ -399,5 +410,24 @@ buttonText: {
     color: '#333',
     fontWeight: '500',
     textAlign: 'center',
+},
+childContainer:{
+  flexDirection:"column",
+  justifyContent:'center',
+  margin: 10,
+  textAlign: 'center',
+},
+bold:{
+  fontWeight:'bold',
+  fontSize:16,
+  textAlign:'center',
+},
+orange:{
+  color:"#F4A261",
+  fontSize:20,
+  textAlign:'center',
+},
+grey:{
+  color:'grey',
 },
 });
