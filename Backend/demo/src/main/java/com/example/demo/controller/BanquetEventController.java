@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.demo.entity.BanquetEvent;
 import com.example.demo.repository.BanquetEventRepository;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,7 +59,7 @@ public class BanquetEventController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping // Will use this method to create new events using infomation from the frontend
+    @PostMapping // Create new events using infomation from the frontend
     public BanquetEvent createEvent(@RequestBody BanquetEvent event) {
         return repository.save(event);
     }
@@ -78,5 +77,21 @@ public class BanquetEventController {
             // Return an error message of event does not exist
             return ResponseEntity.status(404).body("Event not found.");
         }
+    }
+
+    @PutMapping("/{eventId}")
+    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId, @RequestBody BanquetEvent updatedEvent) {
+        return repository.findById(eventId)
+            .map(event -> {
+                event.setEventName(updatedEvent.getEventName());
+                event.setEventStartDate(updatedEvent.getEventStartDate());
+                event.setEventEndDate(updatedEvent.getEventEndDate());
+                event.setEventLocation(updatedEvent.getEventLocation());
+                event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
+                event.setAssignedManager(updatedEvent.getAssignedManager());
+                event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
+                return ResponseEntity.ok(repository.save(event));
+            })
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

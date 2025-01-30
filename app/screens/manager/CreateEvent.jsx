@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import MainLayout from '../../layouts/MainLayout';  
 import CalendarComponent from '../../components/Calender';  
 import { useRouter, useNavigation } from 'expo-router';
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 export default function CreateEvent() {
 
@@ -18,6 +19,7 @@ export default function CreateEvent() {
   const [eventManager, setEventManager] = useState(''); // Name of the manager who is in charge
   const [specialRequirements, setSpecialRequirements] = useState(''); // Additional event requirement
   const navigation = useNavigation(); // Navigation hook for screen transitions
+  const BASE_URL = BaseURLConfig();
 
   const router = useRouter(); // Navigation hook for screen transitions
 
@@ -71,15 +73,8 @@ export default function CreateEvent() {
       specialRequirements: specialRequirements,
     };
     
-    console.log('Final Event Data (to be sent to server):', newEvent);
-
-    // API base URL, adjusted for platform
-    const BASE_URL = Platform.OS === 'android' ? ( 
-      'http://10.0.2.2:8080/api/events') : //Android Device & Android Studio (Use your personal ipv4 address)
-      'http://localhost:8080/api/events'; //Computer & iOS
-
     // Send POST request to create the event
-    fetch(BASE_URL, {
+    fetch(`${BASE_URL}/events`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newEvent),

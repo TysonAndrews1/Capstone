@@ -47,7 +47,6 @@ export default function EditEvent() {
         Alert.alert('Error', 'Failed to retrieve event ID.');
       }
     };
-    
     fetchEventIdAndData();
   }, []);
 
@@ -108,11 +107,9 @@ export default function EditEvent() {
       assignedManager: eventManager,
       specialRequirements,
     };
-    
-    console.log('Final Event Data (to be sent to server):', updatedEvent); // This sends a message to the console with the updated event data
 
     try {
-      const response = await fetch(`${BASE_URL}/${eventId}`, { // Update the event using the PUT method
+      const response = await fetch(`${BASE_URL}/events/${eventId}`, { // Update the event using the PUT method
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedEvent),
@@ -254,7 +251,7 @@ export default function EditEvent() {
 
         {/* Submit button */}
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Create Event</Text>
+          <Text style={styles.submitButtonText}>Save Event</Text>
         </TouchableOpacity>
       </ScrollView>
     </MainLayout>
