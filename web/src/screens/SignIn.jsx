@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../firebase/firebase';
+import {handleLogin}  from '../firebase/auth';
 import { useNavigate } from 'react-router-dom';
-
+import {auth} from '../firebase/firebase';
 //Created by Michelle and Tyson
 //With help from Chat-GPT to fine tune the Tailwind CSS
 //This is a standard Sign in page allowing for only verified users to access the webpage or redirecting to the forgot password page
@@ -13,17 +12,8 @@ function SignIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const BASE_URL = "http://localhost:8080/api"
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/ManagerDashboard');
-    } catch (err) {
-      setError(err.message);
-    }
-  };
   const ToForgotPassword = ()=>{
     try {
       navigate('/ForgotPassword');
@@ -32,9 +22,62 @@ function SignIn() {
     }
   }
 
+  const onLoginPress = async () => {
+    console.log("check2");
+    
+    if (!email || !password) {
+        setError("Error", "Please enter both email and password.");
+  
+        
+        return;
+    }
+
+    try {
+        // Using Firebase Authentication
+  
+        const firebaseUser = await handleLogin(email, password);
+        console.log("Logged in user:", firebaseUser); // Firebase user object
+        
+        // Fetching role from the MySQL
+        const fetchUserRole = async (email) => {
+            
+            try {
+                const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+                console.log(response);
+                
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch user role: ${response.status}`);
+                }
+        
+                const data = await response.json();
+                return data.role;
+            } catch (error) {
+                console.error("Error fetching user role:", error.message);
+                throw error;
+            }
+        };
+
+        // Checking the role, then navigate each screen.
+        const role = await fetchUserRole(email);
+        console.log("User role:", role);
+
+        if (role === 'Manager') {
+            navigate('/ManagerDashboard');
+        } else if (role === 'Employee') {
+            navigate('/Home');
+        } else {
+            setError("Error", "Invalid AccountType. Please contact support.");
+        }
+        
+        
+    } catch (error) {
+        setError("Login Failed", error.message);
+    }
+};
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <form className="bg-white p-7 rounded-2xl shadow-lg w-80" onSubmit={handleLogin}>
+      <form className="bg-white p-7 rounded-2xl shadow-lg w-80" >
         {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
         <h1 className="text-2xl font-bold mb-4 text-center">Sign In</h1>
         <input
@@ -61,8 +104,10 @@ function SignIn() {
           forgot password
         </button>
         <button
-          type="submit"
-          className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue"
+          type="button"
+          className="w-full bg-main-blue text-white font-bold p-2 rounded hover:bg-hover-blue
+          "
+          onClick={()=>{onLoginPress()}}
         >
           Login
         </button>
