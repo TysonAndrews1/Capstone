@@ -1,5 +1,5 @@
 import React from "react";
-
+import { auth } from '../firebase/firebase';
 
 const BASE_URL =  'http://localhost:8080/api'
 
@@ -49,3 +49,23 @@ export const getEvents = async () =>{
     //   setError('Failed to fetch events. Please try again later.');
     }
 }
+
+export const getCurrentUser = async() =>{
+  
+  
+  let email =  auth.currentUser.email
+  console.log(email);
+  
+  try{
+  const response = await fetch (`${BASE_URL}/accounts/user?email=${email}`)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data
+
+   // Update the state with the fetched events
+} catch (err) {
+  console.error('Error fetching Account:', err);
+//   setError('Failed to fetch events. Please try again later.');
+}}
