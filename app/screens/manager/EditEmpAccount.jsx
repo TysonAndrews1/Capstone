@@ -95,7 +95,7 @@ export default function EditEmpAccount({}) {
                     address,
                     phoneNumber,
                     role,
-                    status: status === '1', // This will convert "1" to true, "0" to false
+                    status: status
                 }),
             });
 
@@ -206,8 +206,8 @@ export default function EditEmpAccount({}) {
                             onValueChange={(itemValue) => setStatus(itemValue)}
                         >
                             <Picker.Item label="Select Status" value="" />
-                            <Picker.Item label="Active" value="1" />
-                            <Picker.Item label="Inactive" value="0" />
+                            <Picker.Item label="Active" value="ACTIVE" />
+                            <Picker.Item label="Inactive" value="INACTIVE" />
                         </Picker>
                     </View>
                 </View>

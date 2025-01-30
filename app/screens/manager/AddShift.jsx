@@ -36,15 +36,13 @@ const AddShift = () => {
   const [attachEventItems, setAttachEventItems] = useState([]);
   const [description, setDescription] = useState('');
 
-  // Backend API endpoints
-  const EMPLOYEE_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/accounts': 'http://localhost:8080/api/accounts';
-  const EVENTS_URL = Platform.OS === 'android'? 'http://10.0.2.2:8080/api/events': 'http://localhost:8080/api/events';
+  const BASE_URL = BaseURLConfig();
 
   // Fetch employee data from the backend
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get(`${BaseURLConfig()}/accounts`);
+        const response = await axios.get(`${BASE_URL}/accounts`);
         const employeeData = response.data.map(employee => ({
           label: `${employee.firstName} ${employee.lastName}`,
           value: employee.accountId,
@@ -68,7 +66,7 @@ const AddShift = () => {
     const fetchEvents = async () => {
       if (attachEventOpen) {
         try {
-          const response = await axios.get(`${BaseURLConfig()}/events?date=${selectedDate}`);
+          const response = await axios.get(`${BASE_URL}/events?date=${selectedDate}`);
           console.log('API Response:', response.data);
     
           // Convert the selected date to UTC
@@ -141,7 +139,7 @@ const AddShift = () => {
         };
 
         // Post each shift to all selected employees
-        return fetch(`${BaseURLConfig()}/shifts`, {
+        return fetch(`${BASE_URL}/shifts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(shiftData),
