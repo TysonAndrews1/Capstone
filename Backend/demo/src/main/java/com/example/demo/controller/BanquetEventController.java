@@ -76,7 +76,7 @@ public class BanquetEventController {
         }
     }
 
-    @PutMapping("/{eventId}")
+    @PutMapping("/{eventId}") // Update event by eventId
     public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId, @RequestBody BanquetEvent updatedEvent) {
         return repository.findById(eventId)
             .map(event -> {

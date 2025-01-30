@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.service.annotation.DeleteExchange;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,7 +62,7 @@ public class BanquetShiftController {
         }
     }
 
-    @DeleteMapping({"/{shiftId}"}) // Delete shift by shiftId.
+    @DeleteMapping("/{shiftId}") // Delete shift by shiftId.
     public ResponseEntity<String> deleteShift(@PathVariable Long shiftId){
         if (repository.existsById(shiftId)) { // Check if shift exists
             repository.deleteById(shiftId); // Delete specific event
@@ -74,4 +72,16 @@ public class BanquetShiftController {
         }
     }
 
+    @PutMapping("/{shiftId}") // Update shift by shiftId
+    public ResponseEntity<BanquetShift> updateShift(@PathVariable Long shiftId, @RequestBody BanquetShift updatedShift) {
+        return repository.findById(shiftId)
+        .map(shift -> {
+            shift.setShiftStartDate(updatedShift.getShiftStartDate());
+            shift.setShiftEndDate(updatedShift.getShiftEndDate());
+            shift.setDescription(updatedShift.getDescription());
+            shift.setSwappable(updatedShift.getSwappable());
+            return ResponseEntity.ok(repository.save(shift));
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
