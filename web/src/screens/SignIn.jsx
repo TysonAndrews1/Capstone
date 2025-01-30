@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {handleLogin}  from '../firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import {auth} from '../firebase/firebase';
 //Created by Michelle and Tyson
 //With help from Chat-GPT to fine tune the Tailwind CSS
 //This is a standard Sign in page allowing for only verified users to access the webpage or redirecting to the forgot password page
@@ -23,7 +22,6 @@ function SignIn() {
   }
 
   const onLoginPress = async () => {
-    console.log("check2");
     
     if (!email || !password) {
         setError("Error", "Please enter both email and password.");
@@ -43,7 +41,6 @@ function SignIn() {
             
             try {
                 const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
-                console.log(response);
                 
                 if (!response.ok) {
                     throw new Error(`Failed to fetch user role: ${response.status}`);

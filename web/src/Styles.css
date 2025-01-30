@@ -6,3 +6,6 @@
 .basic-button{
    @apply px-4 py-2 w-48 bg-main-blue text-white font-bold rounded
 }
+.input-field{
+   @apply rounded-lg border-gray-600 border-2
+}

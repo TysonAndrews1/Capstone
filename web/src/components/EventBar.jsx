@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import MiniSchedule from './MiniSchedule';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './Overlay';
+import CreateShift from './CreateShift';
+import EditEvent from '../screens/EditEvent';
 //Made By Aaron, Tyson and Michelle 
 //Converted from React Native with help from Chat-GPT
 
@@ -22,7 +24,7 @@ function format(date) {
   }
 
 
-export default function EventBar({ events}) {
+export default function EventBar({events}) {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate(); // Initialize the router
   const [activeOverlay, setActiveOverlay]= useState(false)
@@ -35,12 +37,6 @@ export default function EventBar({ events}) {
   const closeOverlay = () => {
     setSelectedEvent(null);
     setActiveOverlay(false);
-  };
-
-  const handleEdit = () => {
-    // Navigate to the Edit screen
-    navigate(`/EditEvent/${selectedEvent.eventId}`)
-    closeOverlay();
   };
 
   const handleDelete = () => {
@@ -118,9 +114,9 @@ export default function EventBar({ events}) {
 
             {/* Edit and Delete buttons */}
             <div className="modal-actions">
-              <button className="basic-button w-24" onClick={handleEdit}>
-                Edit 
-              </button>
+              <Overlay child={<EditEvent eventId={selectedEvent.eventId}/>} headerTitle={"Edit Shift"} ButtonTitle={"Edit Shift"} buttonPlacement={"top-[50vh]"} 
+                          isActive={activeOverlay === "Edit Shift"} 
+                      onToggle={setActiveOverlay}/>
               <button className="basic-button w-24 my-1" onClick={handleDelete}>
                 Delete
               </button>

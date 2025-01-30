@@ -35,11 +35,11 @@ const LoadEvent = async (eventId) => {
   }
 };
 
-const EditEvent =() =>{
+const EditEvent =({eventId}) =>{
 
   const navigate = useNavigate();
-  const { eventId } = useParams(); // Get the event ID from the URL
-  const [loading, setLoading] = useState(true); // For handling loading state
+  // const { eventId } = useParams(); // Get the event ID from the URL
+  const [loading, setLoading] = useState(false); // For handling loading state
   const [error, setError] = useState(""); // For handling errors
   const [eventTitle, setEventTitle] = useState('');
   const [startDate, setStartDate] = useState(new Date());
@@ -115,69 +115,100 @@ const EditEvent =() =>{
 
     }
 
-    return(
-    <main>
-        <form onSubmit={handleSubmit}>
-        <div>
-        <input
-          type="text"
-          value={eventTitle}
-          onChange={(e) => setEventTitle(e.target.value)}
-        />
-        <label>Event Title</label>
-      </div>
-      <div>
-        <input
-          type="datetime-local"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <label>Start Date</label>
-      </div>
-      <div>
-          <input
-            type="datetime-local"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-        <label>End Date</label>
-      </div>
-
-      <div>
-        <input
-          type="text"
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
-        />
-        <label>Room</label>
-      </div>
-      <div>
-        <input
-          type="number"
-          value={numberOfGuests}
-          onChange={(e) => setNumberOfGuests(Number(e.target.value))}
-        />
-        <label>Amount of people</label>
-      </div>
-      <div>
-        <input
-          type="text"
-          value={eventManager}
-          onChange={(e) => setEventManager(e.target.value)}
-        />
-        <label>Presiding Manager</label>
-      </div>
-      <div>
-        <input
-          type="text"
-          value={specialRequirements}
-          onChange={(e) => setSpecialRequirements(e.target.value)}
-        />
-        <label>Description</label>
-      </div>
-      <button type="submit" className="basic-button">Save</button>
+    return (
+      <main className="w-72 bg-white  p-2 rounded-lg shadow-md">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Event Title */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Event Title</label>
+            <input
+              type="text"
+              value={eventTitle}
+              onChange={(e) => setEventTitle(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Start Date */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Start Date</label>
+            <input
+              type="datetime-local"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* End Date */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">End Date</label>
+            <input
+              type="datetime-local"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Room */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Room</label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Amount of People */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Amount of People</label>
+            <input
+              type="number"
+              value={numberOfGuests}
+              onChange={(e) => setNumberOfGuests(Number(e.target.value))}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Presiding Manager */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Presiding Manager</label>
+            <input
+              type="text"
+              value={eventManager}
+              onChange={(e) => setEventManager(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Description */}
+          <div className="flex flex-col">
+            <label className="text-sm font-medium text-gray-700">Description</label>
+            <input
+              type="text"
+              value={specialRequirements}
+              onChange={(e) => setSpecialRequirements(e.target.value)}
+              className="input-field"
+            />
+          </div>
+  
+          {/* Buttons */}
+          <div className="flex justify-center">
+            <button type="submit" className="basic-button w-full">Save</button>
+          </div>
         </form>
-        <button type="button" className="basic-button my-1" onClick={()=>navigate("/Events")}>Go Back</button>
-    </main>)
-}
+  
+        {/* <button
+          type="button"
+          className="basic-button w-full mt-2"
+          onClick={() => navigate("/Events")}
+        >
+          Close
+        </button> */}
+      </main>
+    );
+  };
 export default EditEvent;
