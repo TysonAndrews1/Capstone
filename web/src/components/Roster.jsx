@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { useNavigate } from "react-router-dom";
+import { getAccounts } from "./FetchData";
 
 //Created By Tyson
 //The Home Page dedicated to future navigation of the page 
@@ -14,27 +15,8 @@ export default function Roster(){
         const [activeOverlay, setActiveOverlay] = useState(null)
 
 useEffect(() => {
-    
-    const fetchEmployees = async () => {
-        setError(true);
-        try {
-            const response = await fetch(`${BASE_URL}`);
-            if (!response.ok) {
-                throw new Error('Error fetching employees');
-            }
-            const data = await response.json();
-            // console.log(data);
-            
-            setEmployees(data);
-            setFilteredEmployees(data);
-        } catch (error) {
-            console.error(error);
-            setError('Error', 'Failed to fetch employee accounts.');
-        }
-    };
-
-    fetchEmployees(); // calling fetchEmployees will load the data
-}, []);
+    getAccounts().then(Accounts => setEmployees(Accounts)) // Gets the resolved data
+  }, []);
 
     useEffect(() => {
         if (!searchQuery.trim()) {
