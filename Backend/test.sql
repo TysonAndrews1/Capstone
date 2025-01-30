@@ -125,7 +125,7 @@ DROP TABLE IF EXISTS `employee_shifts`;
 -- Creates employee_shifts table structure with foreign key relationships
 CREATE TABLE `employee_shifts` (
   `shift_id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
   `event_id` int NOT NULL,   -- Foreign key referencing banquet_events
   `shift_start_date` datetime NOT NULL,
   `shift_end_date` datetime NOT NULL,
@@ -200,12 +200,12 @@ DROP TABLE IF EXISTS `employee_availability`;
 -- Creates employee_availability table structure with foreign key relationships
 CREATE TABLE `employee_availability` (
   `availability_id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
   `day_of_week` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
   `start_time` time,
   `end_time` time,
   PRIMARY KEY (`availability_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
