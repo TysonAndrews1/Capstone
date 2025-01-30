@@ -13,6 +13,8 @@ const EmployeeScreen = () => {
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
   const [loading, setLoading] = useState(false); // State for handling Loading
   const [error, setError] = useState(null); // State for handling errors
+  const [shifts, setShifts] = useState([]);
+
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -71,6 +73,42 @@ const EmployeeScreen = () => {
     fetchEvents();
   }, [selectedDate]);
 
+  /**
+   * This code was generated with assistance from chatGPT.
+   * Prompt: Write a React Native code using useEffect to fetch data based on a specific user's accountId
+   * and a selected date. The API URL should follow the format /shifts/{accountId}?date={formattedDate}.
+   * Include error handling and loading state in the implementation.
+   */
+  useEffect(() => {
+    const fetchShifts = async () => {
+      if (!user || !user.accountId) return;
+  
+      setLoading(true);
+      setError(null);
+
+      try {
+        const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+        const response = await fetch(`${BASE_URL}/shifts/${user.accountId}?date=${formattedDate}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setShifts(Array.isArray(data) ? data : []);
+
+      } catch (err) {
+        console.error('Error fetching shifts:', err);
+        setError('Failed to fetch shifts. Please try again.');
+        setShifts([]); 
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchShifts();
+  }, [selectedDate, user]);
+
   // Helper function to display a greeting based on the time of day
   const getTimeOfDayMessage = () => {
     const hour = new Date().getHours();
@@ -87,6 +125,11 @@ const EmployeeScreen = () => {
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.eventStartDate);
     return isSameDay(eventDate, selectedDate);
+  });
+
+  const filteredShifts = shifts.filter((shift) => {
+    const shiftDate = new Date(shift.shiftStartDate);
+    return isSameDay(shiftDate, selectedDate);
   });
 
   return (
@@ -157,6 +200,34 @@ const EmployeeScreen = () => {
             ))}
           </View>
         </View>
+
+        {/* Event Details for the Selected Date
+        Some of this code was generated with assistance from chatGPT
+        Prompt: Write a React Native component that displays a list of shifts fetched from an API.
+        Use a ScrollView to allow scrolling and display a loading indicator while fetching data. 
+         */}
+        <View style={styles.detailsContainer}>
+        <ScrollView>
+          {loading ? (
+          <Text>Loading...</Text>
+          ) : filteredShifts.length > 0 ? (
+              filteredShifts.map((shift) => (
+              <View key={shift.shiftId} style={styles.eventContainer}>
+                <View style={styles.dottedLine}></View>
+                  <Text style={styles.timeText}>
+                    {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
+                  </Text>
+                  <Text style={styles.eventDetails}>
+                    {shift.description} 
+                  </Text>
+                  <View style={styles.dottedLine}></View>
+              </View>
+            ))
+            ) : (
+                <Text style={styles.noEventsText}>No Shifts for this date.</Text>
+                )}
+          </ScrollView>
+          </View>
     </View>
     </MainLayout>
   );

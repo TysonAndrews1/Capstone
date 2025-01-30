@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Overlay from "../Overlay";
 import ShiftDetails from "./ShiftDetails";
+import { getAccounts,getShifts } from "../FetchData";
 //A small shift which opens a overlay to allow editing or deletion
 // created using chatgpt for array manipulation and HTML formatting
 
@@ -34,37 +35,6 @@ export default function MiniShift({ selectedDay }) {
   const BASE_URL_SHIFT = "http://localhost:8080/api/shifts";
   const BASE_URL_EMP = "http://localhost:8080/api/accounts";
 
-  // Fetch shifts from the backend
-  const fetchShifts = async () => {
-    try {
-      const response = await fetch(BASE_URL_SHIFT);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setShifts(data); // Update shifts state
-      setError(null); // Clear error state
-    } catch (err) {
-      console.error("Error fetching shifts:", err);
-      setError("Failed to fetch shifts. Please try again later.");
-    }
-  };
-
-  const FetchEmployees = async () =>{
-    try {
-        const response = await fetch(BASE_URL_EMP);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setEmp(data); // Update shifts state
-        
-        setError(null); // Clear error state
-      } catch (err) {
-        console.error("Error fetching shifts:", err);
-        setError("Failed to fetch shifts. Please try again later.");
-      }
-    };
   // Filter shifts whenever `selectedDay` or `shifts` changes
   useEffect(() => {
     const filtered = filterShiftsByDay(selectedDay, shifts);
@@ -73,10 +43,10 @@ export default function MiniShift({ selectedDay }) {
 
   // Fetch shifts when the component mounts
   useEffect(() => {
-    fetchShifts();
+    getShifts().then(shifts => setShifts(shifts)) // Gets the resolved data
   }, []);
   useEffect(() => {
-    FetchEmployees();
+    getAccounts().then(accounts => setEmp(accounts)) // Gets the resolved data  
   }, []);
   // Handle edit action
   const handleEdit = (shiftId) => {
@@ -127,8 +97,8 @@ function getName(empID) {
               <Overlay  headerTitle ={shift.accountId} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
               <div className="flex space-x-2 mt-2">
                 <ShiftDetails/>
-                <button className="basic-button bg-blue-500 text-white"onClick={() => handleEdit(shift.shiftId)}>Edit</button>
-                <button className="basic-button bg-red-500 text-white"onClick={() => handleDelete(shift.shiftId)}>Delete</button>
+                <button className="basic-button "onClick={() => handleEdit(shift.shiftId)}>Edit</button>
+                <button className="basic-button "onClick={() => handleDelete(shift.shiftId)}>Delete</button>
               </div>}/>
             </div>
           ))}

@@ -4,6 +4,7 @@ import UpcomingEvents from "./UpcomingEvents";
 import MiniShift from "./Shifts/MiniShift";
 import ShiftDetails from "./Shifts/ShiftDetails";
 import Overlay from "./Overlay";
+import Roster from "./Roster";
 export default function WeeklyCalender(){
     const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0])
     const [activeOverlay,setActiveOverlay] =useState(false)
@@ -73,7 +74,7 @@ export default function WeeklyCalender(){
       </div>
               {/* Weekly Calendar */}
       <div className="flex flex-nowrap justify-between items-stretch mt-4 h-[70vh]">
-        {weekDays.map((day, index) => (
+        {weekDays.map((day) => (
           <div
             key={day}
             className="flex-1 flex flex-col items-center justify-center border  p-4 bg-gray-200 rounded shadow-md min-w-[12%] max-w-[14%]"
@@ -91,7 +92,8 @@ export default function WeeklyCalender(){
       <div className="mt-4 py-4 text-center bg-gray-100 border-t">
         <p className="text-sm text-gray-500">Footer (if needed)</p>
         <button className="basic-button" onClick={CreateEvent}>Create New Event</button>
-        <Overlay  headerTitle ={"test"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
+        <Overlay  headerTitle ={"test"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay=="test"} onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
+        <Overlay  headerTitle ={"roster"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "roster"} onToggle={setActiveOverlay} child= {<Roster/>}/>
       </div>
     </div>
 )
