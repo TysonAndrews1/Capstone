@@ -100,8 +100,8 @@ const EditEvent =({eventId}) =>{
             specialRequirements: specialRequirements,
           };
 
-          fetch(BASE_URL, {
-            method: 'POST',
+          fetch(`${BASE_URL}/${eventId}`, {
+            method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },

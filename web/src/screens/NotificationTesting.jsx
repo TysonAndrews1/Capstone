@@ -10,12 +10,11 @@ const name = "bob"
 //     senderUserId :"auth.currentUser.uid",
 //     recipientsId:[],
 //     type: "announcement",
-//     threadID: "threadID",
-//     threadData: "threadData",
+//     notificationID: "ID",
+//     notficationData: "Data",
 //     timestamp: "moment().format()",
 //     isRead: false,
-
-// }
+//}
 
 //   const BASE_URL = "http://localhost:8080/api"
 // const fetchUserRole = async (email) => {
