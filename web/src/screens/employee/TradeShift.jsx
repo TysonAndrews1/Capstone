@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { getAuth } from 'firebase/auth';
 
 
 /**
@@ -13,8 +14,31 @@ export default function TradeShift() {
   const [accounts, setAccounts] = useState([]);
   const [shifts, setShifts] = useState([]);
   const [selectedCoworker, setSelectedCoworker] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState({
+    shifts: [
+      { shiftId: 4, shiftStartDate: '2025-02-01 08:00', shiftEndDate: '2025-02-01 16:00' },
+      { shiftId: 5, shiftStartDate: '2025-02-03 09:00', shiftEndDate: '2025-02-03 17:00' }
+    ]
+  });
 
   const BASE_URL = 'http://localhost:8080/api';
+
+  // Function to fetch the logged-in user's data from the backend
+  const fetchLoggedInUser = async (email) => {
+    try {
+      const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setLoggedInUser(data);
+    } catch (error) {
+      console.error('Error fetching logged-in user data:', error.message);
+      throw error;
+    }
+  };
+
+
 
   // Function to fetch all employee banquet accounts from the backend 
   const fetchAccounts = async () => {
@@ -51,8 +75,7 @@ export default function TradeShift() {
     }
   };
 
-
-    useEffect(() => { 
+    useEffect(() => {
       fetchAccounts();
     }, []);
 
@@ -72,6 +95,9 @@ export default function TradeShift() {
         {/* Current Logged in User */}
         <div className="mb-4">
           <h1 className="text-lg font-bold mb-4">Current User</h1>
+          <p>{loggedInUser.email}</p>
+          <p>{loggedInUser.firstName} {loggedInUser.lastName}</p>
+          
         </div>
 
         {/* Dropdown to select the current logged in user's shift */}
@@ -79,6 +105,7 @@ export default function TradeShift() {
           <h1 className="text-lg font-bold mb-4">Your Shifts</h1>
         <select className="w-full p-2 border border-gray-300 rounded">
           <option value="">-- Select Shift --</option>
+          {loggedInUser.shifts.map((shift) => (<option key={shift.shiftId} value={shift.shiftId}>{shift.shiftStartDate} to {shift.shiftEndDate}</option>))}
         </select>
         </div>
 
@@ -111,6 +138,14 @@ export default function TradeShift() {
           ))}
         </select>
         </div>
+
+        {/* Button to trade shifts */}
+        <div className="mb-4">
+          <button className="bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded">
+            Trade Shift
+          </button>
+        </div>
+
 
       </div>
     );
