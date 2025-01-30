@@ -1,28 +1,12 @@
 import React, { useState, useEffect } from "react"; 
 import  { FaPlus } from "react-icons/fa";
-
+import { getShifts } from "../FetchData";
 
 export default function ShiftGrab() {
   const [shifts, setShifts] = useState([]);
 
-  const BASE_URL = 'http://localhost:8080/api';
-
-  const fetchShifts = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/shifts`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setShifts(data);
-      console.log("Fetched shifts:", data);
-    } catch (err) {
-      console.error('Error fetching shifts:', err);
-    }
-  };
-
   useEffect(() => {
-    fetchShifts();
+    getShifts().then(shifts => setShifts(shifts)) // Gets the resolved data
   }, []);
 
   return (

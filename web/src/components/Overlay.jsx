@@ -43,7 +43,7 @@ export default function Overlay({ child, headerTitle, ButtonTitle, buttonPlaceme
           </button>
           <h1 className="text-2xl font-bold ml-4">{headerTitle}</h1>
         </header>
-        <div className="overflow-y-auto h-[calc(100%-64px)] px-6 py-4">
+        <div className="overflow-y-auto h-[calc(100%-64px)] px-4 py-4">
           {child}
         </div>
       </div>
