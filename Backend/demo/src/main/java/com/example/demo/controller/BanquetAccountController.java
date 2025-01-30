@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,13 +10,10 @@ import com.example.demo.entity.BanquetAccount;
 import com.example.demo.repository.BanquetAccountRepository;
 import com.example.demo.service.FirebaseAccountService;
 
-
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // Tells Spring to handle any HTTP requests and return a JSON format
 @RequestMapping("/api/accounts") // Any HTTP request to this endpoint will be routed to this controller
 public class BanquetAccountController {
-
-
 
     @Autowired
     private FirebaseAccountService firebaseAccountService;
@@ -93,10 +89,10 @@ public class BanquetAccountController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } // Return 404 if no employee found
-        }
+    }
+
     @PostMapping // Will use this method to create new events using infomation from the frontend
     public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
         return repository.save(account);
     }
-
 }
