@@ -9,8 +9,6 @@ import { getEvents } from "./FetchData";
 
 function filterEvents(day,events){
   if (events) {
-    console.log(events);
-    
   const eventList = events.filter(event => event.eventStartDate.split("T")[0] == day.toISOString().split("T")[0])
   return eventList
   }

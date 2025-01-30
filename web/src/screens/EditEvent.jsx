@@ -87,10 +87,10 @@ const EditEvent =({eventId}) =>{
           return;
           
         }
+        if(eventId){
         
         const BASE_URL = 'http://localhost:8080/api/events';
         const newEvent = {
-            eventId: eventId,
             eventName: eventTitle,
             eventStartDate: startDate,
             eventEndDate: endDate,
@@ -112,7 +112,32 @@ const EditEvent =({eventId}) =>{
               console.error('Error creating event:', error);
               alert("Error", "Failed to create event");
             });
-
+          }else{
+            const BASE_URL = 'http://localhost:8080/api/events';
+            const newEvent = {
+                eventId: eventId,
+                eventName: eventTitle,
+                eventStartDate: startDate,
+                eventEndDate: endDate,
+                eventLocation: location,
+                numberOfGuests: parseInt(numberOfGuests),
+                assignedManager: eventManager,
+                specialRequirements: specialRequirements,
+              };
+    
+              fetch(`${BASE_URL}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newEvent),
+                })
+                .then((response) => response.json())
+                .catch((error) => {
+                  console.error('Error creating event:', error);
+                  alert("Error", "Failed to create event");
+                });
+          }
     }
 
     return (
