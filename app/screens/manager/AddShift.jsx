@@ -5,6 +5,8 @@ import { useGlobalSearchParams } from 'expo-router';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
 import DropDownPicker from 'react-native-dropdown-picker';
+import BaseURLConfig from '../../config/BaseURLConfig';
+
 
 const AddShift = () => {
   // Extract selected date from parameters
@@ -42,7 +44,7 @@ const AddShift = () => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get(EMPLOYEE_URL);
+        const response = await axios.get(`${BaseURLConfig()}/accounts`);
         const employeeData = response.data.map(employee => ({
           label: `${employee.firstName} ${employee.lastName}`,
           value: employee.accountId,
@@ -66,7 +68,7 @@ const AddShift = () => {
     const fetchEvents = async () => {
       if (attachEventOpen) {
         try {
-          const response = await axios.get(`${EVENTS_URL}?date=${selectedDate}`);
+          const response = await axios.get(`${BaseURLConfig()}/events?date=${selectedDate}`);
           console.log('API Response:', response.data);
     
           // Convert the selected date to UTC
@@ -139,7 +141,7 @@ const AddShift = () => {
         };
 
         // Post each shift to all selected employees
-        return fetch('http://10.0.0.244:8080/api/shifts', {
+        return fetch(`${BaseURLConfig()}/shifts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(shiftData),

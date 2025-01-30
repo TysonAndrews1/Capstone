@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
-
 import com.example.demo.entity.BanquetShift;
 import com.example.demo.repository.BanquetShiftRepository;
 
@@ -30,15 +28,26 @@ public class BanquetShiftController {
         return repository.findAll();
     }
 
-    @GetMapping("/{shiftId}") // Get a specific shift by ID
-    public ResponseEntity<BanquetShift> getShiftById(@PathVariable Long shiftId) {
-        // Retrieve the shift by ID using the repository
-        Optional<BanquetShift> shift = repository.findById(shiftId);
+    // @GetMapping("/{shiftId}") // Get a specific shift by ID
+    // public ResponseEntity<BanquetShift> getShiftById(@PathVariable Long shiftId) {
+    //     // Retrieve the shift by ID using the repository
+    //     Optional<BanquetShift> shift = repository.findById(shiftId);
 
-        if (shift.isPresent()) {
-            return ResponseEntity.ok(shift.get()); // Return the event if found
+    //     if (shift.isPresent()) {
+    //         return ResponseEntity.ok(shift.get()); // Return the event if found
+    //     } else {
+    //         return ResponseEntity.status(404).body(null); // Return 404 if event not found
+    //     }
+    // }
+
+    @GetMapping("/{accountId}")
+    public ResponseEntity<List<BanquetShift>> getShiftByAccountId(@PathVariable Long accountId) {
+        List<BanquetShift> shifts = repository.findAllByAccountId(accountId);
+        
+        if (shifts.isEmpty()) {
+            return ResponseEntity.ok(shifts); // 빈 리스트 반환
         } else {
-            return ResponseEntity.status(404).body(null); // Return 404 if event not found
+            return ResponseEntity.ok(shifts); // 데이터가 있으면 리스트 반환
         }
     }
 
