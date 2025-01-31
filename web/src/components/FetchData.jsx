@@ -1,5 +1,5 @@
-import React from "react";
-import { auth } from "../firebase/firebase";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 
 const BASE_URL =  'http://localhost:8080/api'
 
@@ -70,8 +70,40 @@ export const getEvents = async () =>{
     //   setError('Failed to fetch events. Please try again later.');
     }
 }
-export const getNotifications = async () =>{
 
+
+/**
+ * Reference: OpenAI, "ChatGPT," Personal Communication, Jan. 30, 2025.
+ * Prompt: "Update the function to ensure firebase authentication is performed before fetching the user data." 
+ * 
+ */
+export const getCurrentUser = async () => {
+  return new Promise((resolve, reject) => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const email = user.email;
+        console.log(email);
+
+        try {
+          const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          resolve(data);
+        } catch (err) {
+          console.error('Error fetching Account:', err);
+          reject(err);
+        }
+      } else {
+        reject(new Error('No user is currently logged in'));
+      }
+    });
+  });
+};
+
+export const getNotifications = async () =>{
 
   try{
     const response = await fetch(`${BASE_URL}/notifications`);
@@ -87,5 +119,3 @@ export const getNotifications = async () =>{
     //   setError('Failed to fetch events. Please try again later.');
     }
   }
-
-

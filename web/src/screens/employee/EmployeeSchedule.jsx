@@ -6,6 +6,7 @@ import ShiftGrabs from '../../components/Shifts/ShiftGrabs';
 
 
 
+
 /**
  * Created by: Michelle Tran
  * The EmployeeSchedule component is the main screen for employees to view their schedule, trade shifts, and change availability.
@@ -19,6 +20,7 @@ export default function EmployeeSchedule() {
       </div>
 
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
+      
 
       {/* Overlay for Grab Shift component */}
       <Overlay child={<ShiftGrabs/>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}
