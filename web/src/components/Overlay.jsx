@@ -20,7 +20,7 @@ export default function Overlay({ child, headerTitle, ButtonTitle, buttonPlaceme
     <div>
       <button
         onClick={toggleSidebar}
-        className={`fixed basic-button ${buttonPlacement} z-10`} // Ensure button has lower z-index than overlay
+        className={` basic-button ${buttonPlacement} z-10`} // Ensure button has lower z-index than overlay
       >
         {ButtonTitle}
       </button>

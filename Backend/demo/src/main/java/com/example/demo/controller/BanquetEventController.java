@@ -28,7 +28,7 @@ public class BanquetEventController {
     public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
         // Retrieve the event by ID using the repository
         Optional<BanquetEvent> event = repository.findById(eventId);
-        
+
         if (event.isPresent()) {
             return ResponseEntity.ok(event.get()); // Return the event if found
         } else {
@@ -80,18 +80,19 @@ public class BanquetEventController {
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId, @RequestBody BanquetEvent updatedEvent) {
+    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId,
+            @RequestBody BanquetEvent updatedEvent) {
         return repository.findById(eventId)
-            .map(event -> {
-                event.setEventName(updatedEvent.getEventName());
-                event.setEventStartDate(updatedEvent.getEventStartDate());
-                event.setEventEndDate(updatedEvent.getEventEndDate());
-                event.setEventLocation(updatedEvent.getEventLocation());
-                event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
-                event.setAssignedManager(updatedEvent.getAssignedManager());
-                event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
-                return ResponseEntity.ok(repository.save(event));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(event -> {
+                    event.setEventName(updatedEvent.getEventName());
+                    event.setEventStartDate(updatedEvent.getEventStartDate());
+                    event.setEventEndDate(updatedEvent.getEventEndDate());
+                    event.setEventLocation(updatedEvent.getEventLocation());
+                    event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
+                    event.setAssignedManager(updatedEvent.getAssignedManager());
+                    event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
+                    return ResponseEntity.ok(repository.save(event));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
