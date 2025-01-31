@@ -12,9 +12,10 @@ import { getCurrentUser } from '../../components/FetchData';
 
 export default function TradeShift() {
   const [accounts, setAccounts] = useState([]);
-  const [shifts, setShifts] = useState([]);
+  const [userShifts, setUserShifts] = useState([]);
+  const [coworkerShifts, setCoworkerShifts] = useState([]);
   const [selectedCoworker, setSelectedCoworker] = useState('');
-  const [loggedInUser, setLoggedInUser] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState(null);
 
   const BASE_URL = 'http://localhost:8080/api';
 
@@ -36,9 +37,10 @@ export default function TradeShift() {
     }
   };
 
-  const fetchShifts = async (accountId) => {
+
+  const fetchShifts = async (accountId, setShifts) => {
     try {
-      const response = await fetch(`${BASE_URL}/shifts`);
+      const response = await fetch(`${BASE_URL}/shifts?accountId=${accountId}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -59,6 +61,7 @@ export default function TradeShift() {
         try {
           const userData = await getCurrentUser();
           setLoggedInUser(userData);
+          fetchShifts(userData.accountId, setUserShifts); // This will fetch the shifts for the logged-in user
         } catch (error) {
           console.error("Error fetching Logged-in user data:", error.message);
         }
@@ -72,29 +75,36 @@ export default function TradeShift() {
       const accountId = parseInt(event.target.value, 10);
       setSelectedCoworker(accountId);
       if (accountId) {
-        fetchShifts(accountId); // This will fetch the shifts for the selected coworker 
+        fetchShifts(accountId, setCoworkerShifts); // This will fetch the shifts for the selected coworker 
       } else {
-        setShifts([]); // This will clear the shift if no coworker is selected 
+        setCoworkerShifts([]); // This will clear the shift if no coworker is selected 
       }
     };
+
+  
  
     return (
       <div className="p-4">
 
         {/* Current Logged in User */}
+        {loggedInUser && (
         <div className="mb-4">
           <h1 className="text-lg font-bold mb-4">Current User</h1>
-          <p>{loggedInUser.email}</p>
           <p>{loggedInUser.firstName} {loggedInUser.lastName}</p>
-          
         </div>
+        )}
 
         {/* Dropdown to select the current logged in user's shift */}
         <div className="mb-4">
           <h1 className="text-lg font-bold mb-4">Your Shifts</h1>
-        <select className="w-full p-2 border border-gray-300 rounded">
+        <select 
+          className="w-full p-2 border border-gray-300 rounded">
           <option value="">-- Select Shift --</option>
-          
+          {userShifts.map((shift) => (
+            <option key={shift.shiftId} value={shift.shiftId}>
+              {shift.shiftStartDate} to {shift.shiftEndDate}
+            </option>
+          ))}
         </select>
         </div>
 
@@ -120,7 +130,7 @@ export default function TradeShift() {
           <h1 className="text-lg font-bold mb-4">Available Shifts</h1>
         <select className="w-full p-2 border border-gray-300 rounded">
           <option value="">-- Select Shift --</option>
-          {shifts.map((shift) => (
+          {coworkerShifts.map((shift) => (
             <option key={shift.shiftId} value={shift.shiftId}>
               {shift.shiftStartDate} to {shift.shiftEndDate}
             </option>
