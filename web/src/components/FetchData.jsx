@@ -1,5 +1,6 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
+
 const BASE_URL =  'http://localhost:8080/api'
 
 export const getShifts = async() =>{
@@ -13,7 +14,7 @@ export const getShifts = async() =>{
         
          // Update the state with the fetched events
       } catch (err) {
-        console.error('Error fetching events:', err);
+        console.error('Error fetching Shifts:', err);
       //   setError('Failed to fetch events. Please try again later.');
       }
 }
@@ -28,10 +29,31 @@ export const getAccounts = async() =>{
         
          // Update the state with the fetched events
       } catch (err) {
-        console.error('Error fetching events:', err);
+        console.error('Error fetching Accounts:', err);
       //   setError('Failed to fetch events. Please try again later.');
       }
 }
+
+export const getCurrentUser = async() =>{
+  
+  
+  let email =  auth.currentUser.email
+  console.log(email);
+  
+  try{
+  const response = await fetch (`${BASE_URL}/accounts/user?email=${email}`)
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  const data = await response.json();
+  return data
+
+   // Update the state with the fetched events
+} catch (err) {
+  console.error('Error fetching Account:', err);
+//   setError('Failed to fetch events. Please try again later.');
+}}
+
 export const getEvents = async () =>{
 
     try {
@@ -48,6 +70,7 @@ export const getEvents = async () =>{
     //   setError('Failed to fetch events. Please try again later.');
     }
 }
+
 
 /**
  * Reference: OpenAI, "ChatGPT," Personal Communication, Jan. 30, 2025.
@@ -79,3 +102,20 @@ export const getCurrentUser = async () => {
     });
   });
 };
+
+export const getNotifications = async () =>{
+
+  try{
+    const response = await fetch(`${BASE_URL}/notifications`);
+    if(!response.ok){
+      throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data
+      
+       // Update the state with the fetched events
+    } catch (err) {
+      console.error('Error fetching Notifications:', err);
+    //   setError('Failed to fetch events. Please try again later.');
+    }
+  }

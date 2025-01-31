@@ -33,7 +33,7 @@ public class BanquetAccount {
     private String role;
 
     @Column(name = "status", nullable = false)
-    private Boolean status = true;
+    private String status;
 
     // Getters and Setters
     public Long getAccountId() {
@@ -100,11 +100,11 @@ public class BanquetAccount {
         this.role = role;
     }
 
-    public Boolean getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -114,12 +114,12 @@ public class BanquetAccount {
                 "accountId=" + accountId +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", employeeId=" + employeeId +
-                ", email=" + email + '\'' +
-                ", address=" + address + '\'' +
+                ", employeeId='" + employeeId +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", role='" + role + '\'' +
-                ", status='" + status +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

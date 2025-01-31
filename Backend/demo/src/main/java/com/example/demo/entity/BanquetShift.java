@@ -27,6 +27,9 @@ public class BanquetShift {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "swappable")
+    private String swappable;
+
     // Getters and Setters
     public Long getShiftId() {
         return shiftId;
@@ -76,6 +79,14 @@ public class BanquetShift {
         this.description = description;
     }
 
+    public String getSwappable() {
+        return swappable;
+    }
+
+    public void setSwappable(String swappable) {
+        this.swappable = swappable;
+    }
+
     @Override
     public String toString() {
         return "BanquetShift{" +
@@ -84,7 +95,8 @@ public class BanquetShift {
                 ", eventId='" + eventId +
                 ", shiftStartDate=" + shiftStartDate +
                 ", shiftEndDate=" + shiftEndDate +
-                ", description=" + description + '\'' +
+                ", description='" + description + '\'' +
+                ", swappable='" + swappable + '\'' +
                 '}';
     }
 }

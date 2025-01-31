@@ -91,7 +91,7 @@ CREATE TABLE `banquet_accounts` (
   `address` varchar(100) NOT NULL,
   `phone_number` varchar(15) NOT NULL,
   `role` varchar(100) NOT NULL,
-  `status` BOOLEAN NOT NULL DEFAULT TRUE,
+  `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   PRIMARY KEY (`account_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -105,9 +105,9 @@ LOCK TABLES `banquet_accounts` WRITE;
 /*!40000 ALTER TABLE `banquet_accounts` DISABLE KEYS */;
 
 INSERT INTO `banquet_accounts` VALUES
-(1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', TRUE),
-(2, 'Peter', 'Parker', '000002', 'spiderman@example.com', '456 Web Drive NE', '587-111-2222', 'Employee', TRUE),
-(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', FALSE);
+(1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', 'ACTIVE'),
+(2, 'Peter', 'Parker', '000002', 'spiderman@example.com', '456 Web Drive NE', '587-111-2222', 'Employee', 'ACTIVE'),
+(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', 'INACTIVE');
 /*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
 -- Unlocks the banquet_accounts table
@@ -125,11 +125,12 @@ DROP TABLE IF EXISTS `employee_shifts`;
 -- Creates employee_shifts table structure with foreign key relationships
 CREATE TABLE `employee_shifts` (
   `shift_id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
   `event_id` int NOT NULL,   -- Foreign key referencing banquet_events
   `shift_start_date` datetime NOT NULL,
   `shift_end_date` datetime NOT NULL,
   `description` text,
+  `swappable` ENUM('YES', 'NO') NOT NULL DEFAULT 'NO',
   PRIMARY KEY (`shift_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`event_id`) REFERENCES `banquet_events` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -141,9 +142,9 @@ LOCK TABLES `employee_shifts` WRITE;
 /*!40000 ALTER TABLE `employee_shifts` DISABLE KEYS */;
 
 INSERT INTO `employee_shifts` VALUES
-(1, 2, 3, '2025-12-20 14:00:00', '2025-12-20 22:00:00', 'This is a christmas party for 250 people'),
-(2, 2, 2, '2025-12-20 09:00:00', '2025-12-20 17:00:00', 'This is a 300-person conference for Calgary Police Service'),
-(3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day');
+(1, 2, 3, '2025-12-20 14:00:00', '2025-12-20 22:00:00', 'This is a christmas party for 250 people', 'YES'),
+(2, 2, 2, '2025-12-20 09:00:00', '2025-12-20 17:00:00', 'This is a 300-person conference for Calgary Police Service', 'NO'),
+(3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day', 'NO');
 /*!40000 ALTER TABLE `employee_shifts` ENABLE KEYS */;
 
 -- Unlocks the employee_shifts table
@@ -167,7 +168,7 @@ CREATE TABLE `employee_requests` (
   `start_date` datetime,
   `end_date` datetime,
   `details` text,
-  `status` ENUM('Pending', 'Approved', 'Declined') NOT NULL DEFAULT 'Pending',
+  `status` ENUM('PENDING', 'APPROVED', 'DECLINED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`request_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -178,9 +179,9 @@ LOCK TABLES `employee_requests` WRITE;
 /*!40000 ALTER TABLE `employee_requests` DISABLE KEYS */;
 
 INSERT INTO `employee_requests` VALUES 
-(1, 2, 'Time Off', '2025-01-01 09:00:00', '2025-01-15 09:00:00', '2025-01-20 17:00:00', 'Family vacation', 'Pending'),
-(2, 2, 'Sick Day', '2025-01-05 08:00:00', '2025-01-05 09:00:00', '2025-01-05 17:00:00', 'Fever and cold', 'Approved'),
-(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'Declined');
+(1, 2, 'Time Off', '2025-01-01 09:00:00', '2025-01-15 09:00:00', '2025-01-20 17:00:00', 'Family vacation', 'PENDING'),
+(2, 2, 'Sick Day', '2025-01-05 08:00:00', '2025-01-05 09:00:00', '2025-01-05 17:00:00', 'Fever and cold', 'APPROVED'),
+(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED');
 
 /*!40000 ALTER TABLE `employee_requests` ENABLE KEYS */;
 
@@ -199,12 +200,12 @@ DROP TABLE IF EXISTS `employee_availability`;
 -- Creates employee_availability table structure with foreign key relationships
 CREATE TABLE `employee_availability` (
   `availability_id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
   `day_of_week` ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL,
   `start_time` time,
   `end_time` time,
   PRIMARY KEY (`availability_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
