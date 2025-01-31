@@ -4,18 +4,17 @@ import { auth } from '../firebase/firebase'
 //Source https://www.freecodecamp.org/news/how-to-add-post-notifications-to-your-react-applications/ 
 const name = "bob"
 
-// const notificationData={
-//     senderDisplayName: name,
-//     senderUserEmail: auth.currentUser.email,
-//     senderUserId :"auth.currentUser.uid",
-//     recipientsId:[],
-//     type: "announcement",
-//     threadID: "threadID",
-//     threadData: "threadData",
-//     timestamp: "moment().format()",
-//     isRead: false,
-
-// }
+const notificationData={
+    senderDisplayName: name,
+    senderUserEmail: "auth.currentUser.email",
+    senderUserId :"auth.currentUser.uid",
+    recipientsId:[],
+    type: "announcement",
+    notificationID: "ID",
+    notficationData: "Data",
+    timestamp: "moment().format()",
+    isRead: false,
+}
 
 //   const BASE_URL = "http://localhost:8080/api"
 // const fetchUserRole = async (email) => {
