@@ -91,7 +91,7 @@ public class BanquetAccountController {
         } // Return 404 if no employee found
     }
 
-    @PostMapping // Will use this method to create new events using infomation from the frontend
+    @PostMapping // Will use this method to create new events using information from the frontend
     public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
         return repository.save(account);
     }
