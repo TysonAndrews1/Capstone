@@ -4,8 +4,12 @@ import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import BottomSheetModal from "../../components/BottomSheetModal";
+import BaseURLConfig from "../../config/BaseURLConfig";
 
-const BASE_URL = 'http://10.0.2.2:8080/api';
+
+const BASE_URL = BaseURLConfig();
+
 const EmployeeScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
@@ -15,6 +19,8 @@ const EmployeeScreen = () => {
   const [error, setError] = useState(null); // State for handling errors
   const [shifts, setShifts] = useState([]);
 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalHeight, setModalHeight] = useState(300);
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -109,6 +115,38 @@ const EmployeeScreen = () => {
     fetchShifts();
   }, [selectedDate, user]);
 
+  // Fetch the shifts with selected date
+  // This code was generated with assistance from chatGPT
+  // Prompt: I want to 
+  const fetchShiftsForSelectedDate = async () => {
+    try {
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      const response = await fetch(`${BASE_URL}/shifts?date=${formattedDate}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // ✅ 날짜가 일치하는 쉬프트만 필터링
+      const filteredShifts = data.filter((shift) => {
+        const shiftDate = parseISO(shift.startTime); // 날짜 변환
+        return isSameDay(shiftDate, selectedDate);
+      });
+
+      setShifts(filteredShifts);
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+      setShifts([]);
+    }
+  };
+
+  // Open Modal
+  const openModal = async () => {
+    await fetchShiftsForSelectedDate();
+    setModalVisible(true);
+  };
   // Helper function to display a greeting based on the time of day
   const getTimeOfDayMessage = () => {
     const hour = new Date().getHours();
@@ -159,11 +197,31 @@ const EmployeeScreen = () => {
         {/* four buttons */}
         <View style={styles.fourButtonContainer}>
             <View style={styles.fourButton}>
-                <TouchableOpacity style={styles.buttonWithBackground}>
+                <TouchableOpacity style={styles.buttonWithBackground} onPress={() => openModal(500)} >
                     <Image style={styles.fourButtonImages} source={require('../../../assets/images/team.png')} />
                     <Text style={styles.buttonText}>Team</Text>
                 </TouchableOpacity>
             </View>
+            {/* 모달 */}
+        <BottomSheetModal visible={modalVisible} onClose={() => setModalVisible(false)} height={modalHeight}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Who you are working with ({format(selectedDate, 'yyyy-MM-dd')})</Text>
+            <View style={styles.dottedLine} />
+
+            {shifts.length > 0 ? (
+              shifts.map((shift, index) => (
+                <View key={index} style={styles.shiftItem}>
+                  <Text style={styles.employeeName}>{shift.employeeName}</Text>
+                  <Text style={styles.shiftTime}>
+                    {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.noShiftText}>No employees are working on this date.</Text>
+            )}
+          </View>
+        </BottomSheetModal>
             
             <View style={styles.fourButton}>
                 <TouchableOpacity style={styles.buttonWithBackground}>
@@ -366,10 +424,10 @@ const styles = StyleSheet.create({
   },
   dottedLine: {
     borderBottomWidth: 1,
-    borderStyle: 'dotted',
-    width: '90%',
+    borderStyle: 'solid',
+    width: '100%',
     marginVertical: 5,
-    borderColor: '#999',
+    borderColor: '#000',
   },
   eventText: {
     fontSize: 16,
