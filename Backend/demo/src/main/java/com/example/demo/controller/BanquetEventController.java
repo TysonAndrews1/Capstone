@@ -28,7 +28,7 @@ public class BanquetEventController {
     public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
         // Retrieve the event by ID using the repository
         Optional<BanquetEvent> event = repository.findById(eventId);
-        
+
         if (event.isPresent()) {
             return ResponseEntity.ok(event.get()); // Return the event if found
         } else {
@@ -64,14 +64,11 @@ public class BanquetEventController {
         return repository.save(event);
     }
 
-    @DeleteMapping("/{eventId}") // Create a delete method by event ID
+    @DeleteMapping("/{eventId}") // Delete event by eventId.
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
 
-        System.out.println("Delete request received for ID: " + eventId);
-        // Check if the event exists in the database
-        if (repository.existsById(eventId)) {
-            // Delete specific event
-            repository.deleteById(eventId);
+        if (repository.existsById(eventId)) {  // Check if the event exists in the database
+            repository.deleteById(eventId); // Delete specific event
             return ResponseEntity.ok("Event was deleted successfully.");
         } else {
             // Return an error message of event does not exist
@@ -80,18 +77,20 @@ public class BanquetEventController {
     }
 
     @PutMapping("/{eventId}")
-    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId, @RequestBody BanquetEvent updatedEvent) {
+    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId,
+            @RequestBody BanquetEvent updatedEvent) {
+
         return repository.findById(eventId)
-            .map(event -> {
-                event.setEventName(updatedEvent.getEventName());
-                event.setEventStartDate(updatedEvent.getEventStartDate());
-                event.setEventEndDate(updatedEvent.getEventEndDate());
-                event.setEventLocation(updatedEvent.getEventLocation());
-                event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
-                event.setAssignedManager(updatedEvent.getAssignedManager());
-                event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
-                return ResponseEntity.ok(repository.save(event));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(event -> {
+                    event.setEventName(updatedEvent.getEventName());
+                    event.setEventStartDate(updatedEvent.getEventStartDate());
+                    event.setEventEndDate(updatedEvent.getEventEndDate());
+                    event.setEventLocation(updatedEvent.getEventLocation());
+                    event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
+                    event.setAssignedManager(updatedEvent.getAssignedManager());
+                    event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
+                    return ResponseEntity.ok(repository.save(event));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

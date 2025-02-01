@@ -13,7 +13,27 @@ export default function ShiftDetails({shift}){
         setEditing(!editing); 
       };
     const handleSave = () =>{
+      const BASE_URL = 'http://localhost:8080/api/events';
+      const newEvent = {
+          // shiftId: shiftId,
+          // accountId: accountId,
+          shiftStartDate: shiftStartDate,
+          shiftEndDate: shiftEndDate,
+          description: description,
+        };
 
+        fetch(`${BASE_URL}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newEvent),
+          })
+          .then((response) => response.json())
+          .catch((error) => {
+            console.error('Error creating event:', error);
+            alert("Error", "Failed to create event");
+          });
     }
     const handleDelete = () =>{
 

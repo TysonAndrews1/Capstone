@@ -2,13 +2,14 @@ import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from 'reac
 import React, { useState } from 'react';
 import { handleLogin } from "../../firebase/auth";
 import { useRouter } from "expo-router";
+import BaseURLConfig from '../../config/BaseURLConfig';
 
 const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     
-    const BASE_URL = 'http://10.0.2.2:8080/api';
+    const BASE_URL = BaseURLConfig();
 
     const forgotPass = () => {
         router.push('/screens/forgotPassword');
