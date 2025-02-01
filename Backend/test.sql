@@ -145,6 +145,8 @@ INSERT INTO `employee_shifts` VALUES
 (1, 2, 3, '2025-12-20 14:00:00', '2025-12-20 22:00:00', 'This is a christmas party for 250 people', 'YES'),
 (2, 2, 2, '2025-12-20 09:00:00', '2025-12-20 17:00:00', 'This is a 300-person conference for Calgary Police Service', 'NO'),
 (3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day', 'NO');
+(4, 3, 4, '2025-12-23 14:00:00', '2025-12-23 22:00:00','This is an 18th birthday party', 'YES');
+
 /*!40000 ALTER TABLE `employee_shifts` ENABLE KEYS */;
 
 -- Unlocks the employee_shifts table

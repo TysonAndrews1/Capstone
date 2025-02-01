@@ -46,7 +46,7 @@ export default function TradeShift() {
       }
       const data = await response.json();
       const filteredShifts = data.filter(function(shift) {
-        return shift.accountId === accountId;
+        return shift.accountId === accountId && shift.swappable === 'YES';
       });
       setShifts(filteredShifts); // Update the state with the fetched shifts
       console.log("Fetched shifts:", data);
@@ -80,6 +80,10 @@ export default function TradeShift() {
         setCoworkerShifts([]); // This will clear the shift if no coworker is selected 
       }
     };
+
+    const handleTradeShift = () => {
+    
+    };  
 
   
  
