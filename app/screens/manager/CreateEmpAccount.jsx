@@ -24,15 +24,30 @@ export default function CreateEmpAccount() {
             return;
     }
 
+    // Format the first name, last name, and role to have the first letter capitalized and the rest lowercase
+    const formattedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    const formattedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+    const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+
+    // Format email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // CODE REFERENCE: https://mailtrap.io/blog/javascript-email-validation/
+    if (!emailRegex.test(email)) {
+        Alert.alert("Error", "Please enter a valid email address");
+        return;
+    }
+
+    // Format phone number to only be numbers
+    const numericPhone = phoneNumber.replace(/\D/g, ""); // CODE REFERENCE: https://stackoverflow.com/questions/9309278/javascript-regex-replace-all-characters-other-than-numbers removes everything that is not a number
+
     const newEmployee = { // Creates a new employee object that holds all the following details
-        firstName,
-        lastName,
+        firstName: formattedFirstName,
+        lastName: formattedLastName,
         employeeId,
         email,
         address,
-        phoneNumber,
-        role,
-        status: status === '1'? 'ACTIVE' : 'INACTIVE'
+        phoneNumber: numericPhone,
+        role: formattedRole,
+        status: status === '1'? 'ACTIVE' : 'INACTIVE' // Condition if the status is 1 (active in the Picker), the employee is active, otherwise they are inactive
     };
 
     fetch(`${BASE_URL}/accounts/add-employee`, { // Sends to the API endpoint
