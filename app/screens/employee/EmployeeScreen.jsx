@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
-import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay, parseISO } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import BottomSheetModal from "../../components/BottomSheetModal";
@@ -20,7 +20,7 @@ const EmployeeScreen = () => {
   const [shifts, setShifts] = useState([]);
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalHeight, setModalHeight] = useState(300);
+  const [modalHeight, setModalHeight] = useState(500);
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -117,7 +117,7 @@ const EmployeeScreen = () => {
 
   // Fetch the shifts with selected date
   // This code was generated with assistance from chatGPT
-  // Prompt: I want to 
+  // Prompt: I want to get shifts with selected date and employee names who have shifts selected date.
   const fetchShiftsForSelectedDate = async () => {
     try {
       const formattedDate = format(selectedDate, 'yyyy-MM-dd');
@@ -129,19 +129,59 @@ const EmployeeScreen = () => {
 
       const data = await response.json();
 
-      // ✅ 날짜가 일치하는 쉬프트만 필터링
+      // Filter only matched date
       const filteredShifts = data.filter((shift) => {
-        const shiftDate = parseISO(shift.startTime); // 날짜 변환
+        const shiftDate = parseISO(shift.shiftStartDate); // Convert the date
         return isSameDay(shiftDate, selectedDate);
       });
 
       setShifts(filteredShifts);
+
+      await fetchEmployeeNames(filteredShifts);
     } catch (err) {
       console.error('Error fetching shifts:', err);
       setShifts([]);
     }
   };
 
+  // This code generated with assistance with chatGPT.
+  // Prompt: It was the same as fetchShiftsForSelectedDate function.
+  const fetchEmployeeNames = async (shiftsData) => {
+    try {
+      // Extract unique account IDs from shiftsData
+      const uniqueAccountIds = [...new Set(shiftsData.map(shift => shift.accountId))];
+
+      // Fetch employee details for each unique accountId
+      const employeeRequests = uniqueAccountIds.map(async (accountId) => {
+        const response = await fetch(`${BASE_URL}/accounts/${accountId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse response as JSON
+      });
+
+      // Wait for all employee data requests to complete
+      const employees = await Promise.all(employeeRequests);
+
+      // Create a mapping of accountId to employee name
+      const employeeMap = {};
+      employees.forEach(emp => {
+        employeeMap[emp.accountId] = `${emp.firstName} ${emp.lastName}`;
+      });
+      console.log("Employee Data Map:", employeeMap); // Debugging log
+
+      // Update shiftsData with employee names
+      const updatedShifts = shiftsData.map(shift => ({
+        ...shift,
+        employeeName: employeeMap[shift.accountId] || "Unknown",
+      }));
+
+      setShifts(updatedShifts);
+      
+  } catch (err) {
+    console.error('Error fetching employee names:', err);
+  }
+  };
   // Open Modal
   const openModal = async () => {
     await fetchShiftsForSelectedDate();
@@ -197,24 +237,27 @@ const EmployeeScreen = () => {
         {/* four buttons */}
         <View style={styles.fourButtonContainer}>
             <View style={styles.fourButton}>
-                <TouchableOpacity style={styles.buttonWithBackground} onPress={() => openModal(500)} >
+                <TouchableOpacity style={styles.buttonWithBackground} onPress={openModal} >
                     <Image style={styles.fourButtonImages} source={require('../../../assets/images/team.png')} />
                     <Text style={styles.buttonText}>Team</Text>
                 </TouchableOpacity>
             </View>
-            {/* 모달 */}
+            {/* Modal content with shift details */}
         <BottomSheetModal visible={modalVisible} onClose={() => setModalVisible(false)} height={modalHeight}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Who you are working with ({format(selectedDate, 'yyyy-MM-dd')})</Text>
+            <Text style={styles.modalTitle}>Who you are working with</Text>
             <View style={styles.dottedLine} />
 
             {shifts.length > 0 ? (
               shifts.map((shift, index) => (
                 <View key={index} style={styles.shiftItem}>
-                  <Text style={styles.employeeName}>{shift.employeeName}</Text>
-                  <Text style={styles.shiftTime}>
-                    {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
-                  </Text>
+                  <Image source={require('../../../assets/images/face.png')} style={styles.profileImage} />
+                  <View style={styles.shiftDetails}>
+                    <Text style={styles.employeeName}>{shift.employeeName}</Text>
+                    <Text style={styles.shiftTime}>
+                      {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
+                    </Text>
+                  </View>
                 </View>
               ))
             ) : (
@@ -487,5 +530,36 @@ orange:{
 },
 grey:{
   color:'grey',
+},
+modalContent: {
+  padding: 20,
+},
+shiftItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: 10,
+  backgroundColor: '#f0f0f0',
+  marginVertical: 5,
+  borderRadius: 10,
+},
+profileImage: {
+  width: 40,
+  height: 40,
+  marginRight: 10,
+},
+shiftDetails: {
+  flex: 1,
+},
+employeeName: {
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+shiftTime: {
+  fontSize: 14,
+  color: '#555',
+},
+noShiftText: {
+  textAlign: 'center',
+  color: '#888',
 },
 });
