@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
-import { format, startOfWeek, addDays, isSameDay, parseISO } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay, parseISO, isWithinInterval, set } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import BottomSheetModal from "../../components/BottomSheetModal";
@@ -21,6 +21,11 @@ const EmployeeScreen = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalHeight, setModalHeight] = useState(500);
+
+  const [eventsModalVisible, setEventsModalVisible] = useState(false);
+  const [eventDetailModalVisible, setEventDetailModalVIsible] = useState(false);
+  const [weeklyEvents, setWeeklyEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -182,6 +187,45 @@ const EmployeeScreen = () => {
     console.error('Error fetching employee names:', err);
   }
   };
+
+
+const openEventsModal = async () => {
+  try {
+
+    let startOfWeekDate = startOfWeek(new Date(selectedDate), { weekStartsOn: 0 });
+    startOfWeekDate = set(startOfWeekDate, { hours: 0, minutes: 0, seconds: 0 });
+
+    let endOfWeekDate = addDays(startOfWeekDate, 6);
+    endOfWeekDate = set(endOfWeekDate, { hours: 23, minutes: 59, seconds: 59 });
+
+    const response = await fetch(`${BASE_URL}/events`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+
+    //  filtering for full-day comparison
+    const filteredEvents = data.filter((event) => {
+      const eventDate = new Date(event.eventStartDate);
+
+      return isWithinInterval(eventDate, {
+        start: startOfWeekDate,
+        end: endOfWeekDate
+      });
+    });
+
+    setWeeklyEvents(filteredEvents);
+    setEventsModalVisible(true);
+  } catch (err) {
+    console.error('Error fetching weekly events:', err);
+  }
+};
+
+
+  const openEventDetail = (event) => {
+    setSelectedEvent(event);
+    setEventsModalVisible(false); // Close the event list modal 
+    setTimeout(() => setEventDetailModalVisible(true), 300); // Open event detail modal
+  }
   // Open Modal
   const openModal = async () => {
     await fetchShiftsForSelectedDate();
@@ -243,35 +287,86 @@ const EmployeeScreen = () => {
                 </TouchableOpacity>
             </View>
             {/* Modal content with shift details */}
-        <BottomSheetModal visible={modalVisible} onClose={() => setModalVisible(false)} height={modalHeight}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Who you are working with</Text>
-            <View style={styles.dottedLine} />
+            <BottomSheetModal visible={modalVisible} onClose={() => setModalVisible(false)} height={modalHeight}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Who you are working with</Text>
+                <View style={styles.dottedLine} />
 
-            {shifts.length > 0 ? (
-              shifts.map((shift, index) => (
-                <View key={index} style={styles.shiftItem}>
-                  <Image source={require('../../../assets/images/face.png')} style={styles.profileImage} />
-                  <View style={styles.shiftDetails}>
-                    <Text style={styles.employeeName}>{shift.employeeName}</Text>
-                    <Text style={styles.shiftTime}>
-                      {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
-                    </Text>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <Text style={styles.noShiftText}>No employees are working on this date.</Text>
-            )}
-          </View>
-        </BottomSheetModal>
+                {shifts.length > 0 ? (
+                  shifts.map((shift, index) => (
+                    <View key={index} style={styles.eventCard}>
+                      <View style={styles.eventIconContainer}> 
+                        <Image source={require('../../../assets/images/face.png')} style={styles.eventIcon} />
+                      </View>
+
+                      <View style={styles.eventInfo}>
+                        <Text style={styles.eventTitle}>{shift.employeeName}</Text>
+                        <Text style={styles.eventTime}>
+                          {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
+                        </Text>
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={styles.noShiftText}>No employees are working on this date.</Text>
+                )}
+              </View>
+            </BottomSheetModal>
             
             <View style={styles.fourButton}>
-                <TouchableOpacity style={styles.buttonWithBackground}>
+                <TouchableOpacity style={styles.buttonWithBackground} onPress={openEventsModal}>
                     <Image style={styles.fourButtonImages} source={require('../../../assets/images/event1.png')} />
                     <Text style={styles.buttonText}>Event</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Weekly event list */}
+            <BottomSheetModal visible={eventsModalVisible} onClose={() => setEventsModalVisible(false)} height={500}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Events for this week</Text>
+                <View style={styles.dottedLine} />
+
+                {weeklyEvents.length > 0 ? (
+                  weeklyEvents.map((event, index) => (
+                    <TouchableOpacity key={index} style={styles.eventCard} onPress={() => openEventDetail(event)}>
+                      
+                      <View style={styles.eventIconContainer}>
+                        <Image source={require('../../../assets/images/event11.png')} style={styles.eventIcon} />
+                      </View>
+                      <View style={styles.eventInfo}>
+                        <Text style={styles.eventTitle}>{event.eventName}</Text>
+                        <Text style={styles.eventGuests}>{event.numberOfGuests} Guests</Text>
+                        <Text style={styles.eventTime}>
+                          {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <Text style={styles.noEventText}>No events scheduled for this week.</Text>
+                )}
+              </View>
+            </BottomSheetModal>
+
+            {/* Event detail information */}
+            <BottomSheetModal visible={eventDetailModalVisible} onClose={() => setEventDetailModalVisible(false)} height={400}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Event Details</Text>
+                <View style={styles.dottedLine} />
+                {selectedEvent && (
+                  <>
+                    <Text style={styles.detailLabel}>📌 Booking Company Name:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.companyName}</Text>
+
+                    <Text style={styles.detailLabel}>📌 Type of Event:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.eventType}</Text>
+
+                    <Text style={styles.detailLabel}>📌 Guest Count:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.numberOfGuests}</Text>
+                  </>
+                )}
+              </View>
+            </BottomSheetModal>
 
             <View style={styles.fourButton}>
                 <TouchableOpacity style={styles.buttonWithBackground}>
@@ -387,10 +482,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
   },
-  cardRequest: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+
   weekContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -432,27 +524,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
   },
-  detailsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  hourContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  hourTime: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  hourTask: {
-    fontSize: 14,
-    color: '#555',
-  },
+
   eventContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -478,12 +550,7 @@ const styles = StyleSheet.create({
     color: '#000',
     marginBottom: 2,
   },
-  noEventsText: {
-    fontSize: 16,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 10,
-  },
+
   fourButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -528,9 +595,7 @@ orange:{
   fontSize:20,
   textAlign:'center',
 },
-grey:{
-  color:'grey',
-},
+
 modalContent: {
   padding: 20,
 },
@@ -561,5 +626,63 @@ shiftTime: {
 noShiftText: {
   textAlign: 'center',
   color: '#888',
+},
+eventCard: {
+  flexDirection: 'row', 
+  alignItems: 'center',
+  backgroundColor: '#fff', 
+  padding: 15,
+  marginVertical: 5,
+  borderRadius: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+
+eventIconContainer: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  backgroundColor: '#e0f7fa', 
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: 15,
+},
+
+eventIcon: {
+  width: 30,
+  height: 30,
+  tintColor: '#007AFF', 
+},
+
+eventInfo: {
+  flex: 1,
+},
+
+eventTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#333',
+},
+
+eventGuests: {
+  fontSize: 14,
+  color: '#666',
+  marginTop: 3,
+},
+
+eventTime: {
+  fontSize: 14,
+  color: '#888',
+  marginTop: 5,
+},
+
+noEventText: {
+  fontSize: 16,
+  color: '#888',
+  textAlign: 'center',
+  marginTop: 20,
 },
 });

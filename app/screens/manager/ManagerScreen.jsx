@@ -146,12 +146,13 @@ const ManagerScreen = () => {
                 filteredEvents.map((event) => (
                   <View key={event.eventId} style={styles.eventContainer}>
                     <View style={styles.dottedLine}></View>
-                    <Text style={styles.timeText}>
-                      {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
-                    </Text>
                     <Text style={styles.eventDetails}>
                       {event.eventName} ({event.numberOfGuests} Guests)
                     </Text>
+                    <Text style={styles.timeText}>
+                      {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                    </Text>
+                    
                     <View style={styles.dottedLine}></View>
                   </View>
                 ))
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
   },
   dottedLine: {
     borderBottomWidth: 1,
-    borderStyle: 'dotted',
+    borderStyle: 'solid',
     width: '90%',
     marginVertical: 5,
     borderColor: '#999',
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 5,
+    marginBottom: 2,
   },
   eventDetails: {
     fontSize: 14,
