@@ -24,10 +24,11 @@ export default function CreateEmpAccount() {
             return;
     }
 
-    // Format the first name, last name, and role to have the first letter capitalized and the rest lowercase
-    const formattedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-    const formattedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
-    const formattedRole = role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
+    /* Format the first name, last name, and role to have the first letter capitalized and the rest lowercase.
+    If they have a space in any of the fields, it will capitalize the first letter of each name/role. */
+    const formattedFirstName = firstName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    const formattedLastName = lastName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    const formattedRole = role.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
 
     // Format email address
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // CODE REFERENCE: https://mailtrap.io/blog/javascript-email-validation/
