@@ -9,7 +9,7 @@ export default function CreateEmpAccount() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [employeeId, setEmployeeId] = useState('');
-    const [emailAddress, setEmailAddress] = useState('');
+    const [email, setEmailAddress] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('');
@@ -19,7 +19,7 @@ export default function CreateEmpAccount() {
     const router = useRouter();
 
     const handleSubmit = () => {
-        if (!firstName || !lastName || !employeeId || !emailAddress || !address || !phoneNumber || !role || !status) {
+        if (!firstName || !lastName || !employeeId || !email || !address || !phoneNumber || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
     }
@@ -28,23 +28,22 @@ export default function CreateEmpAccount() {
         firstName,
         lastName,
         employeeId,
-        emailAddress,
+        email,
         address,
         phoneNumber,
         role,
-        status: status === '1', // Convert "1" (Active) to true and "0" (Inactive) to false
+        status: status === '1'? 'ACTIVE' : 'INACTIVE'
     };
 
-    fetch(`${BASE_URL}/accounts`, { // Sends to the API endpoint
+    fetch(`${BASE_URL}/accounts/add-employee`, { // Sends to the API endpoint
         method: 'POST', // This is a POST request to create a new employee account for the database in JSON format
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEmployee),
     })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+    .then(async (response) => {
+        const text = await response.text(); // Read raw response as text
+        console.log("API Response:", text); // Log response to see what’s returned
+        return (text); // Return the response from the API
     })
     .then(() => {
         Alert.alert("Success", "Employee account created successfully!");
@@ -101,7 +100,7 @@ export default function CreateEmpAccount() {
                         <Text style={styles.detailLabel}>Email Address</Text>
                         <TextInput
                             style={styles.textInput}
-                            value={emailAddress}
+                            value={email}
                             onChangeText={setEmailAddress}
                             placeholder="Enter email address"
                         />
