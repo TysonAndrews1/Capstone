@@ -1,12 +1,68 @@
 import React, { useState, useEffect } from "react"; 
 import  { FaPlus } from "react-icons/fa";
-import { getShifts } from "../FetchData";
+import { getcurrentUser } from "../../components/FetchData";
+
+
+const BASE_URL = 'http://localhost:8080/api';
 
 export default function ShiftGrab() {
   const [shifts, setShifts] = useState([]);
+  const [accounts, setAccounts] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  const fetchShifts = async () => {
+    try {
+      const response = await fetch('${BASE_URL}/shifts');
+      if (!response.ok){
+        throw new Error ('HTTP error! status: ${response.status}');
+      }
+      const data = await response.json();
+      return data; 
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+      return [];
+    }
+  };
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await fetch('${BASE_URL}/accounts');
+      if (!response.ok){
+        throw new Error ('HTTP error! status: ${response.status}');
+      }
+      const data = await response.json();
+      const employeeAccounts = data.filter(function(account) {
+        return account.role === 'Employee';
+      });
+      return employeeAccounts;
+    } catch (err) {
+      console.error('Error fetching accounts:', err);
+      return [];
+    }
+  };
+    
+
+  const fetchAvailableShifts = async (accountId, setShifts) => { 
+    try {
+      const response = await fetch(`${BASE_URL}/shifts?accountId=${accountId}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const filteredShifts = data.filter(function(shift) {
+        return shift.accountId === accountId;
+      });
+      setShifts(filteredShifts); // Update the state with the fetched shifts
+      console.log("Fetched shifts:", data);
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+    }
+  }
 
   useEffect(() => {
-    getShifts().then(shifts => setShifts(shifts)) // Gets the resolved data
+    fetchAvailableShifts();
+    fetchAccounts();
+    
   }, []);
 
   return (
@@ -28,6 +84,9 @@ export default function ShiftGrab() {
               <p className="text-sm">
                 End: {new Date(shift.shiftEndDate).toLocaleString()}
               </p>
+              <p className="text-sm">
+                Name: {shift.firstName} {shift.lastName}
+              </p>
             </div>
             <FaPlus className="text-hover-blue hover:text-main-blue cursor-pointer"/>
             </div>
@@ -37,3 +96,4 @@ export default function ShiftGrab() {
     </div>
   );
 }
+
