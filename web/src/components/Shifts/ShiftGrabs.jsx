@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from "react"; 
 import  { FaPlus } from "react-icons/fa";
-import { getcurrentUser } from "../../components/FetchData";
+import { getCurrentUser } from "../../components/FetchData";
 
-
-const BASE_URL = 'http://localhost:8080/api';
 
 export default function ShiftGrab() {
   const [shifts, setShifts] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null);
 
+  const BASE_URL = 'http://localhost:8080/api';
+
   const fetchShifts = async () => {
     try {
-      const response = await fetch('${BASE_URL}/shifts');
-      if (!response.ok){
-        throw new Error ('HTTP error! status: ${response.status}');
+      const response = await fetch(`${BASE_URL}/shifts`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      return data; 
+      return data;
     } catch (err) {
       console.error('Error fetching shifts:', err);
       return [];
     }
   };
 
+  // Function to fetch all employee accounts
   const fetchAccounts = async () => {
     try {
-      const response = await fetch('${BASE_URL}/accounts');
-      if (!response.ok){
-        throw new Error ('HTTP error! status: ${response.status}');
+      const response = await fetch(`${BASE_URL}/accounts`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      const employeeAccounts = data.filter(function(account) {
-        return account.role === 'Employee';
-      });
+      const employeeAccounts = data.filter(acc => acc.role === 'Employee');
       return employeeAccounts;
     } catch (err) {
       console.error('Error fetching accounts:', err);
@@ -113,27 +112,35 @@ export default function ShiftGrab() {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold text-center mb-4">Available Shifts</h1>
-      {shifts.length === 0 ? (
+      {filteredShifts.length === 0 ? (
         <p className="text-center text-gray-500">No shifts available</p>
       ) : (
         <div className="space-y-4">
-          {shifts.map((shift) => (
+          {filteredShifts.map((shift) => (
             <div
               key={shift.id}
-              className="border rounded-xl p-4 shadow-md bg-white hover:shadow-lg"
-            >
-            <div>
-              <p className="text-sm">
-                Start: {new Date(shift.shiftStartDate).toLocaleString()}
-              </p>
-              <p className="text-sm">
-                End: {new Date(shift.shiftEndDate).toLocaleString()}
-              </p>
-              <p className="text-sm">
-                Name: {shift.firstName} {shift.lastName}
-              </p>
-            </div>
-            <FaPlus className="text-hover-blue hover:text-main-blue cursor-pointer"/>
+              className="border rounded-xl p-4 shadow-md bg-white hover:shadow-lg">
+
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-bold">
+                  {shift.firstName} {shift.lastName}
+                </p>
+                <FaPlus
+                className="text-hover-blue hover:text-main-blue cursor-pointer"
+                onClick={() => requestShiftGrab(shift.id)}/>
+              </div>
+              <div>
+                
+                <p className="text-sm">
+                  Start: {new Date(shift.shiftStartDate).toLocaleString()}
+                </p>
+                <p className="text-sm">
+                  End: {new Date(shift.shiftEndDate).toLocaleString()}
+                </p>
+                
+              </div>
+              
+              
             </div>
           ))}
         </div>
@@ -141,4 +148,3 @@ export default function ShiftGrab() {
     </div>
   );
 }
-
