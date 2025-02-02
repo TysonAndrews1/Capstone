@@ -67,13 +67,47 @@ export default function ShiftGrab() {
     }
   };
 
-  
+  // Function to send a request to the manager to grab the shift
+  const requestShiftGrab = async (shiftId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/employee_requests`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          account_id: loggedInUser.accountId,
+          request_type: 'Availability Change',
+          start_date: new Date().toISOString(),
+          end_date: new Date().toISOString(),
+          details: `Request to grab shift with ID ${shiftId}`,
+          status: 'PENDING',
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      alert('Your request to grab the shift has been submitted.');
+      console.log('Shift grab request sent:', data);
+    } catch (err) {
+      console.error('Error requesting shift grab:', err);
+    }
+  };
 
   useEffect(() => {
-    fetchAvailableShifts();
-    fetchAccounts();
-    
+    const fetchData = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setLoggedInUser(userData);
+        await fetchAvailableShifts();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
   }, []);
+
 
   return (
     <div className="p-4">
