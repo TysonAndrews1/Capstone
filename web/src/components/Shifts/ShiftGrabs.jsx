@@ -108,6 +108,7 @@ export default function ShiftGrab() {
     fetchData();
   }, []);
 
+  const filteredShifts = shifts.filter(shift => shift.accountId !== loggedInUser?.accountId);
 
   return (
     <div className="p-4">
