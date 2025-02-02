@@ -19,7 +19,8 @@ function MainLayout({ children }) {
       <header className="bg-hover-blue text-white py-4 px-6 flex items-center justify-between"> 
         <div className="flex items-center">
           <HamburgerMenu />
-          <h1 className="text-2xl font-bold ml-4">Shift Solutions</h1>
+          <h1 className="text-2xl font-bold ml-4"
+          onClick={() => navigate('/home')}>Shift Solutions</h1>
         </div>
         <button className="text-white text-3xl"
         onClick={() => navigate('/profile')}>
