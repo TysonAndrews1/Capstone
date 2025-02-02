@@ -42,22 +42,32 @@ export default function ShiftGrab() {
   };
     
 
-  const fetchAvailableShifts = async (accountId, setShifts) => { 
+  // Function to fetch and merge shifts with account data
+  const fetchAvailableShifts = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/shifts?accountId=${accountId}`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      const filteredShifts = data.filter(function(shift) {
-        return shift.accountId === accountId;
+      const [shiftData, accountData] = await Promise.all([fetchShifts(), fetchAccounts()]);
+      // Filter shifts to only include those that belong to employees
+      const employeeShifts = shiftData.filter(shift => 
+        accountData.some(acc => acc.accountId === shift.accountId)
+      );
+      // Map shifts to their corresponding employee details
+      const enrichedShifts = employeeShifts.map((shift) => {
+        const employee = accountData.find(acc => acc.accountId === shift.accountId);
+        return {
+          ...shift,
+          firstName: employee?.firstName || "Unknown",
+          lastName: employee?.lastName || "Employee",
+        };
       });
-      setShifts(filteredShifts); // Update the state with the fetched shifts
-      console.log("Fetched shifts:", data);
+      setShifts(enrichedShifts);
+      setAccounts(accountData);
+      console.log("Fetched shifts with names:", enrichedShifts);
     } catch (err) {
-      console.error('Error fetching shifts:', err);
+      console.error('Error fetching available shifts:', err);
     }
-  }
+  };
+
+  
 
   useEffect(() => {
     fetchAvailableShifts();
