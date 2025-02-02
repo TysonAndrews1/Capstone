@@ -74,41 +74,45 @@ export default function EmployeeAccounts() {
     return (
         <MainLayout>
             <View style={styles.container}>
-            <TextInput
-                style={styles.searchBar}
-                placeholder="Search"
-                placeholderTextColor="#888"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-            />
+                <TextInput
+                    style={styles.searchBar}
+                    placeholder="Search"
+                    placeholderTextColor="#888"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                />
 
-            <Pressable style={styles.addButton} onPress={()=> router.push('/screens/manager/CreateEmpAccount')}>
-                <Text style={styles.addButtonText}>Add Employee</Text>
-            </Pressable>
+                <Pressable style={styles.addButton} onPress={()=> router.push('/screens/manager/CreateEmpAccount')}>
+                    <Text style={styles.addButtonText}>Add Employee</Text>
+                </Pressable>
 
-            <ScrollView style={styles.scrollContainer}>
-                {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
-                    <Pressable
-                    key={employee.accountId}
-                    style={styles.employeeCard}
-                    onPress={() => handleEmployeePress(employee)}>
-                    <Text style={styles.employeeName}>{employee.firstName} {employee.lastName}</Text>
-                    </Pressable>
-                    ))
-                ) : (
-                    <Text style={styles.noResults}>
-                    {searchQuery ? 'No matching results.' : 'No employees found.'}
-                    </Text>
-                )}
-            </ScrollView>
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
+                        <Pressable
+                        key={employee.accountId}
+                        style={styles.employeeCard}
+                        onPress={() => handleEmployeePress(employee)}>
+                        <Text style={styles.employeeName}>{employee.firstName} {employee.lastName}</Text>
+                        </Pressable>
+                        ))
+                    ) : (
+                        <Text style={styles.noResults}>
+                        {searchQuery ? 'No matching results.' : 'No employees found.'}
+                        </Text>
+                    )}
+                </ScrollView>
             </View>
         </MainLayout>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        paddingBottom: 55,
+    },
+
     container: {
-        flex: 1,
         padding: 16,
     },
 
@@ -136,11 +140,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-      
-
-    scrollContainer: {
-        flex: 1,
     },
 
     employeeCard: {

@@ -76,7 +76,7 @@ export default function CreateEmpAccount() {
                     <View style={styles.header}>
                         <Image source={userIcon} style={styles.profileIcon} />
                         <View style={styles.profileTextContainer}>
-                            <Text style={styles.profileName}>Employee Name</Text>
+                            <Text style={styles.profileName}>New Employee</Text>
                         </View>
                     </View>
     
@@ -176,8 +176,12 @@ export default function CreateEmpAccount() {
     const styles = StyleSheet.create({
         scrollContainer: {
             flexGrow: 1,
-            padding: 16,
+            padding: 14,
             backgroundColor: '#F5F5F5',
+        },
+
+        container: {
+            flex: 1,
         },
     
         header: {
