@@ -23,7 +23,7 @@ const EmployeeScreen = () => {
   const [modalHeight, setModalHeight] = useState(500);
 
   const [eventsModalVisible, setEventsModalVisible] = useState(false);
-  const [eventDetailModalVisible, setEventDetailModalVIsible] = useState(false);
+  const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
   const [weeklyEvents, setWeeklyEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -219,8 +219,11 @@ const openEventsModal = async () => {
     console.error('Error fetching weekly events:', err);
   }
 };
-
-
+  // Open event detail modal when clicking
+  const openEventDetailFromList = (event) => {
+    setSelectedEvent(event);
+    setTimeout(() => setEventDetailModalVisible(true), 300);
+  }
   const openEventDetail = (event) => {
     setSelectedEvent(event);
     setEventsModalVisible(false); // Close the event list modal 
@@ -349,20 +352,23 @@ const openEventsModal = async () => {
             </BottomSheetModal>
 
             {/* Event detail information */}
-            <BottomSheetModal visible={eventDetailModalVisible} onClose={() => setEventDetailModalVisible(false)} height={400}>
+            <BottomSheetModal visible={eventDetailModalVisible} onClose={() => setEventDetailModalVisible(false)} height={500}>
               <View style={styles.modalContent}>
                 <Text style={styles.modalTitle}>Event Details</Text>
                 <View style={styles.dottedLine} />
                 {selectedEvent && (
                   <>
-                    <Text style={styles.detailLabel}>📌 Booking Company Name:</Text>
+                    <Text style={styles.detailLabel}>Company Name:</Text>
                     <Text style={styles.detailText}>{selectedEvent.companyName}</Text>
 
-                    <Text style={styles.detailLabel}>📌 Type of Event:</Text>
+                    <Text style={styles.detailLabel}>Type of Event:</Text>
                     <Text style={styles.detailText}>{selectedEvent.eventType}</Text>
 
-                    <Text style={styles.detailLabel}>📌 Guest Count:</Text>
+                    <Text style={styles.detailLabel}>Guest Count:</Text>
                     <Text style={styles.detailText}>{selectedEvent.numberOfGuests}</Text>
+
+                    <Text style={styles.detailLabel}>Special Requirements:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.specialRequirements}</Text>
                   </>
                 )}
               </View>
@@ -401,34 +407,43 @@ const openEventsModal = async () => {
         Use a ScrollView to allow scrolling and display a loading indicator while fetching data. 
          */}
           <ScrollView>
-          {loading ? (
-          <Text>Loading...</Text>
-          ) : filteredEvents.length > 0 ? (
-              filteredEvents.map((event) => (
-                  <View key={event.eventId} style={styles.eventContainer}>
-                    <Text style={styles.eventText}>Events</Text>
-                    <View style={styles.dottedLine}></View>
-                      <Text style={styles.eventText}>
-                      {event.eventName} ({event.numberOfGuests} Guests)
-                      </Text>
-                      <Text style={styles.eventText}>
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : filteredEvents.length > 0 ? (
+              <View style={styles.eventListContainer}>
+                {/* Individual event list */}
+                {filteredEvents.map((event) => (
+                  <TouchableOpacity 
+                    key={event.eventId} 
+                    style={styles.eventCard} 
+                    onPress={() => openEventDetailFromList(event)}
+                  >
+                    <View style={styles.eventIconContainer}>
+                      <Image source={require('../../../assets/images/event11.png')} style={styles.eventIcon} />
+                    </View>
+                    <View style={styles.eventInfo}>
+                      <Text style={styles.eventTitle}>{event.eventName}</Text>
+                      <Text style={styles.eventGuests}>{event.numberOfGuests} Guests</Text>
+                      <Text style={styles.eventTime}>
                         {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
                       </Text>
-                      <View style={styles.dottedLine}></View>
-                  </View>
-            ))
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
             ) : (
-              <View style = {styles.detailsContainer}>
-                <View style = {styles.childContainer}>
-                  <Text style = {styles.orange}>{format(selectedDate, 'd')}</Text>
+              <View style={styles.detailsContainer}>
+                <View style={styles.childContainer}>
+                  <Text style={styles.orange}>{format(selectedDate, 'd')}</Text>
                   <Text style={styles.bold}>{format(selectedDate, 'EEE')} </Text>
                 </View>
-                <View style = {styles.childContainer}>
+                <View style={styles.childContainer}>
                   <Text style={styles.bold}> No Shifts for this date.</Text>
                 </View>
               </View>
-                )}
+            )}
           </ScrollView>
+
         </View>
     </View>
     </MainLayout>
@@ -684,5 +699,44 @@ noEventText: {
   color: '#888',
   textAlign: 'center',
   marginTop: 20,
+},
+modalContent: {
+  padding: 20,
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+
+modalTitle: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: '#333',
+  textAlign: 'center',
+  marginBottom: 10,
+},
+
+dottedLine: {
+  borderBottomWidth: 1,
+  borderStyle: 'dotted',
+  width: '100%',
+  marginVertical: 5,
+  borderColor: '#ccc',
+},
+
+detailLabel: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#555',
+  marginTop: 10,
+},
+
+detailText: {
+  fontSize: 16,
+  color: '#333',
+  marginBottom: 5,
 },
 });
