@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 export default function ShiftDetails({shift}){
     const [editing, setEditing] = useState(shift === null);
+    const [shiftId, setShiftId] = useState(shift?.shiftId|| null)
+    const [accountId, setAccountId] = useState(shift?.accountId|| null)
     const [firstName, setFirstName] = useState(shift?.firstName || "");
     const [shiftStartDate, setShiftStartDate] = useState(shift?.shiftStartDate || "");
     const [shiftEndDate, setShiftEndDate] = useState(shift?.shiftEndDate || "");
@@ -14,26 +16,42 @@ export default function ShiftDetails({shift}){
       };
     const handleSave = () =>{
       const BASE_URL = 'http://localhost:8080/api/shifts';
-      const newEvent = {
-          // shiftId: shiftId,
-          // accountId: accountId,
+      const newShift = {
+          shiftId: null,
+          accountId: accountId,
           shiftStartDate: shiftStartDate,
           shiftEndDate: shiftEndDate,
           description: description,
         };
+        if(shiftId == null){
 
-        fetch(`${BASE_URL}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newEvent),
-          })
-          .then((response) => response.json())
-          .catch((error) => {
-            console.error('Error creating event:', error);
-            alert("Error", "Failed to create event");
-          });
+          fetch(`${BASE_URL}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newShift),
+            })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error creating event:', error);
+              alert("Error", "Failed to create event");
+            });
+        }else{
+
+          fetch(`${BASE_URL}`, {
+            method: 'Update',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newShift),
+            })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error creating event:', error);
+              alert("Error", "Failed to create event");
+            });
+        }
     }
     const handleDelete = () =>{
 

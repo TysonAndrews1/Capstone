@@ -113,8 +113,8 @@ export default function EventBar({events}) {
 
             {/* Edit and Delete buttons */}
             <div className="modal-actions">
-              <Overlay child={<EditEvent eventId={selectedEvent.eventId}/>} headerTitle={"Edit Shift"} ButtonTitle={"Edit Shift"} buttonPlacement={"top-[50vh]"} 
-                          isActive={activeOverlay === "Edit Shift"} 
+              <Overlay child={<EditEvent eventId={selectedEvent.eventId}/>} headerTitle={"Edit Event"} ButtonTitle={"Edit Event"} buttonPlacement={"top-[50vh]"} 
+                          isActive={activeOverlay === "Edit Event"} 
                       onToggle={setActiveOverlay}/>
               <button className="basic-button w-24 my-1" onClick={handleDelete}>
                 Delete
