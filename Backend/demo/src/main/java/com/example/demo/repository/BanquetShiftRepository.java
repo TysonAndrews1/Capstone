@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface BanquetShiftRepository extends JpaRepository<BanquetShift, Long> {
     // Currently using built-in CRUD operations from Spring Data JPA.
+
+    // Custom operations
     List<BanquetShift> findAllByAccountId(Long accountId);
 }

@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping("/api/events") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetEventController {
 
-    @Autowired // Allows Spring to use BanquetEventRepository automatically into the controller
+    @Autowired //Allows Spring to use BanquetEventRepository automatically into the controller
     private BanquetEventRepository repository;
 
     @GetMapping // Display a list of all events in the database
