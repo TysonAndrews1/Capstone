@@ -9,7 +9,7 @@ export default function CreateEmpAccount() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [employeeId, setEmployeeId] = useState('');
-    const [emailAddress, setEmailAddress] = useState('');
+    const [email, setEmailAddress] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('');
@@ -19,32 +19,47 @@ export default function CreateEmpAccount() {
     const router = useRouter();
 
     const handleSubmit = () => {
-        if (!firstName || !lastName || !employeeId || !emailAddress || !address || !phoneNumber || !role || !status) {
+        if (!firstName || !lastName || !employeeId || !email || !address || !phoneNumber || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
     }
 
+    /* Format the first name, last name, and role to have the first letter capitalized and the rest lowercase.
+    If they have a space in any of the fields, it will capitalize the first letter of each name/role. */
+    const formattedFirstName = firstName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    const formattedLastName = lastName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    const formattedRole = role.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+
+    // Format email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // CODE REFERENCE: https://mailtrap.io/blog/javascript-email-validation/
+    if (!emailRegex.test(email)) {
+        Alert.alert("Error", "Please enter a valid email address");
+        return;
+    }
+
+    // Format phone number to only be numbers
+    const numericPhone = phoneNumber.replace(/\D/g, ""); // CODE REFERENCE: https://stackoverflow.com/questions/9309278/javascript-regex-replace-all-characters-other-than-numbers removes everything that is not a number
+
     const newEmployee = { // Creates a new employee object that holds all the following details
-        firstName,
-        lastName,
+        firstName: formattedFirstName,
+        lastName: formattedLastName,
         employeeId,
-        emailAddress,
+        email,
         address,
-        phoneNumber,
-        role,
-        status: status === '1', // Convert "1" (Active) to true and "0" (Inactive) to false
+        phoneNumber: numericPhone,
+        role: formattedRole,
+        status: status === '1'? 'ACTIVE' : 'INACTIVE' // Condition if the status is 1 (active in the Picker), the employee is active, otherwise they are inactive
     };
 
-    fetch(`${BASE_URL}/accounts`, { // Sends to the API endpoint
+    fetch(`${BASE_URL}/accounts/add-employee`, { // Sends to the API endpoint
         method: 'POST', // This is a POST request to create a new employee account for the database in JSON format
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEmployee),
     })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
+    .then(async (response) => {
+        const text = await response.text(); // Read raw response as text
+        console.log("API Response:", text); // Log response to see what’s returned
+        return (text); // Return the response from the API
     })
     .then(() => {
         Alert.alert("Success", "Employee account created successfully!");
@@ -62,7 +77,7 @@ export default function CreateEmpAccount() {
                     <View style={styles.header}>
                         <Image source={userIcon} style={styles.profileIcon} />
                         <View style={styles.profileTextContainer}>
-                            <Text style={styles.profileName}>Employee Name</Text>
+                            <Text style={styles.profileName}>New Employee</Text>
                         </View>
                     </View>
     
@@ -101,7 +116,7 @@ export default function CreateEmpAccount() {
                         <Text style={styles.detailLabel}>Email Address</Text>
                         <TextInput
                             style={styles.textInput}
-                            value={emailAddress}
+                            value={email}
                             onChangeText={setEmailAddress}
                             placeholder="Enter email address"
                         />
@@ -162,8 +177,12 @@ export default function CreateEmpAccount() {
     const styles = StyleSheet.create({
         scrollContainer: {
             flexGrow: 1,
-            padding: 16,
+            padding: 14,
             backgroundColor: '#F5F5F5',
+        },
+
+        container: {
+            flex: 1,
         },
     
         header: {
