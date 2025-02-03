@@ -59,7 +59,7 @@ public class BanquetEventController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping // Create new events using infomation from the frontend
+    @PostMapping // Create new events using information from the frontend
     public BanquetEvent createEvent(@RequestBody BanquetEvent event) {
         return repository.save(event);
     }

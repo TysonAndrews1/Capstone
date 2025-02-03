@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import com.example.demo.entity.BanquetAccount;
 import com.example.demo.repository.BanquetAccountRepository;
 import com.example.demo.service.FirebaseAccountService;
@@ -81,6 +83,7 @@ public class BanquetAccountController {
     }
 
     // API to retrieve a specific employee by email
+
     @GetMapping("/user")
     public ResponseEntity<BanquetAccount> getUserByEmail(@RequestParam String email) {
         BanquetAccount employee = repository.findByEmail(email);
@@ -91,8 +94,36 @@ public class BanquetAccountController {
         } // Return 404 if no employee found
     }
 
-    @PostMapping // Will use this method to create new events using information from the frontend
+    @PostMapping // Create new accounts using information from the frontend
     public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
         return repository.save(account);
+    }
+
+    @DeleteMapping("/{accountId}") // Delete account by accountId
+    public ResponseEntity<String> deleteAccount(@PathVariable Long accountId) {
+
+        if (repository.existsById(accountId)) {
+            repository.deleteById(accountId);
+            return ResponseEntity.ok("Account was deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("Account not found.");
+        }
+    }
+
+    @PutMapping("/{accountId}") // Update account by accountId
+    public ResponseEntity<BanquetAccount> updateAccount(@PathVariable Long accountId, @RequestBody BanquetAccount updatedAccount) {
+        return repository.findById(accountId)
+        .map(account -> {
+            account.setFirstName(updatedAccount.getFirstName());
+            account.setLastName(updatedAccount.getLastName());
+            account.setEmployeeId(updatedAccount.getEmployeeId());
+            account.setEmail(updatedAccount.getEmail());
+            account.setAddress(updatedAccount.getAddress());
+            account.setPhoneNumber(updatedAccount.getPhoneNumber());
+            account.setRole(updatedAccount.getRole());
+            account.setStatus(updatedAccount.getStatus());
+            return ResponseEntity.ok(repository.save(account));
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
