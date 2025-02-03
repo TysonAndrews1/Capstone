@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css'; 
 import HamburgerMenu from '../components/HamburgerMenu';
 import { FaRegCircleUser } from 'react-icons/fa6'; 
-import { useNavigate } from 'react-router-dom';
+
+
 
 
 /**
@@ -11,21 +13,21 @@ import { useNavigate } from 'react-router-dom';
  * 
  */
 function MainLayout({ children }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className={`min-h-screen flex flex-col bg-gray-100 transition-all duration-300 ${menuOpen ? 'ml-64' : 'ml-0'}`}>
       <header className="bg-hover-blue text-white py-4 px-6 flex items-center justify-between"> 
 
         <div className="flex items-center">
-          <HamburgerMenu />
-          <h1 className="text-2xl font-bold ml-4 cursor-pointer"
+          <HamburgerMenu setMenuOpen={setMenuOpen} />
+          <h1 className="text-2xl font-bold ml-4 cursor-pointer" // Added cursor-pointer to make the cursor convert to a pointer when hovering over the name. 
           onClick={() => navigate('/home')}>Shift Solutions</h1>
         </div>
 
         <button className="text-white text-3xl "
-        onClick={() => navigate('/profile')}>
+          onClick={() => navigate('/profile')}>
           <FaRegCircleUser />
         </button>
 
