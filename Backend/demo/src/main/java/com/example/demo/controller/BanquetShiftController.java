@@ -1,3 +1,6 @@
+//Reference: https://masteringbackend.com/posts/spring-boot
+//I use this guide to help me setup the SpringBoot backend server. It provided examples on how to setup and use the basic CRUD operations built into Spring/JPA.
+
 package com.example.demo.controller;
 
 import java.util.List;
@@ -17,11 +20,11 @@ import com.example.demo.entity.BanquetShift;
 import com.example.demo.repository.BanquetShiftRepository;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RestController
-@RequestMapping("api/shifts")
+@RestController //Tells Spring to handle any HTTP requests and return a JSON format
+@RequestMapping("api/shifts") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetShiftController {
 
-    @Autowired
+    @Autowired // Allows Spring to use BanquetShiftRepository automatically into the controller
     private BanquetShiftRepository repository;
 
     @GetMapping
@@ -52,7 +55,7 @@ public class BanquetShiftController {
         }
     }
 
-    @PostMapping // Saving shift
+    @PostMapping //Create shift from information provided from the frontend
     public ResponseEntity<String> addShift(@RequestBody BanquetShift shift) {
         try {
             repository.save(shift); 
@@ -62,7 +65,7 @@ public class BanquetShiftController {
         }
     }
 
-    @DeleteMapping("/{shiftId}") // Delete shift by shiftId.
+    @DeleteMapping("/{shiftId}") //Delete shift by shiftId.
     public ResponseEntity<String> deleteShift(@PathVariable Long shiftId){
         if (repository.existsById(shiftId)) { // Check if shift exists
             repository.deleteById(shiftId); // Delete specific event
@@ -72,7 +75,7 @@ public class BanquetShiftController {
         }
     }
 
-    @PutMapping("/{shiftId}") // Update shift by shiftId
+    @PutMapping("/{shiftId}") //Update shift by shiftId
     public ResponseEntity<BanquetShift> updateShift(@PathVariable Long shiftId, @RequestBody BanquetShift updatedShift) {
         return repository.findById(shiftId)
         .map(shift -> {

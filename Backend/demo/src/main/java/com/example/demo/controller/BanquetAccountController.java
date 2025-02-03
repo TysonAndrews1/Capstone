@@ -1,3 +1,6 @@
+//Reference: https://masteringbackend.com/posts/spring-boot
+//I use this guide to help me setup the SpringBoot backend server. It provided examples on how to setup and use the basic CRUD operations built into Spring/JPA.
+
 package com.example.demo.controller;
 
 import java.util.List;
@@ -6,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.example.demo.entity.BanquetAccount;
 import com.example.demo.repository.BanquetAccountRepository;
@@ -14,7 +16,7 @@ import com.example.demo.service.FirebaseAccountService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // Tells Spring to handle any HTTP requests and return a JSON format
-@RequestMapping("/api/accounts") // Any HTTP request to this endpoint will be routed to this controller
+@RequestMapping("/api/accounts") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetAccountController {
 
     @Autowired

@@ -1,3 +1,7 @@
+//Reference: https://start.spring.io/
+//I use this website to initialize a spring boot project. It allows you to generate a spring boot project with the correct project, language, and java version.
+//For our project we are using Project: Maven, Language: Java, Java Version: 23.
+
 package com.example.demo;
 
 import org.springframework.boot.SpringApplication;

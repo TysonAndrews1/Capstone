@@ -1,3 +1,6 @@
+//Reference: https://masteringbackend.com/posts/spring-boot
+//I use this guide to help me setup the SpringBoot backend server. It provided examples on how to setup and use the basic CRUD operations built into Spring/JPA.
+
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +15,8 @@ import java.util.stream.Collectors;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RestController // Tells Spring to handle any HTTP requests and return a JSON format
-@RequestMapping("/api/events") // Any HTTP request to this endpoint will be routed to this controller
+@RestController //Tells Spring to handle any HTTP requests and return a JSON format
+@RequestMapping("/api/events") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetEventController {
 
     @Autowired // Allows Spring to use BanquetEventRepository automatically into the controller
@@ -36,22 +39,17 @@ public class BanquetEventController {
         }
     }
 
-    @GetMapping("/filter") // Filters events by timeframe (past or upcoming)
+    @GetMapping("/filter") // Filters events by time frame (past or upcoming)
     public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {
 
-        // Store the loacal time and date
-        LocalDateTime today = LocalDate.now().atStartOfDay();
-
-        // Takes all events from database and stoer in a list
-        List<BanquetEvent> allEvents = repository.findAll();
+        LocalDateTime today = LocalDate.now().atStartOfDay(); // Store the local time and date
+        List<BanquetEvent> allEvents = repository.findAll(); // Takes all events from database and store in a list
 
         // Compares event with today date and time
         return allEvents.stream().filter(event -> {
             if ("past".equalsIgnoreCase(timeframe)) {
-                // Check if the event has ended before today
-                return event.getEventEndDate().isBefore(today);
-            } else if ("upcoming".equalsIgnoreCase(timeframe)) {
-                // Check if the event starts before or on today and ends after today
+                return event.getEventEndDate().isBefore(today); // Check if the event has ended before today
+            } else if ("upcoming".equalsIgnoreCase(timeframe)) { // Check if the event starts before or on today and ends after today
                 return event.getEventEndDate().isAfter(today);
             }
             return false;
@@ -71,15 +69,15 @@ public class BanquetEventController {
             repository.deleteById(eventId); // Delete specific event
             return ResponseEntity.ok("Event was deleted successfully.");
         } else {
-            // Return an error message of event does not exist
             return ResponseEntity.status(404).body("Event not found.");
         }
     }
 
-    @PutMapping("/{eventId}")
+    @PutMapping("/{eventId}") // Update event by eventId
     public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId,
             @RequestBody BanquetEvent updatedEvent) {
 
+        // Locates event by eventId and update any new information given by the frontend.
         return repository.findById(eventId)
                 .map(event -> {
                     event.setEventName(updatedEvent.getEventName());
