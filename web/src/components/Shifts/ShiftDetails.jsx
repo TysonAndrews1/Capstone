@@ -13,7 +13,7 @@ export default function ShiftDetails({shift}){
         setEditing(!editing); 
       };
     const handleSave = () =>{
-      const BASE_URL = 'http://localhost:8080/api/events';
+      const BASE_URL = 'http://localhost:8080/api/shifts';
       const newEvent = {
           // shiftId: shiftId,
           // accountId: accountId,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import MainLayout from '../layouts/MainLayout'
 
 function HamburgerMenu({ setMenuOpen }) {
   const [isOpen, setIsOpen] = useState(false);
