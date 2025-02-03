@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import MiniSchedule from './MiniSchedule';
 import { useNavigate } from 'react-router-dom';
 import Overlay from './Overlay';
-import CreateShift from './CreateShift';
 import EditEvent from '../screens/EditEvent';
 //Made By Aaron, Tyson and Michelle 
 //Converted from React Native with help from Chat-GPT

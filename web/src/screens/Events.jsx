@@ -2,8 +2,8 @@ import React, {useState} from "react";
 import CalendarComponent from "../components/Calender";
 import UpcomingEvents from "../components/UpcomingEvents";
 import Overlay from "../components/Overlay";
-import CreateShift from "../components/CreateShift";
-import ScheduledShifts from "../components/ScheduledShifts";
+import ShiftDetails from "../components/Shifts/ShiftDetails";
+import ScheduledShifts from "../components/Shifts/ScheduledShifts";
 import EditEvent from "./EditEvent";
 
 
@@ -26,7 +26,7 @@ return(
 <Overlay child={<ScheduledShifts selectedDate={date}/>} headerTitle={"Scheduled Shifts"} ButtonTitle={"Scheduled Shifts"} buttonPlacement={"top-[75vh] left-[10vw]"} 
             isActive={activeOverlay === "Scheduled Shifts"}
         onToggle={setActiveOverlay}/>
-<Overlay child={<CreateShift/>} headerTitle={"Add Shift"} ButtonTitle={"Add Shift"} buttonPlacement={"top-[75vh] left-[55vw]"} 
+<Overlay child={<ShiftDetails/>} headerTitle={"Add Shift"} ButtonTitle={"Add Shift"} buttonPlacement={"top-[75vh] left-[55vw]"} 
             isActive={activeOverlay === "Add Shift"} 
         onToggle={setActiveOverlay}/>
         <Overlay child={<EditEvent eventId={null}/>} headerTitle={"Create Event"} ButtonTitle={"Create Event"} buttonPlacement={"top-[90vh] left-[55vw]"} 
