@@ -226,7 +226,7 @@ return (
     <button onClick={() => setEditing(true)} className="basic-button my-2">
       Edit
     </button>
-    <button onClick={() => handleDelete} className="basic-button">
+    <button onClick={() => handleDelete(shift.shiftId)} className="basic-button">
       Delete
     </button>
     </div>
