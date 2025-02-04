@@ -34,7 +34,7 @@ export default function EmpAccountDetails() {
                     const data = await response.json();
                     setEmployee({
                         ...data,
-                        status: data.status === 1 || data.status === "1" || data.status === true // This will make the status display as "Active" if the status is 1 or true, and "Inactive" if the status is 0 or false.
+                        status: data.status === 1 || data.status.toUpperCase() === "ACTIVE" // Convert status to "Active" or "Inactive", displays it in lowercase
                             ? "Active" 
                             : "Inactive",
                     });

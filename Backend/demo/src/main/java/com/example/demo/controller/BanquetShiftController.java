@@ -1,16 +1,17 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.example.demo.entity.BanquetShift;
 import com.example.demo.repository.BanquetShiftRepository;
@@ -51,7 +52,7 @@ public class BanquetShiftController {
         }
     }
 
-    @PostMapping // New shift will be saved
+    @PostMapping // Saving shift
     public ResponseEntity<String> addShift(@RequestBody BanquetShift shift) {
         try {
             repository.save(shift); 
@@ -59,5 +60,28 @@ public class BanquetShiftController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error adding shift: " + e.getMessage());
         }
+    }
+
+    @DeleteMapping("/{shiftId}") // Delete shift by shiftId.
+    public ResponseEntity<String> deleteShift(@PathVariable Long shiftId){
+        if (repository.existsById(shiftId)) { // Check if shift exists
+            repository.deleteById(shiftId); // Delete specific event
+            return ResponseEntity.ok("Shift was deleted successfully.");
+        } else {
+            return ResponseEntity.status(404).body("Shift not found.");
+        }
+    }
+
+    @PutMapping("/{shiftId}") // Update shift by shiftId
+    public ResponseEntity<BanquetShift> updateShift(@PathVariable Long shiftId, @RequestBody BanquetShift updatedShift) {
+        return repository.findById(shiftId)
+        .map(shift -> {
+            shift.setShiftStartDate(updatedShift.getShiftStartDate());
+            shift.setShiftEndDate(updatedShift.getShiftEndDate());
+            shift.setDescription(updatedShift.getDescription());
+            shift.setSwappable(updatedShift.getSwappable());
+            return ResponseEntity.ok(repository.save(shift));
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
