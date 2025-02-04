@@ -16,6 +16,7 @@ export default function WeeklyCalender(){
     setTargetDate(newDate.toISOString().split("T")[0]);
   };
 
+  
   // Function to move the target date forward by 7 days
   const moveForward = () => {
     const newDate = new Date(targetDate);
