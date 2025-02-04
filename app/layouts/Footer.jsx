@@ -4,6 +4,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router'; // expo-router's useRouter hook
 import Icon from 'react-native-vector-icons/AntDesign';
 import More from 'react-native-vector-icons/Feather'
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigationState } from '@react-navigation/native';
 
 export default function Footer() {
@@ -32,8 +33,8 @@ export default function Footer() {
 
       {/* Chat Button */}
       <TouchableOpacity onPress={() => onPress("EventList")} style = {styles.navButton}>
-        <Icon name="message1" size={30} color={getButtonColor("EventList")} />
-        <Text style={[styles.navText, { color: getButtonColor("EventsList") }]}>Chat</Text>
+        <MaterialIcon name="event" size={30} color={getButtonColor("EventList")} />
+        <Text style={[styles.navText, { color: getButtonColor("EventsList") }]}>Events</Text>
       </TouchableOpacity>
 
       {/* Shifts Button */}
