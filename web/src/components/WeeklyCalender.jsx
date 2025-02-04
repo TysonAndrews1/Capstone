@@ -1,19 +1,14 @@
 import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
 import UpcomingEvents from "./UpcomingEvents";
 import MiniShift from "./Shifts/MiniShift";
 import ShiftDetails from "./Shifts/ShiftDetails";
 import Overlay from "./Overlay";
 import Roster from "./Roster";
 import EditEvent from "../screens/EditEvent";
+import CreateAnnouncement from "./CreateAnnouncment";
 export default function WeeklyCalender(){
     const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0])
     const [activeOverlay,setActiveOverlay] =useState(false)
-    const navigate = useNavigate()
-
-    const CreateEvent = () =>{
-        navigate(`/EditEvent/${null}`)
-    }
   // Function to move the target date backward by 7 days
   const moveBackward = () => {
     const newDate = new Date(targetDate);
@@ -21,6 +16,7 @@ export default function WeeklyCalender(){
     setTargetDate(newDate.toISOString().split("T")[0]);
   };
 
+  
   // Function to move the target date forward by 7 days
   const moveForward = () => {
     const newDate = new Date(targetDate);
@@ -78,8 +74,7 @@ export default function WeeklyCalender(){
         {weekDays.map((day) => (
           <div
             key={day}
-            className="flex-1 flex flex-col items-center justify-center border  p-4 bg-gray-200 rounded shadow-md min-w-[12%] max-w-[14%]"
-          >
+            className="flex-1 flex flex-col items-center justify-center border  p-4 bg-gray-200 rounded shadow-md min-w-[12%] max-w-[14%]">
             <p className="font-bold text-lg mb-2">{new Date(day).toDateString()}</p>
             <div className="flex-1 w-full">
               <UpcomingEvents selectedDay={new Date(day)}/>
@@ -90,22 +85,21 @@ export default function WeeklyCalender(){
       </div>
 
       {/* Footer */}
-      <div className="mt-4 py-4 text-center bg-gray-100 border-t">
-        <p className="text-sm text-gray-500">Footer (if needed)</p>
-        <Overlay  headerTitle ={"Create Event"} ButtonTitle={"Create Event"} buttonPlacement={"top-[66vh] left-[33vw]"} isActive={activeOverlay=="Create Event"} 
-        onToggle={setActiveOverlay} child= {<EditEvent eventId={null}/>}/>
-        <Overlay  headerTitle ={"test"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay=="test"} 
-        onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
-        <Overlay  headerTitle ={"roster"} ButtonTitle={"Test"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "roster"} 
-        onToggle={setActiveOverlay} child= {<Roster/>}/>
+      <div className="mt-4 py-4 text-center bg-gray-100 border-t w-full">
+  <p className="text-sm text-gray-500 mb-4">Footer</p>
+
+  {/* Container for buttons with grid layout */}
+  <div className="flex flex-wrap justify-center gap-4">
+        <Overlay  headerTitle ={"Create Event"} ButtonTitle={"Create Event"} buttonPlacement={"top-[66vh] left-[33vw] h-full"} isActive={activeOverlay==="Create Event"} 
+          onToggle={setActiveOverlay} child= {<EditEvent eventId={null}/>}/>
+        <Overlay  headerTitle ={"Create Shift"} ButtonTitle={"Create Shift"} buttonPlacement={"top-[75vh] left-[33vw] h-full"} isActive={activeOverlay==="Create Shift"} 
+          onToggle={setActiveOverlay} child= {<ShiftDetails shift={null}/>}/>
+        <Overlay  headerTitle ={"Roster"} ButtonTitle={"Roster"} buttonPlacement={"top-[75vh] left-[50vw] h-full"} isActive={activeOverlay=== "Roster"} 
+          onToggle={setActiveOverlay} child= {<Roster/>}/>
+        <Overlay  headerTitle ={"Create Announcement"} ButtonTitle={"Create Announcement"} buttonPlacement={"top-[75vh] left-[50vw] h-full"} isActive={activeOverlay=== "Create Announcement"} 
+          onToggle={setActiveOverlay} child= {<CreateAnnouncement/>}/>
+          </div>
       </div>
     </div>
 )
 }
-
-
-
-// Date Friday
-// 1. Sun Mon Tue Wen Thu fri sat
-// 2. Fri Sat Sun Mon Tue Wen Thu
-// 3. tue Wen Thr fri Sat Sun Mon

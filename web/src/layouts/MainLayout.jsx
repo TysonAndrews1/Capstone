@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import 'tailwindcss/tailwind.css'; 
 import HamburgerMenu from '../components/HamburgerMenu';
 import { FaRegCircleUser } from 'react-icons/fa6'; 
-
+import NotificationMenu from '../components/NotificationMenu';
 
 
 
 /**
- * Created by: Michelle Tran
+ * Created by: Michelle Tran, Tyson
  * The MainLayout component wraps the entire application to provide a consistent layout across all screens.
- * 
+
  */
 function MainLayout({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notificationOpen, setNotificationOpen] = useState(false)
   const navigate = useNavigate();
 
   return (
@@ -25,11 +26,15 @@ function MainLayout({ children }) {
           <h1 className="text-2xl font-bold ml-4 cursor-pointer" // Added cursor-pointer to make the cursor convert to a pointer when hovering over the name. 
           onClick={() => navigate('/home')}>Shift Solutions</h1>
         </div>
-
-        <button className="text-white text-3xl "
+        <div className=''>
+        <button className="text-white text-3xl mr-4 "
           onClick={() => navigate('/profile')}>
           <FaRegCircleUser />
         </button>
+        <button className='text-white text-3xl'>
+          <NotificationMenu/>
+        </button>
+        </div>
 
       </header>
       
