@@ -79,6 +79,8 @@ public class BanquetShiftController {
     public ResponseEntity<BanquetShift> updateShift(@PathVariable Long shiftId, @RequestBody BanquetShift updatedShift) {
         return repository.findById(shiftId)
         .map(shift -> {
+            shift.setAccountId(updatedShift.getAccountId());
+            shift.setEventId(updatedShift.getEventId());
             shift.setShiftStartDate(updatedShift.getShiftStartDate());
             shift.setShiftEndDate(updatedShift.getShiftEndDate());
             shift.setDescription(updatedShift.getDescription());
