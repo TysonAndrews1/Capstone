@@ -53,25 +53,6 @@ export default function MiniShift({ selectedDay }) {
     setEditing(!editing)
   };
 
-  // Needs Implementing in backend
-  const handleDelete = async (shiftId) => {
-    try {
-      const response = await fetch(`${BASE_URL_SHIFT}/${shiftId}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        alert("Shift deleted successfully.");
-        setShifts((prevShifts) => prevShifts.filter((shift) => shift.shiftId !== shiftId)); // Remove the deleted shift from state
-      } else {
-        const data = await response.json();
-        alert(data.message || "Failed to delete the shift.");
-      }
-    } catch (err) {
-      console.error("Error deleting shift:", err);
-      alert("An error occurred while deleting the shift.");
-    }
-  };
-
 function getName(empID) {
     const employee = emp.find((Employee) => Employee.accountId === empID); // Use find instead of forEach
     return employee ? employee.firstName : "Unknown";
@@ -95,10 +76,8 @@ function getName(empID) {
             <p >view Details</p>
               {/* Actions: Edit & Delete */}
               <Overlay  headerTitle ={shift.accountId} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
-              <div className="flex space-x-2 mt-2">
+              <div className="flex space-x-2 mt-2 flex-col">
                 <ShiftDetails/>
-                <button className="basic-button "onClick={() => handleEdit(shift.shiftId)}>Edit</button>
-                <button className="basic-button "onClick={() => handleDelete(shift.shiftId)}>Delete</button>
               </div>}/>
             </div>
           ))}
