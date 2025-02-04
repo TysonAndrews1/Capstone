@@ -19,15 +19,17 @@ const EmployeeScreen = () => {
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
   const [loading, setLoading] = useState(false); // State for handling Loading
   const [error, setError] = useState(null); // State for handling errors
-  const [shifts, setShifts] = useState([]);
+  const [shifts, setShifts] = useState([]); // Stores employee shifts
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalHeight, setModalHeight] = useState(500);
+  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+  const [modalHeight, setModalHeight] = useState(500); // Sets modal height
 
+  // Events & Event detail modal visibility
   const [eventsModalVisible, setEventsModalVisible] = useState(false);
   const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
-  const [weeklyEvents, setWeeklyEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const [weeklyEvents, setWeeklyEvents] = useState([]); // Stores weekly events
+  const [selectedEvent, setSelectedEvent] = useState(null); // Holds selected event details
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -190,7 +192,8 @@ const EmployeeScreen = () => {
   }
   };
 
-
+// some codes were generated with assistance from chatGPT.
+// prompt: I want to fetch event data for a week based on current date. How can I build this?
 const openEventsModal = async () => {
   try {
 
@@ -221,21 +224,26 @@ const openEventsModal = async () => {
     console.error('Error fetching weekly events:', err);
   }
 };
-  // Open event detail modal when clicking
+
+  // Change the value to open Event modal
   const openEventDetailFromList = (event) => {
     setSelectedEvent(event);
     setTimeout(() => setEventDetailModalVisible(true), 300);
   }
+
+  // Open event detail modal when clicking
   const openEventDetail = (event) => {
     setSelectedEvent(event);
     setEventsModalVisible(false); // Close the event list modal 
     setTimeout(() => setEventDetailModalVisible(true), 300); // Open event detail modal
   }
-  // Open Modal
+
+  // Change the value to open modal
   const openModal = async () => {
     await fetchShiftsForSelectedDate();
     setModalVisible(true);
   };
+
   // Helper function to display a greeting based on the time of day
   const getTimeOfDayMessage = () => {
     const hour = new Date().getHours();
@@ -676,6 +684,7 @@ eventIcon: {
 
 eventInfo: {
   flex: 1,
+  paddingTop: 5,
 },
 
 eventTitle: {
