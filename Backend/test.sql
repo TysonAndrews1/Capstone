@@ -220,8 +220,8 @@ INSERT INTO `employee_availability` VALUES
 (2, 2, 'Tuesday', '12:00:00', '20:00:00'),
 (3, 2, 'Wednesday', '10:00:00', '20:00:00'),
 (4, 2, 'Thursday', NULL, NULL),
-(5, 2, 'Friday', '16:00:00', '24:00:00'),
-(6, 2, 'Saturday', '16:00:00', '24:00:00'),
+(5, 2, 'Friday', '16:00:00', '23:59:59'),
+(6, 2, 'Saturday', '16:00:00', '23:59:59'),
 (7, 2, 'Sunday', NULL, NULL);
 
 /*!40000 ALTER TABLE `employee_availability` ENABLE KEYS */;
