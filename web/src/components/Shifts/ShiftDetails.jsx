@@ -2,7 +2,7 @@ import React, {useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { getAccounts, getEvents } from "../FetchData";
 import Select from "react-select"
-
+import { getCurrentUser } from "../FetchData";
 export default function ShiftDetails({shift}){
     const [editing, setEditing] = useState(shift === null);
     const [selectedEmployees, setSelectedEmployees] = useState([])
@@ -13,11 +13,17 @@ export default function ShiftDetails({shift}){
     const [shiftEndDate, setShiftEndDate] = useState(shift?.shiftEndDate || "");
     const [description, setDescription] = useState(shift?.description || "");
 
+    const [currentRole, setCurrentRole] = useState("Employee")
+    useEffect(()=>{
+      getCurrentUser().then((user)=>{setCurrentRole(user.role)})
+    },[])
+
     const BASE_URL_SHIFT = "http://localhost:8080/api/shifts";
 
     const ToggleEditing = () => {
         setEditing(!editing); 
       };
+
     const handleSave = async () =>{
  if (selectedEmployees.length === 0 || !selectedEvent || !shiftStartDate || !shiftEndDate || !description.trim()) {
         console.log(("Error", "All fields are required."));
@@ -105,14 +111,14 @@ export default function ShiftDetails({shift}){
         setEventOptions(formattedOptions);
       });
     }, []);
-      // reset all the data.
-  const resetFields = () => {
-    setSelectedEmployees([]); 
-    setSelectedEvent(null); 
-    setShiftStartDate(null); 
-    setShiftEndDate(null); 
-    setDescription(''); 
-};
+;
+const resetFields = () => {
+  setSelectedEmployees([]); 
+  setSelectedEvent(null); 
+  setShiftStartDate(null); 
+  setShiftEndDate(null); 
+  setDescription(''); 
+}
 return (
     <div className="p-4 bg-gray-100 shadow rounded">
       {editing ? (
@@ -173,38 +179,30 @@ return (
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
-              <button
-                onClick={handleSave}
-                className="basic-button"
-              >
+              <button onClick={handleSave} className="basic-button">
                 Save
               </button>
-              <button
-                onClick={()=>{console.log(selectedEvent, selectedEmployees,shiftStartDate);
-                }}
-                className="basic-button"
-              >
-                valueCheck
+              <button onClick={() => resetFields()} className="basic-button">
+                Reset
               </button>
-            </div>
+           </div>
           ) : (
     <div>
-    <p><strong>First Name:</strong> placeholder</p>
+    <p><strong>First Name:</strong> { }</p>
     <p><strong>Start Time:</strong> {shiftStartDate}</p>
     <p><strong>End Time:</strong> {shiftEndDate}</p>
     <p><strong>Description:</strong> {description}</p>
-    <button
-      onClick={() => setEditing(true)}
-      className="basic-button"
-    >
+    {currentRole === "Manager" && (
+  <>
+    <button onClick={() => setEditing(true)} className="basic-button">
       Edit
     </button>
-    <button
-      onClick={() => handleDelete}
-      className="basic-button"
-    >
+    <button onClick={handleDelete} className="basic-button">
       Delete
     </button>
+  </>
+)}
+
   </div>
   )} 
    </div>

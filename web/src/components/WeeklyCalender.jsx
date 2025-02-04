@@ -6,6 +6,7 @@ import ShiftDetails from "./Shifts/ShiftDetails";
 import Overlay from "./Overlay";
 import Roster from "./Roster";
 import EditEvent from "../screens/EditEvent";
+import CreateAnnouncement from "./CreateAnnouncment";
 export default function WeeklyCalender(){
     const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0])
     const [activeOverlay,setActiveOverlay] =useState(false)
@@ -95,9 +96,11 @@ export default function WeeklyCalender(){
         <Overlay  headerTitle ={"Create Event"} ButtonTitle={"Create Event"} buttonPlacement={"top-[66vh] left-[33vw]"} isActive={activeOverlay=="Create Event"} 
         onToggle={setActiveOverlay} child= {<EditEvent eventId={null}/>}/>
         <Overlay  headerTitle ={"Create Shift"} ButtonTitle={"Create Shift"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay=="Create Shift"} 
-        onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
+        onToggle={setActiveOverlay} child= {<ShiftDetails shift={null}/>}/>
         <Overlay  headerTitle ={"Roster"} ButtonTitle={"Roster"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "Roster"} 
         onToggle={setActiveOverlay} child= {<Roster/>}/>
+                <Overlay  headerTitle ={"Create Announcement"} ButtonTitle={"Create Announcement"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "Create Announcement"} 
+        onToggle={setActiveOverlay} child= {<CreateAnnouncement/>}/>
       </div>
     </div>
 )

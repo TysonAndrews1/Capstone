@@ -20,7 +20,5 @@ This is the Home
 </p>
 <Notification/>
 <WeeklyCalender/>
-{/* <Overlay child={<Roster/>} headerTitle={"View Roster"} ButtonTitle={"View Roster"} buttonPlacement={"top-[75vh] left-[55vw]"} isActive={activeOverlay === "View Roster"} onToggle={setActiveOverlay}/> */}
-
 </div>)
 }
