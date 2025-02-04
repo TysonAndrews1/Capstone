@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {handleLogin}  from '../firebase/auth';
 import { useNavigate } from 'react-router-dom';
+
 //Created by Michelle and Tyson
 //With help from Chat-GPT to fine tune the Tailwind CSS
 //This is a standard Sign in page allowing for only verified users to access the webpage or redirecting to the forgot password page
@@ -11,6 +12,7 @@ function SignIn() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
   const BASE_URL = "http://localhost:8080/api"
 
   const ToForgotPassword = ()=>{

@@ -4,19 +4,21 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import userIcon from '../../../assets/images/usericon.png'; // Icon from https://www.flaticon.com/free-icon/user_847969?term=user&page=1&position=21&origin=search&related_id=847969
 import { Picker } from '@react-native-picker/picker';
 import BaseURLConfig from '../../config/BaseURLConfig';
+import { useRouter } from 'expo-router';
 
-export default function EditEmpAccount({}) {
-    const [accountId, setAccountId] = useState(null);
+export default function EditEmpAccount() {
+    const [accountId, setAccountId] = useState();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [employeeId, setEmployeeId] = useState('');
-    const [emailAddress, setEmailAddress] = useState('');
+    const [email, setEmailAddress] = useState('');
     const [address, setAddress] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [role, setRole] = useState('');
     const [status, setStatus] = useState('');
     
     const BASE_URL = BaseURLConfig();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchAccountIdAndData = async () => {
@@ -29,10 +31,6 @@ export default function EditEmpAccount({}) {
                 } else {
                     Alert.alert('Error', 'No account ID found in storage.');
                 }
-                const response = await fetch(`${BASE_URL}/accounts/${employeeId}`);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch employee: ${response.status}`);
-                }
             } catch (error) {
                 console.error('Error fetching account ID from AsyncStorage:', error);
                 Alert.alert('Error', 'Failed to retrieve account ID.');
@@ -42,9 +40,9 @@ export default function EditEmpAccount({}) {
         fetchAccountIdAndData();
     }, []);
 
-    const fetchEmployeeData = async (id) => {
+    const fetchEmployeeData = async (accountId) => {
         try {
-            const response = await fetch(`${BASE_URL}/${id}`);
+            const response = await fetch(`${BASE_URL}/accounts/${accountId}`);
             if (!response.ok) {
                 throw new Error(`Failed to fetch employee data: ${response.status}`);
             }
@@ -56,64 +54,90 @@ export default function EditEmpAccount({}) {
             setAddress(data.address);
             setPhoneNumber(data.phoneNumber);
             setRole(data.role);
-            setStatus(data.status ? 'Active' : 'Inactive'); // Convert status to 'Active' or 'Inactive' depending on the boolean value in the database.
+            setStatus(data.status);
         } catch (error) {
             console.error('Error fetching employee data:', error);
             Alert.alert('Error', 'Failed to load employee data.');
         }
     };
 
-    const handleSubmit = async () => { // To update the employee data in the backend and database, if fields are empty, an error message is displayed.
-        if (!firstName || !lastName || !employeeId || !emailAddress || !address || !phoneNumber || !role || !status) {
+    const handleUpdate = async () => { // To update the employee data in the backend and database, if fields are empty, an error message is displayed.
+        if (!firstName || !lastName || !employeeId || !email || !address || !phoneNumber || !role || !status) {
             Alert.alert("Error", "Please fill in all fields");
             return;
         }
 
-        if (!/^\d{6}$/.test(employeeId)) { // This will ensure that the employee ID is a 6-digit number
-            Alert.alert('Error', 'Employee ID must be a 6-digit number.');
+        /* Format the first name, last name, and role to have the first letter capitalized and the rest lowercase.
+        If they have a space in any of the fields, it will capitalize the first letter of each name/role. (Copied from CreateEmpAccount.jsx)*/
+        const formattedFirstName = firstName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+        const formattedLastName = lastName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+        const formattedRole = role.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
+    
+        // Format email address
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // CODE REFERENCE: https://mailtrap.io/blog/javascript-email-validation/
+        if (!emailRegex.test(email)) {
+            Alert.alert("Error", "Please enter a valid email address");
             return;
         }
+    
+        // Format phone number to only be numbers
+        const numericPhone = phoneNumber.replace(/\D/g, ""); // CODE REFERENCE: https://stackoverflow.com/questions/9309278/javascript-regex-replace-all-characters-other-than-numbers removes everything that is not a number
 
-        if (!/^\d{10}$/.test(phoneNumber)) { // This will ensure that the phone number is a 10-digit number, WILL CONFIRM WITH TEAM ON HOW TO FORMAT IT.
-            Alert.alert('Error', 'Phone Number must be a 10-digit number.');
-            return;
-        }
-
-        if (!status || status === 'placeholder') { // This will ensure that the user selects a status
-            Alert.alert('Error', 'Please select a valid status.');
-            return;
-        }        
+        const updatedEmployeeData = {
+            firstName: formattedFirstName,
+            lastName: formattedLastName,
+            employeeId,
+            email,
+            address,
+            phoneNumber: numericPhone,
+            role: formattedRole,
+            status: status,
+        };
 
         try { // To update the employee data in the backend and database along with some error handling
-            const response = await fetch(`${BASE_URL}/${accountId}`, {
+            const response = await fetch(`${BASE_URL}/accounts/${accountId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    firstName,
-                    lastName,
-                    email: emailAddress,
-                    address,
-                    phoneNumber,
-                    role,
-                    status: status === '1', // This will convert "1" to true, "0" to false
-                }),
+                body: JSON.stringify(updatedEmployeeData),
             });
 
             if (!response.ok) {
                 throw new Error(`Failed to update employee: ${response.status}`);
             }
 
-            Alert.alert('Success', 'Employee updated successfully!');
+            Alert.alert('Success', 'Employee account updated successfully!');
             router.push('/screens/manager/EmployeeAccounts');
 
         } catch (error) {
             console.error('Error updating employee:', error);
             Alert.alert('Error', 'Failed to update employee account');
         }
-    }
+    };
 
-    // TODO: Make a handleDelete function to delete the employee account. This will be a DELETE request to the backend.
-    // Ensure it contains a confirmation alert before deleting the account.
+    const handleDelete = async () => { // Same as the handleDelete method in EditEvent.jsx, but for deleting an employee account
+        if (!accountId) return;
+    
+        try {
+            const response = await fetch(`${BASE_URL}/accounts/${accountId}`, {
+                method: 'DELETE',
+            });
+    
+            if (response.ok) {
+                alert(`Employee account deleted successfully.`);
+                router.push('/screens/manager/EmployeeAccounts');
+
+            } else {
+                const data = await response.json();
+                console.log('Delete failed:', data);
+                alert(data.message || 'Failed to delete employee account.');
+            }
+
+        } catch (error) {
+            console.error('Error deleting employee:', error);
+            alert('An error occurred while deleting the employee account.');
+        }
+    };
+    
 
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -121,7 +145,7 @@ export default function EditEmpAccount({}) {
                 <View style={styles.header}>
                     <Image source={userIcon} style={styles.profileIcon} />
                     <View style={styles.profileTextContainer}>
-                        <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text> {/*Replaces the placeholder text with the employee's first and last name*/}
+                        <Text style={styles.profileName}>{`${firstName} ${lastName}`}</Text>
                     </View>
                 </View>
 
@@ -160,7 +184,7 @@ export default function EditEmpAccount({}) {
                     <Text style={styles.detailLabel}>Email Address</Text>
                     <TextInput
                         style={styles.textInput}
-                        value={emailAddress}
+                        value={email}
                         onChangeText={setEmailAddress}
                         placeholder="Enter email address"
                     />
@@ -200,24 +224,24 @@ export default function EditEmpAccount({}) {
                 <View style={styles.detailCard}>
                     <Text style={styles.detailLabel}>Status</Text>
                     <View style={styles.pickerContainer}>
-                        <Picker // Reference for code: https://archive.reactnative.dev/docs/picker
+                        <Picker // CODE REFERENCE: https://archive.reactnative.dev/docs/picker
                             selectedValue={status || ''} // This will set the default value to the employee's status
                             style={styles.picker}
                             onValueChange={(itemValue) => setStatus(itemValue)}
                         >
                             <Picker.Item label="Select Status" value="" />
-                            <Picker.Item label="Active" value="1" />
-                            <Picker.Item label="Inactive" value="0" />
+                            <Picker.Item label="Active" value="ACTIVE" />
+                            <Picker.Item label="Inactive" value="INACTIVE" />
                         </Picker>
                     </View>
                 </View>
 
 
-                <TouchableOpacity style={styles.saveButton} onPress={handleSubmit}>
+                <TouchableOpacity style={styles.saveButton} onPress={handleUpdate}>
                     <Text style={styles.saveButtonText}>Save</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.deleteButton}> {/*add onPress={handleDelete} when handleDelete is done*/}
+                <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
                     <Text style={styles.deleteButtonText}>Delete Account</Text>
                 </TouchableOpacity>
             </View>
@@ -228,7 +252,7 @@ export default function EditEmpAccount({}) {
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
-        padding: 16,
+        padding: 14,
         backgroundColor: '#F5F5F5',
     },
 
@@ -289,7 +313,7 @@ const styles = StyleSheet.create({
 
     detailCard: {
         backgroundColor: '#fff',
-        padding: 16,
+        padding: 14,
         borderRadius: 10,
         marginBottom: 16,
     },
@@ -307,10 +331,9 @@ const styles = StyleSheet.create({
     },
 
     picker: {
-        height: 50,
+        height: 70,
         backgroundColor: '#fff',
         borderColor: '#ccc',
-        justifyContent: 'center',
     },
 
     pickerContainer: {

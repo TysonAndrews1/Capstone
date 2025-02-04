@@ -1,3 +1,6 @@
+//Reference: https://masteringbackend.com/posts/spring-boot
+//I use this guide to help me setup the SpringBoot backend server. It provided examples on how to setup and use the basic CRUD operations built into Spring/JPA.
+
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +15,11 @@ import java.util.stream.Collectors;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RestController // Tells Spring to handle any HTTP requests and return a JSON format
-@RequestMapping("/api/events") // Any HTTP request to this endpoint will be routed to this controller
+@RestController //Tells Spring to handle any HTTP requests and return a JSON format
+@RequestMapping("/api/events") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetEventController {
 
-    @Autowired // Allows Spring to use BanquetEventRepository automatically into the controller
+    @Autowired //Allows Spring to use BanquetEventRepository automatically into the controller
     private BanquetEventRepository repository;
 
     @GetMapping // Display a list of all events in the database
@@ -28,7 +31,7 @@ public class BanquetEventController {
     public ResponseEntity<BanquetEvent> getEventById(@PathVariable Long eventId) {
         // Retrieve the event by ID using the repository
         Optional<BanquetEvent> event = repository.findById(eventId);
-        
+
         if (event.isPresent()) {
             return ResponseEntity.ok(event.get()); // Return the event if found
         } else {
@@ -36,22 +39,17 @@ public class BanquetEventController {
         }
     }
 
-    @GetMapping("/filter") // Filters events by timeframe (past or upcoming)
+    @GetMapping("/filter") // Filters events by time frame (past or upcoming)
     public List<BanquetEvent> getBanquetEventsByTimeframe(@RequestParam String timeframe) {
 
-        // Store the loacal time and date
-        LocalDateTime today = LocalDate.now().atStartOfDay();
-
-        // Takes all events from database and stoer in a list
-        List<BanquetEvent> allEvents = repository.findAll();
+        LocalDateTime today = LocalDate.now().atStartOfDay(); // Store the local time and date
+        List<BanquetEvent> allEvents = repository.findAll(); // Takes all events from database and store in a list
 
         // Compares event with today date and time
         return allEvents.stream().filter(event -> {
             if ("past".equalsIgnoreCase(timeframe)) {
-                // Check if the event has ended before today
-                return event.getEventEndDate().isBefore(today);
-            } else if ("upcoming".equalsIgnoreCase(timeframe)) {
-                // Check if the event starts before or on today and ends after today
+                return event.getEventEndDate().isBefore(today); // Check if the event has ended before today
+            } else if ("upcoming".equalsIgnoreCase(timeframe)) { // Check if the event starts before or on today and ends after today
                 return event.getEventEndDate().isAfter(today);
             }
             return false;
@@ -59,39 +57,38 @@ public class BanquetEventController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping // Create new events using infomation from the frontend
+    @PostMapping // Create new events using information from the frontend
     public BanquetEvent createEvent(@RequestBody BanquetEvent event) {
         return repository.save(event);
     }
 
-    @DeleteMapping("/{eventId}") // Create a delete method by event ID
+    @DeleteMapping("/{eventId}") // Delete event by eventId.
     public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
 
-        System.out.println("Delete request received for ID: " + eventId);
-        // Check if the event exists in the database
-        if (repository.existsById(eventId)) {
-            // Delete specific event
-            repository.deleteById(eventId);
+        if (repository.existsById(eventId)) {  // Check if the event exists in the database
+            repository.deleteById(eventId); // Delete specific event
             return ResponseEntity.ok("Event was deleted successfully.");
         } else {
-            // Return an error message of event does not exist
             return ResponseEntity.status(404).body("Event not found.");
         }
     }
 
-    @PutMapping("/{eventId}")
-    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId, @RequestBody BanquetEvent updatedEvent) {
+    @PutMapping("/{eventId}") // Update event by eventId
+    public ResponseEntity<BanquetEvent> updateEvent(@PathVariable Long eventId,
+            @RequestBody BanquetEvent updatedEvent) {
+
+        // Locates event by eventId and update any new information given by the frontend.
         return repository.findById(eventId)
-            .map(event -> {
-                event.setEventName(updatedEvent.getEventName());
-                event.setEventStartDate(updatedEvent.getEventStartDate());
-                event.setEventEndDate(updatedEvent.getEventEndDate());
-                event.setEventLocation(updatedEvent.getEventLocation());
-                event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
-                event.setAssignedManager(updatedEvent.getAssignedManager());
-                event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
-                return ResponseEntity.ok(repository.save(event));
-            })
-            .orElseGet(() -> ResponseEntity.notFound().build());
+                .map(event -> {
+                    event.setEventName(updatedEvent.getEventName());
+                    event.setEventStartDate(updatedEvent.getEventStartDate());
+                    event.setEventEndDate(updatedEvent.getEventEndDate());
+                    event.setEventLocation(updatedEvent.getEventLocation());
+                    event.setNumberOfGuests(updatedEvent.getNumberOfGuests());
+                    event.setAssignedManager(updatedEvent.getAssignedManager());
+                    event.setSpecialRequirements(updatedEvent.getSpecialRequirements());
+                    return ResponseEntity.ok(repository.save(event));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

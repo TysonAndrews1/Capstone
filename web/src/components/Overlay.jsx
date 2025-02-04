@@ -9,7 +9,7 @@ import React, { useState } from "react";
 
 export default function Overlay({ child, headerTitle, ButtonTitle, buttonPlacement, isActive, onToggle }) {
   function closeOverlay() {
-    onToggle(null); // Pass null to close the overlay
+    onToggle(false); // Pass null to close the overlay
   }
 
   const toggleSidebar = () => {
@@ -20,7 +20,7 @@ export default function Overlay({ child, headerTitle, ButtonTitle, buttonPlaceme
     <div>
       <button
         onClick={toggleSidebar}
-        className={`fixed basic-button ${buttonPlacement} z-10`} // Ensure button has lower z-index than overlay
+        className={` basic-button ${buttonPlacement} z-10`} // Ensure button has lower z-index than overlay
       >
         {ButtonTitle}
       </button>

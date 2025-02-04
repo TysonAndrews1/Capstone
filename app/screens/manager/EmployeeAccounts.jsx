@@ -31,8 +31,22 @@ export default function EmployeeAccounts() {
                 throw new Error('Error fetching employees');
             }
             const data = await response.json();
-            setEmployees(data);
-            setFilteredEmployees(data);
+
+            const sortedEmployees = data.sort((a, b) => { // Sort employees by last name, then first name
+                const lastNameA = a.lastName.toLowerCase();
+                const lastNameB = b.lastName.toLowerCase();
+                const firstNameA = a.firstName.toLowerCase();
+                const firstNameB = b.firstName.toLowerCase();
+    
+                if (lastNameA < lastNameB) return -1;
+                if (lastNameA > lastNameB) return 1;
+                if (firstNameA < firstNameB) return -1;
+                if (firstNameA > firstNameB) return 1;
+                return 0;
+            });
+
+            setEmployees(sortedEmployees);
+            setFilteredEmployees(sortedEmployees);
         } catch (error) {
             console.error(error);
             setError('Error', 'Failed to fetch employee accounts.');
@@ -48,12 +62,13 @@ export default function EmployeeAccounts() {
     /* This effect listens to changes in searchQuery or employees (like entering a name in the search bar).
     If there's no search query, filteredEmployees = employees (show all). */
     useEffect(() => {
-        if (!searchQuery.trim()) {
+        if (!searchQuery.trim()) { // .trim() removes whitespace from both ends of a string
             setFilteredEmployees(employees); // If the search is empty, show all employees
         } else {
-            const lowerCaseQuery = searchQuery.toLowerCase();
-            const filtered = employees.filter((emp) =>
-            emp.name.toLowerCase().includes(lowerCaseQuery)
+            const lowerCaseQuery = searchQuery.toLowerCase(); // Converts the user's input to lowercase
+            const filtered = employees.filter((emp) => // .filter creates a new array with elements that pass the conditions of the function, while not modifying the original array
+            emp.firstName.toLowerCase().includes(lowerCaseQuery) ||
+            emp.lastName.toLowerCase().includes(lowerCaseQuery)
             );
             setFilteredEmployees(filtered);
         }
@@ -74,41 +89,51 @@ export default function EmployeeAccounts() {
     return (
         <MainLayout>
             <View style={styles.container}>
-            <TextInput
-                style={styles.searchBar}
-                placeholder="Search"
-                placeholderTextColor="#888"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-            />
+                <TextInput
+                    style={styles.searchBar}
+                    placeholder="Search"
+                    placeholderTextColor="#888"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                />
 
-            <Pressable style={styles.addButton} onPress={()=> router.push('/screens/manager/CreateEmpAccount')}>
-                <Text style={styles.addButtonText}>Add Employee</Text>
-            </Pressable>
+                <Pressable style={styles.addButton} onPress={()=> router.push('/screens/manager/CreateEmpAccount')}>
+                    <Text style={styles.addButtonText}>Add Employee</Text>
+                </Pressable>
 
-            <ScrollView style={styles.scrollContainer}>
-                {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
-                    <Pressable
-                    key={employee.accountId}
-                    style={styles.employeeCard}
-                    onPress={() => handleEmployeePress(employee)}>
-                    <Text style={styles.employeeName}>{employee.firstName} {employee.lastName}</Text>
-                    </Pressable>
-                    ))
-                ) : (
-                    <Text style={styles.noResults}>
-                    {searchQuery ? 'No matching results.' : 'No employees found.'}
-                    </Text>
-                )}
-            </ScrollView>
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    {filteredEmployees.length > 0 ? (
+                        filteredEmployees.map((employee) => ( // returns a new array with the results of calling a provided function on every element in the array, in this case, the employee cards
+                            <Pressable
+                                key={employee.accountId}
+                                style={styles.employeeCard}
+                                onPress={() => handleEmployeePress(employee)}
+                            >
+                                <View style={styles.employeeInfoContainer}>
+                                    <Text style={styles.employeeName}>
+                                        {employee.firstName} {employee.lastName}
+                                    </Text>
+                                </View>
+                            </Pressable>
+                        ))
+                    ) : (
+                        <Text style={styles.noResults}>
+                            {searchQuery ? 'No matching results found.' : 'No employees available.'}
+                        </Text>
+                    )}
+                </ScrollView>
             </View>
         </MainLayout>
     );
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        paddingBottom: 55,
+    },
+
     container: {
-        flex: 1,
         padding: 16,
     },
 
@@ -136,11 +161,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-    },
-      
-
-    scrollContainer: {
-        flex: 1,
     },
 
     employeeCard: {

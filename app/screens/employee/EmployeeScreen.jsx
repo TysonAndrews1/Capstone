@@ -4,11 +4,13 @@ import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay, parseISO, isWithinInterval, set } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+
 import BottomSheetModal from "../../components/BottomSheetModal";
 import BaseURLConfig from "../../config/BaseURLConfig";
 
 
 const BASE_URL = BaseURLConfig();
+
 
 const EmployeeScreen = () => {
   const [user, setUser] = useState(null); // State for user data

@@ -3,6 +3,8 @@ import Overlay from '../../components/Overlay';
 import TradeShift from './TradeShift';
 import ShiftDetails from '../../components/Shifts/ShiftDetails';
 import ShiftGrabs from '../../components/Shifts/ShiftGrabs';
+import TimeOffRequest from '../../components/TimeOffRequest';
+
 
 
 
@@ -19,6 +21,7 @@ export default function EmployeeSchedule() {
       </div>
 
       {/* Will have a weekly calendar schedule view of the employee's schedule */}
+      
 
       {/* Overlay for Grab Shift component */}
       <Overlay child={<ShiftGrabs/>} headerTitle={"Grab Shift"} ButtonTitle={"Grabs"} buttonPlacement={"top-[75vh] left-[25vw]"}
@@ -35,6 +38,11 @@ export default function EmployeeSchedule() {
       {/* Overlay for Change Availability component */}
       <Overlay child={<div>UpdateAvailability</div>} headerTitle={"Update Availability"} ButtonTitle={"Update Availability"} buttonPlacement={"top-[75vh] left-[10vw]"}
       isActive={activeOverlay === "Update Avaliability"} onToggle={setActiveOverlay}/>
+
+      {/* Overlay for Change Availability component */}
+      <Overlay child={<TimeOffRequest/>} headerTitle={"Time Off Request"} ButtonTitle={"Time Off Request"} buttonPlacement={"top-[75vh] left-[10vw]"}
+      isActive={activeOverlay === "Time Off Request"} onToggle={setActiveOverlay}/>
+
     </main>
   
   )

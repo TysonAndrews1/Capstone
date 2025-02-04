@@ -1,3 +1,6 @@
+//Reference: https://masteringbackend.com/posts/spring-boot
+//I use this guide to help me setup the SpringBoot backend server. It provided examples on how to setup and use the basic CRUD operations built into Spring/JPA.
+
 package com.example.demo.controller;
 
 import java.util.List;
@@ -6,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.entity.BanquetAccount;
 import com.example.demo.repository.BanquetAccountRepository;
 import com.example.demo.service.FirebaseAccountService;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController // Tells Spring to handle any HTTP requests and return a JSON format
-@RequestMapping("/api/accounts") // Any HTTP request to this endpoint will be routed to this controller
+@RequestMapping("/api/accounts") //Any HTTP request to this endpoint will be routed to this controller
 public class BanquetAccountController {
 
     @Autowired
@@ -81,6 +85,7 @@ public class BanquetAccountController {
     }
 
     // API to retrieve a specific employee by email
+
     @GetMapping("/user")
     public ResponseEntity<BanquetAccount> getUserByEmail(@RequestParam String email) {
         BanquetAccount employee = repository.findByEmail(email);
@@ -91,8 +96,36 @@ public class BanquetAccountController {
         } // Return 404 if no employee found
     }
 
-    @PostMapping // Will use this method to create new events using infomation from the frontend
+    @PostMapping // Create new accounts using information from the frontend
     public BanquetAccount createAccount(@RequestBody BanquetAccount account) {
         return repository.save(account);
+    }
+
+    @DeleteMapping("/{accountId}") // Delete account by accountId
+    public ResponseEntity<String> deleteAccount(@PathVariable Long accountId) {
+
+        if (repository.existsById(accountId)) {
+            repository.deleteById(accountId);
+            return ResponseEntity.ok("Account was deleted successfully");
+        } else {
+            return ResponseEntity.status(404).body("Account not found.");
+        }
+    }
+
+    @PutMapping("/{accountId}") // Update account by accountId
+    public ResponseEntity<BanquetAccount> updateAccount(@PathVariable Long accountId, @RequestBody BanquetAccount updatedAccount) {
+        return repository.findById(accountId)
+        .map(account -> {
+            account.setFirstName(updatedAccount.getFirstName());
+            account.setLastName(updatedAccount.getLastName());
+            account.setEmployeeId(updatedAccount.getEmployeeId());
+            account.setEmail(updatedAccount.getEmail());
+            account.setAddress(updatedAccount.getAddress());
+            account.setPhoneNumber(updatedAccount.getPhoneNumber());
+            account.setRole(updatedAccount.getRole());
+            account.setStatus(updatedAccount.getStatus());
+            return ResponseEntity.ok(repository.save(account));
+        })
+        .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

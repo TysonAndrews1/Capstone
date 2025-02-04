@@ -4,12 +4,8 @@
 package com.example.demo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.demo.entity.BanquetAccount;
+import com.example.demo.entity.BanquetRequest;
 
-public interface BanquetAccountRepository extends JpaRepository<BanquetAccount, Long> {
+public interface BanquetRequestRepository extends JpaRepository<BanquetRequest, Long>{
     // Currently using built-in CRUD operations from Spring Data JPA.
-
-    // Custom operations
-    BanquetAccount findByEmail(String email);
-
 }
