@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { CiBellOn } from "react-icons/ci";
 
 const TestNotifications = [
-    { id: 1, text: "📢 Event A is starting soon!" },
+    { id: 1, text: "📢 Placeholder" },
     { id: 2, text: "🎉 Your request was approved!" },
     { id: 3, text: "⚠️ System maintenance at 10 PM." },
     { id: 4, text: "✅ Your schedule has been updated." },
@@ -62,7 +62,7 @@ const NotificationMenu = () => {
 
           {/* View All Button */}
           <button className="mt-3 text-blue-600 w-full text-sm hover:underline">
-            View All
+           Mark All As Seen
           </button>
         </div>
       )}

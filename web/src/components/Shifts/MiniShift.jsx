@@ -1,20 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Overlay from "../Overlay";
 import ShiftDetails from "./ShiftDetails";
 import { getAccounts,getShifts } from "../FetchData";
+
 //A small shift which opens a overlay to allow editing or deletion
 // created using chatgpt for array manipulation and HTML formatting
 
-function format(date) {
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  }
 
 // Utility function to filter shifts by a specific day
 function filterShiftsByDay(day, shifts) {
@@ -27,13 +18,8 @@ export default function MiniShift({ selectedDay }) {
   const [shifts, setShifts] = useState([]); // State to store all shifts
   const [filteredShifts, setFilteredShifts] = useState([]); // State for filtered shifts
   const [emp, setEmp] = useState([]); // State to store all shifts
-  const [filteredEmp, setFilteredEmp] = useState([]); // State for filtered shifts
   const [error, setError] = useState(null); // State for error handling
-  const [editing, setEditing] = useState(false)
   const [activeOverlay, setActiveOverlay] =useState(false)
-  const navigate = useNavigate();
-  const BASE_URL_SHIFT = "http://localhost:8080/api/shifts";
-  const BASE_URL_EMP = "http://localhost:8080/api/accounts";
 
   // Filter shifts whenever `selectedDay` or `shifts` changes
   useEffect(() => {
@@ -49,15 +35,21 @@ export default function MiniShift({ selectedDay }) {
     getAccounts().then(accounts => setEmp(accounts)) // Gets the resolved data  
   }, []);
   // Handle edit action
-  const handleEdit = (shiftId) => {
-    setEditing(!editing)
-  };
 
 function getName(empID) {
     const employee = emp.find((Employee) => Employee.accountId === empID); // Use find instead of forEach
     return employee ? employee.firstName : "Unknown";
-}
 
+}
+const toggleOverlay = (shiftId) => {
+  console.log(activeOverlay);
+  
+  if (activeOverlay === shiftId) {
+    setActiveOverlay(false) 
+  }else{
+    setActiveOverlay(shiftId)
+  }
+}
   return (
     <div className="container">
       {/* Error Message */}
@@ -69,17 +61,21 @@ function getName(empID) {
       ) : (
         <div className="scroll-container">
           {filteredShifts.map((shift) => (
-            <div key={shift.shiftId} className="p-4 bg-white shadow rounded my-2" onClick={() => setActiveOverlay(!activeOverlay)}>
-              {/* Shift Details */}
+            <div key={shift.shiftId} className="p-4 bg-white shadow rounded my-2">
+              {/*mini in schedule*/ }
+              <div onClick={() => toggleOverlay(shift.shiftId)}>
               <p className="font-bold">Name: {getName(shift.accountId)}</p>
               <p>Start Time: {shift.shiftStartDate.split("T")[1]}</p>
             <p >view Details</p>
-              {/* Actions: Edit & Delete */}
-              <Overlay  headerTitle ={shift.accountId} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
+            </div>
+            {/*Overlay*/ }
+            <div>
+              <Overlay  headerTitle ={"View Shift"} ButtonTitle={"View Shift"} buttonPlacement={"opacity-0 pointer-events-none"} isActive={activeOverlay === shift.shiftId} onToggle={setActiveOverlay} child= {
               <div className="flex space-x-2 mt-2 flex-col">
-                <ShiftDetails/>
+                <ShiftDetails shift={shift}/>
               </div>}/>
             </div>
+        </div>
           ))}
         </div>
       )}

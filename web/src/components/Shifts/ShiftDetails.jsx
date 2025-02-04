@@ -2,6 +2,28 @@ import React, {useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import { getAccounts, getEvents } from "../FetchData";
 import Select from "react-select"
+import { getCurrentUser } from "../FetchData";
+
+
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+  
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return "Invalid date";
+    }
+  
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true, // Ensures AM/PM format
+    });
+  };
+
 
 export default function ShiftDetails({shift}){
     const [editing, setEditing] = useState(shift === null);
@@ -12,6 +34,10 @@ export default function ShiftDetails({shift}){
     const [shiftStartDate, setShiftStartDate] = useState(shift?.shiftStartDate || "");
     const [shiftEndDate, setShiftEndDate] = useState(shift?.shiftEndDate || "");
     const [description, setDescription] = useState(shift?.description || "");
+    const [currentRole, setCurrentRole] = useState("Employee")
+    useEffect(()=>{
+      getCurrentUser().then((user)=>{setCurrentRole(user.role)})
+    },[])
 
     const BASE_URL_SHIFT = "http://localhost:8080/api/shifts";
 
@@ -189,22 +215,23 @@ return (
             </div>
           ) : (
     <div>
-    <p><strong>First Name:</strong> placeholder</p>
-    <p><strong>Start Time:</strong> {shiftStartDate}</p>
-    <p><strong>End Time:</strong> {shiftEndDate}</p>
+    <p><strong>First Name:</strong></p>
+    <p><strong>Start Time:</strong> {formatDate(shiftStartDate)}</p>
+    <p><strong>End Time:</strong> {formatDate(shiftEndDate)}</p>
     <p><strong>Description:</strong> {description}</p>
-    <button
-      onClick={() => setEditing(true)}
-      className="basic-button"
-    >
+
+    {currentRole === "Manager" && (
+      <>
+      <div className=" w-full justify-center">
+    <button onClick={() => setEditing(true)} className="basic-button my-2">
       Edit
     </button>
-    <button
-      onClick={() => handleDelete}
-      className="basic-button"
-    >
+    <button onClick={() => handleDelete} className="basic-button">
       Delete
     </button>
+    </div>
+    </>
+    )}
   </div>
   )} 
    </div>

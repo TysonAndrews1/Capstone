@@ -10,9 +10,6 @@ export default function Roster(){
     const [employees, setEmployees] = useState([]);
     const [filteredEmployees, setFilteredEmployees] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [error, setError] = useState(null);
-    const BASE_URL = 'http://localhost:8080/api/accounts';
-        const [activeOverlay, setActiveOverlay] = useState(null)
 
 useEffect(() => {
     getAccounts().then(Accounts => setEmployees(Accounts)) // Gets the resolved data
@@ -34,22 +31,30 @@ useEffect(() => {
        function handleEmployeePress(employee){
         navigate()
        }
-return (
-
-<div>
-This is the Roster
-
-<div>
-    {filteredEmployees.length > 0 ? (filteredEmployees.map((employee) => (
-                        <div>
-                            <button key={employee.accountId} onClick={() => handleEmployeePress(employee)}>    
-                        <p>{employee.firstName}{employee.accountId}</p>
-                        <p >Role: {employee.role}</p>
-                        </button></div>
-                        ))
-                    ) : (
-                        <p>{searchQuery ? 'No matching results.' : 'No employees found.'}</p>
-                    )}
-</div>
-</div>)
+       return (
+        <div className="p-4">
+          <p className="text-xl font-semibold mb-4">This is the Roster</p>
+      
+          <div className="bg-white shadow-md rounded-lg p-4">
+            {filteredEmployees.length > 0 ? (
+              filteredEmployees.map((employee) => (
+                <div key={employee.accountId} className="mb-2">
+                  <button
+                    onClick={() => handleEmployeePress(employee)}
+                    className="w-full p-3 bg-main-blue hover:bg-blue-600 text-white font-medium rounded-lg shadow-md flex flex-col items-start"
+                  >
+                    <p className="text-lg font-semibold">{employee.firstName} {employee.lastName}</p>
+                    <p className="text-sm text-gray-200">Role: {employee.role}</p>
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 text-center">
+                {searchQuery ? "No matching results." : "No employees found."}
+              </p>
+            )}
+          </div>
+        </div>
+      );
+      
 }

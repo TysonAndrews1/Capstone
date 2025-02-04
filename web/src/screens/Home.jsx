@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 import WeeklyCalender from "../components/WeeklyCalender";
 import Notification from "./NotificationTesting";
@@ -11,7 +11,6 @@ import { getCurrentUser } from "../components/FetchData";
 
 export default function Home(){
     getCurrentUser().then((user)=>{console.log(user)})
-
     return (
 
 <div>
