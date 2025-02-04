@@ -9,22 +9,11 @@ export default function CreateAnnouncement(){
     const [announcemntTitle, setAnnouncemntTitle] = useState("")
     const [announcemntBody, setAnnouncemntBody] = useState("")
 
-    const handleSave = async () =>{
-        console.log(announcemntTitle, announcemntBody);
-        
-        
-    }
-
 
 
 return (
 
-    <div>
-    <input type="text" className = "input-field" placeholder="title" value={announcemntTitle} onChange={(e)=>setAnnouncemntTitle(e.target.value)}/>
-    <textarea type="text" className = "input-field"placeholder="body" value={announcemntBody} onChange={(e)=>setAnnouncemntBody(e.target.value)}/>
-        <button className= "basic-button" onClick={handleSave}>
-            Save
-        </button>
-    </div>
-)
+<p>
+
+</p>)
 }

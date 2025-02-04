@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { CiBellOn } from "react-icons/ci";
 
 const TestNotifications = [
-    { id: 1, text: "📢 PlaceHolder" },
+    { id: 1, text: "📢 Event A is starting soon!" },
     { id: 2, text: "🎉 Your request was approved!" },
     { id: 3, text: "⚠️ System maintenance at 10 PM." },
     { id: 4, text: "✅ Your schedule has been updated." },
@@ -10,6 +10,7 @@ const TestNotifications = [
     { id: 6, text: "🚀 New feature released!" },
     { id: 7, text: "🔔 Reminder: Meeting at 3 PM." },
   ];
+
 
 //Chat-GPT 4 Used to create the notification model in "Industry Standard form" which I then editied -Tyson
 const NotificationMenu = () => {
@@ -52,7 +53,7 @@ const NotificationMenu = () => {
           {/* Scrollable Notifications Container */}
           <div className="max-h-60 overflow-auto space-y-2 scrollbar-thin scrollbar-thumb-gray-300">
             {TestNotifications.map((note) => (
-              <div key={note.id} className="p-2 bg-gray-100 rounded-md text-black" >
+              <div key={note.id} className="p-2 bg-gray-100 rounded-md text-black">
                 <p>{note.text}</p>
               </div>
             ))}
@@ -61,7 +62,7 @@ const NotificationMenu = () => {
 
           {/* View All Button */}
           <button className="mt-3 text-blue-600 w-full text-sm hover:underline">
-            Mark all as seen
+            View All
           </button>
         </div>
       )}

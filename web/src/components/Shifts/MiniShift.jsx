@@ -75,9 +75,9 @@ function getName(empID) {
               <p>Start Time: {shift.shiftStartDate.split("T")[1]}</p>
             <p >view Details</p>
               {/* Actions: Edit & Delete */}
-              <Overlay  headerTitle ={"View Shift"} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
+              <Overlay  headerTitle ={shift.accountId} ButtonTitle={"Test"} buttonPlacement={"invisible pointer-events-none"} isActive={activeOverlay} onToggle={setActiveOverlay} child= {
               <div className="flex space-x-2 mt-2 flex-col">
-                <ShiftDetails shift={shift}/>
+                <ShiftDetails/>
               </div>}/>
             </div>
           ))}

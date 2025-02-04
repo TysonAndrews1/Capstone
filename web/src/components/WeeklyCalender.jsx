@@ -96,7 +96,7 @@ export default function WeeklyCalender(){
         <Overlay  headerTitle ={"Create Event"} ButtonTitle={"Create Event"} buttonPlacement={"top-[66vh] left-[33vw]"} isActive={activeOverlay=="Create Event"} 
         onToggle={setActiveOverlay} child= {<EditEvent eventId={null}/>}/>
         <Overlay  headerTitle ={"Create Shift"} ButtonTitle={"Create Shift"} buttonPlacement={"top-[75vh] left-[33vw]"} isActive={activeOverlay=="Create Shift"} 
-        onToggle={setActiveOverlay} child= {<ShiftDetails shift={null}/>}/>
+        onToggle={setActiveOverlay} child= {<ShiftDetails/>}/>
         <Overlay  headerTitle ={"Roster"} ButtonTitle={"Roster"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "Roster"} 
         onToggle={setActiveOverlay} child= {<Roster/>}/>
                 <Overlay  headerTitle ={"Create Announcement"} ButtonTitle={"Create Announcement"} buttonPlacement={"top-[75vh] left-[50vw]"} isActive={activeOverlay== "Create Announcement"} 
