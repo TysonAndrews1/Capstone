@@ -21,6 +21,9 @@ public class BanquetRequest {
     @Column(name = "request_id")
     private Long requestId;
 
+    @Column(name = "account_id")
+    private Long accountId;
+
     @Column(name = "request_type", nullable = false)
     private String requestType;
 
@@ -47,6 +50,14 @@ public class BanquetRequest {
 
     public void setRequestId(Long requestId) {
         this.requestId = requestId;
+    }  
+
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
     public String getRequestType() {
