@@ -102,10 +102,3 @@ export default function WeeklyCalender(){
     </div>
 )
 }
-
-
-
-// Date Friday
-// 1. Sun Mon Tue Wen Thu fri sat
-// 2. Fri Sat Sun Mon Tue Wen Thu
-// 3. tue Wen Thr fri Sat Sun Mon
