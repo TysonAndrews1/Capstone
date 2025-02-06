@@ -205,13 +205,6 @@ return (
               >
                 Save
               </button>
-              <button
-                onClick={()=>{console.log(selectedEvent, selectedEmployees,shiftStartDate);
-                }}
-                className="basic-button"
-              >
-                valueCheck
-              </button>
             </div>
           ) : (
     <div>
