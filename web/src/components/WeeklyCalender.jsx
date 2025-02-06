@@ -12,22 +12,20 @@ import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 
 export default function WeeklyCalender(){
-    const [targetDate, setTargetDate] = useState(new Date().toISOString().split("T")[0])
+  const [targetDate, setTargetDate] = useState(new Date().toLocaleDateString("en-CA"));
     const [activeOverlay,setActiveOverlay] =useState(false)
 
   // Function to move the target date backward by 7 days
   const moveBackward = () => {
-    const newDate = new Date(targetDate);
+    const newDate = new Date(targetDate+"T00:00:00"); // En);
     newDate.setDate(newDate.getDate() - 7);
-    setTargetDate(newDate.toISOString().split("T")[0]);
+    setTargetDate(newDate.toLocaleDateString("en-CA"));
   };
-
   
-  // Function to move the target date forward by 7 days
   const moveForward = () => {
-    const newDate = new Date(targetDate);
+    const newDate = new Date(targetDate+  "T00:00:00"); // En);
     newDate.setDate(newDate.getDate() + 7);
-    setTargetDate(newDate.toISOString().split("T")[0]);
+    setTargetDate(newDate.toLocaleDateString("en-CA"));
   };
 
   const getRecentSunday = (date) => {
@@ -63,15 +61,16 @@ export default function WeeklyCalender(){
 
     // Generate 7 days starting from the target date
     const getWeekDays = () => {
-        const weekDays = [];
-        const baseDate = new Date(recentSunday);
-        for (let i = 0; i < 7; i++) {
-          const day = new Date(baseDate);
-          day.setDate(baseDate.getDate() + i);
-          weekDays.push(day.toISOString().split("T")[0]);
-        }
-        return weekDays;
-      };
+      const weekDays = [];
+      const baseDate = new Date(recentSunday.toISOString().split("T")[0] + "T00:00:00");
+    
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(baseDate);
+        day.setDate(baseDate.getDate() + i);
+        weekDays.push(day.toLocaleDateString("en-CA")); // Keeps format in YYYY-MM-DD
+      }
+      return weekDays;
+    };
     
       const weekDays = getWeekDays();
 
@@ -139,22 +138,29 @@ export default function WeeklyCalender(){
       </div>
 
       {/* Weekly Calendar */}
-      <div className="flex flex-nowrap justify-between items-stretch mt-4 h-[70vh]">
-        {weekDays.map((day) => (
-          <div
-            key={day}
-            className="flex-1 flex flex-col items-center justify-center border  p-4 bg-gray-200 rounded shadow-md min-w-[12%] max-w-[14%]">
-            <p className="font-semibold text-lg mb-2">{getDayOfWeek(day)}</p>
-            <p className={`text-lg mb-2 ${isToday(day) ? 'bg-hover-blue text-white rounded-full w-10 h-10 flex items-center justify-center' : ''}`}>
-              {getDayOfMonth(day)}
-            </p>
-            <div className="flex-1 w-full">
-              <UpcomingEvents selectedDay={new Date(day)}/>
-              <MiniShift selectedDay={new Date(day)}/>
-            </div>
-          </div>
-        ))}
+<div className="flex flex-nowrap justify-between items-stretch mt-4 h-[70vh]">
+  {weekDays.map((day) => {
+    const [year, month, date] = day.split("-").map(Number);
+    const localDate = new Date(Date.UTC(year, month - 1, date, 7)); // 7 AM UTC ensures it's within MST
+    
+    return ( // Ensure you return the JSX
+      <div
+        key={day}
+        className="flex-1 flex flex-col items-center justify-center border p-4 bg-gray-200 rounded shadow-md min-w-[12%] max-w-[14%]"
+      >
+        <p className="font-semibold text-lg mb-2">{getDayOfWeek(localDate)}</p>
+        <p className={`text-lg mb-2 ${isToday(localDate) ? 'bg-hover-blue text-white rounded-full w-10 h-10 flex items-center justify-center' : ''}`}>
+          {getDayOfMonth(localDate)}
+        </p>
+        <div className="flex-1 w-full overflow-y-auto">
+          <UpcomingEvents selectedDay={localDate} />
+          <MiniShift selectedDay={localDate} />
+        </div>
       </div>
+    );
+  })}
+</div>
+
 
       {/* Footer */}
       <div className="mt-4 py-4 text-center bg-gray-100 border-t w-full">
