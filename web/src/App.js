@@ -1,17 +1,19 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ManagerDashboard from './screens/manager/ManagerDashboard';
-import MainLayout from './layouts/MainLayout'; 
-import SignIn from './screens/SignIn';
-import RegisterPage from './screens/RegisterPage';
-import Events from './screens/Events';
-import Home from './screens/Home';
-import EmployeeSchedule from './screens/employee/EmployeeSchedule';
-import Profile from './screens/employee/Profile';
-import TradeShift from './screens/employee/TradeShift';
-import EditEvent from './screens/EditEvent';
 import './Styles.css'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SignIn from './screens/SignIn';
 import ForgotPassword from './screens/ForgotPassword';
+import MainLayout from './layouts/MainLayout';
+import Home from './screens/Home';
+import ManagerDashboard from './screens/manager/ManagerDashboard';
+import Events from './screens/Events'; 
+import EditEvent from './screens/EditEvent';
+import EmployeeSchedule from './screens/employee/EmployeeSchedule';
+import TradeShift from './screens/employee/TradeShift';
+import Profile from './screens/employee/Profile';
+import RegisterPage from './screens/RegisterPage';
+
+
 function App() {
   return (
     /*This router component wraps the entire application to allow routing 
