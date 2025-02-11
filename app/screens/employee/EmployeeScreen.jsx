@@ -1,12 +1,17 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import MainLayout from '../../layouts/MainLayout';
-import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { format, startOfWeek, addDays, isSameDay, parseISO, isWithinInterval, set } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import BaseURLConfig from '../../config/BaseURLConfig';
+
+import BottomSheetModal from "../../components/BottomSheetModal";
+import BaseURLConfig from "../../config/BaseURLConfig";
+
 
 const BASE_URL = BaseURLConfig();
+
+
 const EmployeeScreen = () => {
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
@@ -14,8 +19,17 @@ const EmployeeScreen = () => {
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
   const [loading, setLoading] = useState(false); // State for handling Loading
   const [error, setError] = useState(null); // State for handling errors
-  const [shifts, setShifts] = useState([]);
+  const [shifts, setShifts] = useState([]); // Stores employee shifts
 
+  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+  const [modalHeight, setModalHeight] = useState(500); // Sets modal height
+
+  // Events & Event detail modal visibility
+  const [eventsModalVisible, setEventsModalVisible] = useState(false);
+  const [eventDetailModalVisible, setEventDetailModalVisible] = useState(false);
+
+  const [weeklyEvents, setWeeklyEvents] = useState([]); // Stores weekly events
+  const [selectedEvent, setSelectedEvent] = useState(null); // Holds selected event details
 
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
@@ -89,7 +103,7 @@ const EmployeeScreen = () => {
 
       try {
         const formattedDate = format(selectedDate, 'yyyy-MM-dd');
-        const response = await fetch(`${BASE_URL}/shifts/${user.accountId}?date=${formattedDate}`);
+        const response = await fetch(`${BASE_URL}/shifts/account/${user.accountId}?date=${formattedDate}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -109,6 +123,126 @@ const EmployeeScreen = () => {
   
     fetchShifts();
   }, [selectedDate, user]);
+
+  // Fetch the shifts with selected date
+  // This code was generated with assistance from chatGPT
+  // Prompt: I want to get shifts with selected date and employee names who have shifts selected date.
+  const fetchShiftsForSelectedDate = async () => {
+    try {
+      const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+      const response = await fetch(`${BASE_URL}/shifts?date=${formattedDate}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      // Filter only matched date
+      const filteredShifts = data.filter((shift) => {
+        const shiftDate = parseISO(shift.shiftStartDate); // Convert the date
+        return isSameDay(shiftDate, selectedDate);
+      });
+
+      setShifts(filteredShifts);
+
+      await fetchEmployeeNames(filteredShifts);
+    } catch (err) {
+      console.error('Error fetching shifts:', err);
+      setShifts([]);
+    }
+  };
+
+  // This code generated with assistance with chatGPT.
+  // Prompt: It was the same as fetchShiftsForSelectedDate function.
+  const fetchEmployeeNames = async (shiftsData) => {
+    try {
+      // Extract unique account IDs from shiftsData
+      const uniqueAccountIds = [...new Set(shiftsData.map(shift => shift.accountId))];
+
+      // Fetch employee details for each unique accountId
+      const employeeRequests = uniqueAccountIds.map(async (accountId) => {
+        const response = await fetch(`${BASE_URL}/accounts/${accountId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // Parse response as JSON
+      });
+
+      // Wait for all employee data requests to complete
+      const employees = await Promise.all(employeeRequests);
+
+      // Create a mapping of accountId to employee name
+      const employeeMap = {};
+      employees.forEach(emp => {
+        employeeMap[emp.accountId] = `${emp.firstName} ${emp.lastName}`;
+      });
+      console.log("Employee Data Map:", employeeMap); // Debugging log
+
+      // Update shiftsData with employee names
+      const updatedShifts = shiftsData.map(shift => ({
+        ...shift,
+        employeeName: employeeMap[shift.accountId] || "Unknown",
+      }));
+
+      setShifts(updatedShifts);
+      
+  } catch (err) {
+    console.error('Error fetching employee names:', err);
+  }
+  };
+
+// some codes were generated with assistance from chatGPT.
+// prompt: I want to fetch event data for a week based on current date. How can I build this?
+const openEventsModal = async () => {
+  try {
+
+    let startOfWeekDate = startOfWeek(new Date(selectedDate), { weekStartsOn: 0 });
+    startOfWeekDate = set(startOfWeekDate, { hours: 0, minutes: 0, seconds: 0 });
+
+    let endOfWeekDate = addDays(startOfWeekDate, 6);
+    endOfWeekDate = set(endOfWeekDate, { hours: 23, minutes: 59, seconds: 59 });
+
+    const response = await fetch(`${BASE_URL}/events`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const data = await response.json();
+
+    //  filtering for full-day comparison
+    const filteredEvents = data.filter((event) => {
+      const eventDate = new Date(event.eventStartDate);
+
+      return isWithinInterval(eventDate, {
+        start: startOfWeekDate,
+        end: endOfWeekDate
+      });
+    });
+
+    setWeeklyEvents(filteredEvents);
+    setEventsModalVisible(true);
+  } catch (err) {
+    console.error('Error fetching weekly events:', err);
+  }
+};
+
+  // Change the value to open Event modal
+  const openEventDetailFromList = (event) => {
+    setSelectedEvent(event);
+    setTimeout(() => setEventDetailModalVisible(true), 300);
+  }
+
+  // Open event detail modal when clicking
+  const openEventDetail = (event) => {
+    setSelectedEvent(event);
+    setEventsModalVisible(false); // Close the event list modal 
+    setTimeout(() => setEventDetailModalVisible(true), 300); // Open event detail modal
+  }
+
+  // Change the value to open modal
+  const openModal = async () => {
+    await fetchShiftsForSelectedDate();
+    setModalVisible(true);
+  };
 
   // Helper function to display a greeting based on the time of day
   const getTimeOfDayMessage = () => {
@@ -160,18 +294,95 @@ const EmployeeScreen = () => {
         {/* four buttons */}
         <View style={styles.fourButtonContainer}>
             <View style={styles.fourButton}>
-                <TouchableOpacity style={styles.buttonWithBackground}>
+                <TouchableOpacity style={styles.buttonWithBackground} onPress={openModal} >
                     <Image style={styles.fourButtonImages} source={require('../../../assets/images/team.png')} />
                     <Text style={styles.buttonText}>Team</Text>
                 </TouchableOpacity>
             </View>
+            {/* Modal content with shift details */}
+            <BottomSheetModal visible={modalVisible} onClose={() => setModalVisible(false)} height={modalHeight}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Who you are working with</Text>
+                <View style={styles.dottedLine} />
+
+                {shifts.length > 0 ? (
+                  shifts.map((shift, index) => (
+                    <View key={index} style={styles.eventCard}>
+                      <View style={styles.eventIconContainer}> 
+                        <Image source={require('../../../assets/images/face.png')} style={styles.eventIcon} />
+                      </View>
+
+                      <View style={styles.eventInfo}>
+                        <Text style={styles.eventTitle}>{shift.employeeName}</Text>
+                        <Text style={styles.eventTime}>
+                          {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
+                        </Text>
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <Text style={styles.noShiftText}>No employees are working on this date.</Text>
+                )}
+              </View>
+            </BottomSheetModal>
             
             <View style={styles.fourButton}>
-                <TouchableOpacity style={styles.buttonWithBackground}>
+                <TouchableOpacity style={styles.buttonWithBackground} onPress={openEventsModal}>
                     <Image style={styles.fourButtonImages} source={require('../../../assets/images/event1.png')} />
                     <Text style={styles.buttonText}>Event</Text>
                 </TouchableOpacity>
             </View>
+
+            {/* Weekly event list */}
+            <BottomSheetModal visible={eventsModalVisible} onClose={() => setEventsModalVisible(false)} height={500}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Events for this week</Text>
+                <View style={styles.dottedLine} />
+
+                {weeklyEvents.length > 0 ? (
+                  weeklyEvents.map((event, index) => (
+                    <TouchableOpacity key={index} style={styles.eventCard} onPress={() => openEventDetail(event)}>
+                      
+                      <View style={styles.eventIconContainer}>
+                        <Image source={require('../../../assets/images/event11.png')} style={styles.eventIcon} />
+                      </View>
+                      <View style={styles.eventInfo}>
+                        <Text style={styles.eventTitle}>{event.eventName}</Text>
+                        <Text style={styles.eventGuests}>{event.numberOfGuests} Guests</Text>
+                        <Text style={styles.eventTime}>
+                          {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))
+                ) : (
+                  <Text style={styles.noEventText}>No events scheduled for this week.</Text>
+                )}
+              </View>
+            </BottomSheetModal>
+
+            {/* Event detail information */}
+            <BottomSheetModal visible={eventDetailModalVisible} onClose={() => setEventDetailModalVisible(false)} height={500}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Event Details</Text>
+                <View style={styles.dottedLine} />
+                {selectedEvent && (
+                  <>
+                    <Text style={styles.detailLabel}>Company Name:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.companyName}</Text>
+
+                    <Text style={styles.detailLabel}>Type of Event:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.eventType}</Text>
+
+                    <Text style={styles.detailLabel}>Guest Count:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.numberOfGuests}</Text>
+
+                    <Text style={styles.detailLabel}>Special Requirements:</Text>
+                    <Text style={styles.detailText}>{selectedEvent.specialRequirements}</Text>
+                  </>
+                )}
+              </View>
+            </BottomSheetModal>
 
             <View style={styles.fourButton}>
                 <TouchableOpacity style={styles.buttonWithBackground}>
@@ -200,35 +411,50 @@ const EmployeeScreen = () => {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
-
-        {/* Event Details for the Selected Date
+          {/* Event Details for the Selected Date
         Some of this code was generated with assistance from chatGPT
         Prompt: Write a React Native component that displays a list of shifts fetched from an API.
         Use a ScrollView to allow scrolling and display a loading indicator while fetching data. 
          */}
-        <View style={styles.detailsContainer}>
-        <ScrollView>
-          {loading ? (
-          <Text>Loading...</Text>
-          ) : filteredShifts.length > 0 ? (
-              filteredShifts.map((shift) => (
-              <View key={shift.shiftId} style={styles.eventContainer}>
-                <View style={styles.dottedLine}></View>
-                  <Text style={styles.timeText}>
-                    {format(new Date(shift.shiftStartDate), 'hh:mm a')} - {format(new Date(shift.shiftEndDate), 'hh:mm a')}
-                  </Text>
-                  <Text style={styles.eventDetails}>
-                    {shift.description} 
-                  </Text>
-                  <View style={styles.dottedLine}></View>
+          <ScrollView>
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : filteredEvents.length > 0 ? (
+              <View style={styles.eventListContainer}>
+                {/* Individual event list */}
+                {filteredEvents.map((event) => (
+                  <TouchableOpacity 
+                    key={event.eventId} 
+                    style={styles.eventCard} 
+                    onPress={() => openEventDetailFromList(event)}
+                  >
+                    <View style={styles.eventIconContainer}>
+                      <Image source={require('../../../assets/images/event11.png')} style={styles.eventIcon} />
+                    </View>
+                    <View style={styles.eventInfo}>
+                      <Text style={styles.eventTitle}>{event.eventName}</Text>
+                      <Text style={styles.eventGuests}>{event.numberOfGuests} Guests</Text>
+                      <Text style={styles.eventTime}>
+                        {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
               </View>
-            ))
             ) : (
-                <Text style={styles.noEventsText}>No Shifts for this date.</Text>
-                )}
+              <View style={styles.detailsContainer}>
+                <View style={styles.childContainer}>
+                  <Text style={styles.orange}>{format(selectedDate, 'd')}</Text>
+                  <Text style={styles.bold}>{format(selectedDate, 'EEE')} </Text>
+                </View>
+                <View style={styles.childContainer}>
+                  <Text style={styles.bold}> No Shifts for this date.</Text>
+                </View>
+              </View>
+            )}
           </ScrollView>
-          </View>
+
+        </View>
     </View>
     </MainLayout>
   );
@@ -281,10 +507,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
   },
-  cardRequest: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+
   weekContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -314,6 +537,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 10,
     padding: 15,
@@ -322,57 +546,36 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
-  detailsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 10,
+    alignItems: 'center',
   },
-  hourContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  hourTime: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  hourTask: {
-    fontSize: 14,
-    color: '#555',
-  },
+
   eventContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
     marginBottom: 10,
     alignItems: 'center',
   },
   dottedLine: {
     borderBottomWidth: 1,
-    borderStyle: 'dotted',
-    width: '90%',
+    borderStyle: 'solid',
+    width: '100%',
     marginVertical: 5,
-    borderColor: '#999',
+    borderColor: '#000',
   },
-  timeText: {
+  eventText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 5,
+    color: '#000',
+    marginBottom: 2,
   },
-  eventDetails: {
-    fontSize: 14,
-    color: '#555',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  noEventsText: {
-    fontSize: 16,
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 10,
-  },
+
   fourButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -400,5 +603,151 @@ buttonText: {
     color: '#333',
     fontWeight: '500',
     textAlign: 'center',
+},
+childContainer:{
+  flexDirection:"column",
+  justifyContent:'center',
+  margin: 10,
+  textAlign: 'center',
+},
+bold:{
+  fontWeight:'bold',
+  fontSize:16,
+  textAlign:'center',
+},
+orange:{
+  color:"#F4A261",
+  fontSize:20,
+  textAlign:'center',
+},
+
+modalContent: {
+  padding: 20,
+},
+shiftItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  padding: 10,
+  backgroundColor: '#f0f0f0',
+  marginVertical: 5,
+  borderRadius: 10,
+},
+profileImage: {
+  width: 40,
+  height: 40,
+  marginRight: 10,
+},
+shiftDetails: {
+  flex: 1,
+},
+employeeName: {
+  fontSize: 16,
+  fontWeight: 'bold',
+},
+shiftTime: {
+  fontSize: 14,
+  color: '#555',
+},
+noShiftText: {
+  textAlign: 'center',
+  color: '#888',
+},
+eventCard: {
+  flexDirection: 'row', 
+  alignItems: 'center',
+  backgroundColor: '#fff', 
+  padding: 15,
+  marginVertical: 5,
+  borderRadius: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+
+eventIconContainer: {
+  width: 50,
+  height: 50,
+  borderRadius: 25,
+  backgroundColor: '#e0f7fa', 
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginRight: 15,
+},
+
+eventIcon: {
+  width: 30,
+  height: 30,
+  tintColor: '#007AFF', 
+},
+
+eventInfo: {
+  flex: 1,
+  paddingTop: 5,
+},
+
+eventTitle: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#333',
+},
+
+eventGuests: {
+  fontSize: 14,
+  color: '#666',
+  marginTop: 3,
+},
+
+eventTime: {
+  fontSize: 14,
+  color: '#888',
+  marginTop: 5,
+},
+
+noEventText: {
+  fontSize: 16,
+  color: '#888',
+  textAlign: 'center',
+  marginTop: 20,
+},
+modalContent: {
+  padding: 20,
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+
+modalTitle: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: '#333',
+  textAlign: 'center',
+  marginBottom: 10,
+},
+
+dottedLine: {
+  borderBottomWidth: 1,
+  borderStyle: 'dotted',
+  width: '100%',
+  marginVertical: 5,
+  borderColor: '#ccc',
+},
+
+detailLabel: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#555',
+  marginTop: 10,
+},
+
+detailText: {
+  fontSize: 16,
+  color: '#333',
+  marginBottom: 5,
 },
 });

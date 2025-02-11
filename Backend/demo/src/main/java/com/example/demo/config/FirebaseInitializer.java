@@ -3,40 +3,33 @@ package com.example.demo.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.io.InputStream;
 
-@Configuration
+@Component
 public class FirebaseInitializer {
-    private static final Logger logger = LoggerFactory.getLogger(FirebaseInitializer.class);
 
-    public FirebaseInitializer() {
+    @PostConstruct
+    public void initialize() {
         try {
-            logger.info("Initializing Firebase...");
+            // Find serviceAccountKey.json using classPath
+            InputStream serviceAccount = new ClassPathResource("serviceAccountKey.json").getInputStream();
 
-            // Load the service account key file using ClassLoader
-            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
-            if (serviceAccount == null) {
-                throw new RuntimeException("Can't find serviceAccountKey.json, Please check the file path at 'src/main/resources'.");
-            }
+            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
 
-            // Set Firebase options using the service account key
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(credentials)
                     .build();
 
-            // Check if the FirebaseApp has already been initialized
             if (FirebaseApp.getApps().isEmpty()) {
                 FirebaseApp.initializeApp(options);
-                logger.info("Firebase initialized successfully.");
-            } else {
-                logger.warn("FirebaseApp is already initialized.");
             }
-        } catch (Exception e) {
-            logger.error("Error initializing Firebase: {}", e.getMessage(), e);
+            System.out.println("Firebase initialized successfully");
+        } catch (IOException e) {
             throw new RuntimeException("Firebase initialization failed", e);
         }
     }
