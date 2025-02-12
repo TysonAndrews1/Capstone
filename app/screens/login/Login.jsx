@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { handleLogin } from "../../firebase/auth";
 import { useRouter } from "expo-router";
 import BaseURLConfig from '../../config/BaseURLConfig';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = () => {
     const router = useRouter();
@@ -10,6 +11,20 @@ const Login = () => {
     const [password, setPassword] = useState('');
     
     const BASE_URL = BaseURLConfig();
+
+    const fetchUserRole = async (email) => { // Fetch the user role from the database using the email provided
+        try {
+            const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch user role: ${response.status}`);
+            }
+            const data = await response.json();
+            return data.role;
+        } catch (error) {
+            console.error("Error fetching user role:", error.message);
+            throw error;
+        }
+    };
 
     const forgotPass = () => {
         router.push('/screens/forgotPassword');
@@ -25,39 +40,20 @@ const Login = () => {
         try {
             // Using Firebase Authentication
             const firebaseUser = await handleLogin(email, password);
-            console.log("Logged in user:", firebaseUser); // Firebase user object
-            
-            // Fetching role from the MySQL
-            const fetchUserRole = async (email) => {
-                
-                try {
-                    const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
-            
-                    if (!response.ok) {
-                        throw new Error(`Failed to fetch user role: ${response.status}`);
-                    }
-            
-                    const data = await response.json();
-                    return data.role;
-                } catch (error) {
-                    console.error("Error fetching user role:", error.message);
-                    throw error;
-                }
-            };
-
-            // Checking the role, then navigate each screen.
-            const role = await fetchUserRole(email);
+            const role = await fetchUserRole(email); // Fetch user role from the database
             console.log("User role:", role);
 
-            if (role === 'Manager') {
+            // Persist the role locally
+            await AsyncStorage.setItem("userRole", role);
+
+            // Navigate to the appropriate screen
+            if (role === "Manager") {
                 router.push('/screens/manager/ManagerScreen');
-            } else if (role === 'Employee') {
+            } else if (role === "Employee") {
                 router.push('/screens/employee/EmployeeScreen');
             } else {
                 Alert.alert("Error", "Unknown role. Please contact support.");
             }
-            
-            
         } catch (error) {
             Alert.alert("Login Failed", error.message);
         }
