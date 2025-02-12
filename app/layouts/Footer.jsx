@@ -3,6 +3,6 @@ import ManagerFooter from './ManagerFooter'; // Manager-specific footer componen
 import EmployeeFooter from './EmployeeFooter'; // Employee-specific footer component
 
 export default function AppFooter({ role }) {
-  // Dynamically choose the footer based on the role
+  // This will return the footer based on the role
   return role === "Manager" ? <ManagerFooter /> : <EmployeeFooter />;
 }
