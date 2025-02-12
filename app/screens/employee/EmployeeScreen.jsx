@@ -8,9 +8,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import BottomSheetModal from "../../components/BottomSheetModal";
 import BaseURLConfig from "../../config/BaseURLConfig";
 
-
 const BASE_URL = BaseURLConfig();
-
 
 const EmployeeScreen = () => {
   const [user, setUser] = useState(null); // State for user data
@@ -37,7 +35,6 @@ const EmployeeScreen = () => {
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   }
 
-  // Fetch user data from MySQL using Firebase Authentication email
   useEffect(() => {
     const fetchUserData = async (email) => {
       try {
@@ -51,16 +48,18 @@ const EmployeeScreen = () => {
         console.error("Error fetching user data:", err);
         setError("Failed to fetch user data. Please try again.");
       }
-    };
+      };
+    }, []);
 
-    // Listen for authentication state changes
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser) {
-        fetchUserData(currentUser.email); // Fetch user data using email
-      } else {
-        setUser(null); // Clear user data if no user is logged in
-      }
-    });
+  // Listen for authentication state changes
+  useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        if (currentUser) {
+          fetchUserData(currentUser.email); // Fetch user data
+        } else {
+          setUser(null);
+        }
+      });
 
     return () => unsubscribe(); // Cleanup subscription
   }, []);
