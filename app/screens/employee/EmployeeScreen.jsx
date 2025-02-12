@@ -4,8 +4,6 @@ import MainLayout from '../../layouts/MainLayout';
 import { format, startOfWeek, addDays, isSameDay, parseISO, isWithinInterval, set } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from "expo-router";
 
 import BottomSheetModal from "../../components/BottomSheetModal";
 import BaseURLConfig from "../../config/BaseURLConfig";
@@ -31,30 +29,29 @@ const EmployeeScreen = () => {
   const [weeklyEvents, setWeeklyEvents] = useState([]); // Stores weekly events
   const [selectedEvent, setSelectedEvent] = useState(null); // Holds selected event details
 
-  const router = useRouter();
-
   // Helper function to calculate the current week's dates
   function getCurrentWeek() {
     const start = startOfWeek(new Date(), { weekStartsOn: 0 });
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   }
 
-  // Fetch user data from MySQL using Firebase Authentication email
   useEffect(() => {
-    // This will verify if the user is an employee or not. If not, it will redirect to the manager screen.
-    const checkRole = async () => {
+    const fetchUserData = async (email) => {
       try {
-        const role = await AsyncStorage.getItem("userRole");
-        if (role !== "Employee") { // Redirects to ManagerScreen if not an employee
-            router.push("/screens/manager/ManagerScreen");
+        const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      } catch (error) {
-        console.error("Error fetching role:", error);
+        const data = await response.json();
+        setUser(data); // Set user data from MySQL
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Failed to fetch user data. Please try again.");
       }
-    };
-    checkRole();
-}, []);
+      };
+    }, []);
 
+  // Listen for authentication state changes
   useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
