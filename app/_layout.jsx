@@ -64,8 +64,9 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/EmpAccountDetails" options={{ title: 'Employee Details' }}/>
       <Stack.Screen name="screens/manager/EditEmpAccount" options={{ title: 'Edit Employee Details' }}/>
       <Stack.Screen name="screens/manager/CreateEmpAccount" options={{ title: 'Create Employee Account' }}/>
-
       <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
+
+      <Stack.Screen name="screens/employee/EmployeeMore" options={{ title: 'More (rename this)' }}/>
 
     </Stack>
   );

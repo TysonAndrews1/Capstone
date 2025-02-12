@@ -5,6 +5,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router'; // expo-router's useRouter hook
 import Icon from 'react-native-vector-icons/AntDesign';
 import More from 'react-native-vector-icons/Feather'
+import Chat from 'react-native-vector-icons/Entypo'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigationState } from '@react-navigation/native';
 
@@ -33,16 +34,16 @@ export default function EmployeeFooter() {
         </TouchableOpacity>
   
         {/* Chat Button */}
-        <TouchableOpacity onPress={() => onPress("EventList")} style = {styles.navButton}>
-          <MaterialIcon name="event" size={30} color={getButtonColor("EventList")} />
-          <Text style={[styles.navText, { color: getButtonColor("EventsList") }]}>Events</Text>
+        <TouchableOpacity onPress={() => onPress("Chat")} style = {styles.navButton}>
+          <MaterialIcon name="chat" size={30} color={getButtonColor("Chat")} />
+          <Text style={[styles.navText, { color: getButtonColor("Chat") }]}>Chat</Text>
         </TouchableOpacity>
   
-        { /* Shifts Button
-        <TouchableOpacity onPress={() => onPress("ManagerSchedule")} style = {styles.navButton}>
+        {/* Shifts Button */}
+        <TouchableOpacity onPress={() => onPress("EmployeeSchedule")} style = {styles.navButton}>
           <Icon name="calendar" size={30} color={getButtonColor("Schedule")} />
           <Text style={[styles.navText, { color: getButtonColor("Schedule") }]}>Schedule</Text>
-        </TouchableOpacity> */ }
+        </TouchableOpacity>
   
         {/* More Button */}
         <TouchableOpacity onPress={() => onPress("EmployeeMore")} style = {styles.navButton}>
