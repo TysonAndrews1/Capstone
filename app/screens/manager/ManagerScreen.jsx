@@ -5,16 +5,12 @@ import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
 import { auth } from "../../firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import BaseURLConfig from '../../config/BaseURLConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from "expo-router";
 
 const ManagerScreen = () => {
-  const router = useRouter();
   const [user, setUser] = useState(null); // State for user data
   const [selectedDate, setSelectedDate] = useState(new Date()); // State for managing the currently selected date
   const [currentWeek, setCurrentWeek] = useState(getCurrentWeek()); // State for storing the current week's dates
   const [events, setEvents] = useState([]); // State for storing events fetched from the backend
-  const [loadingRole, setLoadingRole] = useState(true); // State for handling Loading and error states
   const BASE_URL = BaseURLConfig();
 
   // State for handling Loading and error states
@@ -28,26 +24,6 @@ const ManagerScreen = () => {
   }
 
   // Fetch user data from MySQL using Firebase Authentication email
-  useEffect(() => {
-    const checkRole = async () => {
-      try {
-        const role = await AsyncStorage.getItem("userRole");
-        if (role !== "Manager") {
-          console.log("Redirecting to EmployeeScreen"); // Debug log
-          router.push("/screens/employee/EmployeeScreen");
-        } else {
-          console.log("Role validated as Manager"); // Debug log
-          setLoadingRole(false); // Stop loading only if valid
-        }
-      } catch (error) {
-        console.error("Error checking role:", error);
-        setError("Unable to validate user role.");
-        router.push("/screens/login"); // Redirect on failure
-      }
-    };
-    checkRole();
-  }, []);
-
   useEffect(() => {
     const fetchUserData = async (email) => {
       try {
@@ -117,83 +93,77 @@ const ManagerScreen = () => {
   });
 
   return (
-    loadingRole ? ( // If still loading the role, show the loading screen (this will usually show only for a second)
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text>Loading...</Text>
-      </View>
-    ) : (
-      <MainLayout>
-        <View style={styles.container}>
-          {/* Greeting for the user */}
-          <Text style={styles.greeting}>{getTimeOfDayMessage()},</Text>
-          <Text style={styles.name}>
-            {user ? `${user.firstName}` : "Loading..."}
-          </Text>
+    <MainLayout>
+      <View style={styles.container}>
+        {/* Greeting for the user */}
+        <Text style={styles.greeting}>{getTimeOfDayMessage()},</Text>
+        <Text style={styles.name}>
+          {user ? `${user.firstName}` : "Loading..."}
+        </Text>
 
-          {/* User Information Card */}
-          <View style={{ ...styles.card, backgroundColor: '#212124' }}>
-            <View style={styles.cardContainer}>
-              <Text style={styles.cardTitle}>
-                {user ? `${user.firstName} ${user.lastName}` : "Loading..."}
-              </Text>
-              <Text style={styles.cardSubtitle}>
-                {user ? `${user.role}` : "Loading..."}
-              </Text>
-              <Text style={styles.cardText}>
-                It's gonna be announcements.
-              </Text>
-            </View>
-          </View>
-
-          {/* New Employee Requests Card */}
-          <TouchableOpacity style={styles.card}>
-            <View style={styles.cardRequest}>
-              <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10 }} />
-              <Text style={styles.monthText}>(3) New Employee Requests</Text>
-            </View>
-          </TouchableOpacity>
-
-          {/* Weekly Calendar */}
-          <View style={styles.card}>
-            <Text style={styles.monthText}>{format(selectedDate, 'MMMM yyyy')}</Text>
-            <View style={styles.weekContainer}>
-              {currentWeek.map((day) => (
-                <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay]}
-                  onPress={() => setSelectedDate(day)}>
-                  <Text style={styles.dayText}>{format(day, 'EEE')}</Text>
-                  <Text style={styles.dateText}>{format(day, 'd')}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Event Details for the Selected Date */}
-            <View style={styles.detailsContainer}>
-              <ScrollView>
-                {loading ? (
-                  <Text>Loading...</Text>
-                ) : filteredEvents.length > 0 ? (
-                  filteredEvents.map((event) => (
-                    <View key={event.eventId} style={styles.eventContainer}>
-                      <View style={styles.dottedLine}></View>
-                      <Text style={styles.eventDetails}>
-                        {event.eventName} ({event.numberOfGuests} Guests)
-                      </Text>
-                      <Text style={styles.timeText}>
-                        {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
-                      </Text>
-                      
-                      <View style={styles.dottedLine}></View>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={styles.noEventsText}>No events for this date.</Text>
-                )}
-              </ScrollView>
-            </View>
+        {/* User Information Card */}
+        <View style={{ ...styles.card, backgroundColor: '#212124' }}>
+          <View style={styles.cardContainer}>
+            <Text style={styles.cardTitle}>
+              {user ? `${user.firstName} ${user.lastName}` : "Loading..."}
+            </Text>
+            <Text style={styles.cardSubtitle}>
+              {user ? `${user.role}` : "Loading..."}
+            </Text>
+            <Text style={styles.cardText}>
+              It's gonna be announcements.
+            </Text>
           </View>
         </View>
-      </MainLayout>
-    )
+
+        {/* New Employee Requests Card */}
+        <TouchableOpacity style={styles.card}>
+          <View style={styles.cardRequest}>
+            <Image source={require('../../../assets/images/error.png')} style={{ width: 48, height: 48, marginRight: 10 }} />
+            <Text style={styles.monthText}>(3) New Employee Requests</Text>
+          </View>
+        </TouchableOpacity>
+
+        {/* Weekly Calendar */}
+        <View style={styles.card}>
+          <Text style={styles.monthText}>{format(selectedDate, 'MMMM yyyy')}</Text>
+          <View style={styles.weekContainer}>
+            {currentWeek.map((day) => (
+              <TouchableOpacity key={day.toISOString()} style={[styles.dayContainer, isSameDay(day, selectedDate) && styles.selectedDay]}
+                onPress={() => setSelectedDate(day)}>
+                <Text style={styles.dayText}>{format(day, 'EEE')}</Text>
+                <Text style={styles.dateText}>{format(day, 'd')}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Event Details for the Selected Date */}
+          <View style={styles.detailsContainer}>
+            <ScrollView>
+              {loading ? (
+                <Text>Loading...</Text>
+              ) : filteredEvents.length > 0 ? (
+                filteredEvents.map((event) => (
+                  <View key={event.eventId} style={styles.eventContainer}>
+                    <View style={styles.dottedLine}></View>
+                    <Text style={styles.eventDetails}>
+                      {event.eventName} ({event.numberOfGuests} Guests)
+                    </Text>
+                    <Text style={styles.timeText}>
+                      {format(new Date(event.eventStartDate), 'hh:mm a')} - {format(new Date(event.eventEndDate), 'hh:mm a')}
+                    </Text>
+                    
+                    <View style={styles.dottedLine}></View>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noEventsText}>No events for this date.</Text>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </View>
+    </MainLayout>
   );
 };
 
