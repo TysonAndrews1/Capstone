@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.9",
     "cra-template": "1.2.0",
     "firebase": "^11.2.0",
@@ -13,6 +14,8 @@
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
     "react-select": "^5.10.0",
+    "sockjs-client": "^1.6.1",
+    "stompjs": "^2.3.3",
     "web-vitals": "^4.2.4"
   },
   "scripts": {
