@@ -67,7 +67,24 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
 
       <Stack.Screen name="screens/employee/EmployeeMore" options={{ title: 'More (rename this)' }}/>
-
+      <Stack.Screen name="screens/employee/EmployeeSchedule"  options={{ title: 'Schedule', headerBackVisible: false, 
+      headerRight: () => (
+        <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+            {/* tintColor can change a image(png or svg) color */}
+            <Image source={require('../assets/images/edit1.png')} style={ styles.icon } />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerLeft: () => (
+        <View style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => alert('Icon 1 pressed')}>
+            <Image source={require('../assets/images/calendar.png')} style={ styles.icon } />
+          </TouchableOpacity>
+        </View>
+      ), headerStyle: { backgroundColor: '#3F6D89' },
+      headerTitleAlign: 'center',
+      }}/> 
     </Stack>
   );
 }

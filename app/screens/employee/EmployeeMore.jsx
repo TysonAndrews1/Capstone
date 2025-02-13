@@ -16,7 +16,7 @@ const EmployeeMore = () => {
       <View style={styles.container}>
 
         {/* Button to manage employee schedules */}
-        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/manager/EmployeeSchedule')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/employee/EmployeeSchedule')}>
           <Text style={styles.text}>Schedule</Text>
         </TouchableOpacity>
 
