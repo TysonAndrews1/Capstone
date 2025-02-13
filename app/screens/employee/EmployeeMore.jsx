@@ -20,9 +20,9 @@ const EmployeeMore = () => {
           <Text style={styles.text}>Schedule</Text>
         </TouchableOpacity>
 
-        {/* Button to view employee reports */}
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.text}>Requests</Text>
+        {/* Button to view requests sent and create requests */}
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/employee/MyRequests')}>
+          <Text style={styles.text}>My Requests</Text>
         </TouchableOpacity>
       </View>
     </MainLayout>
