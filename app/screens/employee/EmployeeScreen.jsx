@@ -49,10 +49,8 @@ const EmployeeScreen = () => {
         setError("Failed to fetch user data. Please try again.");
       }
       };
-    }, []);
 
   // Listen for authentication state changes
-  useEffect(() => {
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
           fetchUserData(currentUser.email); // Fetch user data
