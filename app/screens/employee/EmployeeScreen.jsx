@@ -35,34 +35,33 @@ const EmployeeScreen = () => {
     return Array.from({ length: 7 }).map((_, i) => addDays(start, i));
   }
 
-  useEffect(() => {
-    const fetchUserData = async (email) => {
-      try {
-        const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    // Fetch user data from MySQL using Firebase Authentication email
+    useEffect(() => {
+      const fetchUserData = async (email) => {
+        try {
+          const response = await fetch(`${BASE_URL}/accounts/user?email=${email}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setUser(data); // Set user data from MySQL
+        } catch (err) {
+          console.error("Error fetching user data:", err);
+          setError("Failed to fetch user data. Please try again.");
         }
-        const data = await response.json();
-        setUser(data); // Set user data from MySQL
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        setError("Failed to fetch user data. Please try again.");
-      }
       };
-    }, []);
-
-  // Listen for authentication state changes
-  useEffect(() => {
+  
+      // Listen for authentication state changes
       const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
         if (currentUser) {
-          fetchUserData(currentUser.email); // Fetch user data
+          fetchUserData(currentUser.email); // Fetch user data using email
         } else {
-          setUser(null);
+          setUser(null); // Clear user data if no user is logged in
         }
       });
-
-    return () => unsubscribe(); // Cleanup subscription
-  }, []);
+  
+      return () => unsubscribe(); // Cleanup subscription
+    }, []);
 
   // Fetch events from the backend whenever the selected date changes
   useEffect(() => {
