@@ -12,6 +12,7 @@ import TradeShift from './screens/employee/TradeShift';
 import EditEvent from './screens/EditEvent';
 import './Styles.css'
 import ForgotPassword from './screens/ForgotPassword';
+import ChatPage from './screens/Chat';
 function App() {
   return (
     /*This router component wraps the entire application to allow routing 
@@ -30,6 +31,7 @@ function App() {
 
         <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
         <Route path="/TradeShift/:accountId" element={<MainLayout><TradeShift /></MainLayout>} />
+        <Route path="/Chat" element={<MainLayout><ChatPage /></MainLayout>} />
       </Routes>
     </Router>
   );

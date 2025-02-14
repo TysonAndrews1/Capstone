@@ -30,6 +30,7 @@ function HamburgerMenu({ setMenuOpen }) {
           <li><a href="/Events" className="text-gray-800 hover:text-blue-500">Events</a></li>
           <li><a href="/ManagerDashboard" className="text-gray-800 hover:text-blue-500">Manager Dashboard</a></li>
           <li><a href="/employeeschedule" className="text-gray-800 hover:text-blue-500">Employee Schedule</a></li>
+          <li><a href="/Chat" className="text-gray-800 hover:text-blue-500">Chat</a></li>
           <li><a href="/" className="text-gray-800 hover:text-blue-500">Log Out</a></li>
           </ul>
         </nav>
