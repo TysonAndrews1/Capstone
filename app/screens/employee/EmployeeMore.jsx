@@ -14,6 +14,10 @@ const EmployeeMore = () => {
 
       {/* Main Button Section */}
       <View style={styles.container}>
+        {/* Button to clock in / clock out */}
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/attendance/Attendance')}>
+          <Text style={styles.text}>Clock In / Clock Out</Text>
+        </TouchableOpacity>
 
         {/* Button to manage employee schedules */}
         <TouchableOpacity style={styles.button} onPress={() => router.push('screens/manager/EmployeeSchedule')}>

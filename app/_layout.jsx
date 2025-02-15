@@ -67,6 +67,7 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
 
       <Stack.Screen name="screens/employee/EmployeeMore" options={{ title: 'More (rename this)' }}/>
+      <Stack.Screen name="screens/attendance/Attendance" options={{ title: 'Work Attendance'}}/>
 
     </Stack>
   );
