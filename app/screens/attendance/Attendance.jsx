@@ -1,0 +1,161 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import MainLayout from '../../layouts/MainLayout';
+
+const Attendance = () => {
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [status, setStatus] = useState('You are currently not clocked in.');
+  const [instruction, setInstruction] = useState('');
+  const [awaitingTap, setAwaitingTap] = useState(false);
+
+  // Update the clock every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleStartShift = () => {
+    setInstruction('Please tap your phone on the attendance reader to start your shift.');
+    setAwaitingTap(true);
+  };
+
+  const handleEndShift = () => {
+    setInstruction('Please tap your phone on the attendance reader to end your shift.');
+    setAwaitingTap(true);
+  };
+
+  const handleTap = () => {
+    if (awaitingTap) {
+      setStatus(instruction.includes('start') ? 'You are currently CLOCKED IN' : 'You are currently CLOCKED OUT');
+      setInstruction('');
+      setAwaitingTap(false);
+    }
+  };
+
+  return (
+    <MainLayout>
+      {/* Header-like Digital Clock */}
+      <View style={styles.header}>
+        <Text style={styles.digitalClock}>
+          {currentTime.toLocaleTimeString()}
+        </Text>
+      </View>
+
+      <View style={styles.container}>
+        {/* Current Status */}
+        <Text style={styles.statusText}>{status}</Text>
+
+        {/* Start Shift / End Shift Buttons */}
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleStartShift}
+            disabled={awaitingTap}
+          >
+            <Text style={styles.buttonText}>Start Shift</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleEndShift}
+            disabled={awaitingTap}
+          >
+            <Text style={styles.buttonText}>End Shift</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Tap Instruction */}
+        {instruction !== '' && (
+          <View style={styles.instructionContainer}>
+            <Text style={styles.instructionText}>{instruction}</Text>
+            <TouchableOpacity style={styles.tapButton} onPress={handleTap}>
+              <Text style={styles.tapButtonText}>Click here to enable tap</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    </MainLayout>
+  );
+};
+
+export default Attendance;
+
+const styles = StyleSheet.create({
+  header: {
+    width: '100%',
+    backgroundColor: '#3F6D89',
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+
+  digitalClock: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    backgroundColor: '#F5F5F5',
+  },
+  
+  statusText: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '80%',
+    marginBottom: 20,
+  },
+
+  button: {
+    backgroundColor: '#3F6D89',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    elevation: 2,
+    alignItems: 'center',
+  },
+
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+
+  instructionContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+
+  instructionText: {
+    fontSize: 16,
+    color: '#007AFF',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+
+  tapButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+
+  tapButtonText: {
+    fontSize: 16,
+    color: '#FFF',
+    fontWeight: 'bold',
+  },
+});
