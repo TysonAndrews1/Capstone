@@ -16,15 +16,19 @@ import com.facebook.soloader.SoLoader
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ReactNativeHostWrapper
 
+import community.revteltech.nfc.NfcManagerPackage;
+
 class MainApplication : Application(), ReactApplication {
 
   override val reactNativeHost: ReactNativeHost = ReactNativeHostWrapper(
         this,
         object : DefaultReactNativeHost(this) {
           override fun getPackages(): List<ReactPackage> {
-            val packages = PackageList(this).packages
+            val packages = PackageList(this).packages.toMutableList() // Convert to mutable list
             // Packages that cannot be autolinked yet can be added manually here, for example:
             // packages.add(new MyReactNativePackage());
+            // Add NFC Manager Package manually
+            packages.add(NfcManagerPackage())
             return packages
           }
 
