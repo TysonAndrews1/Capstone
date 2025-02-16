@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { NfcManager, NfcEvents } from 'react-native-nfc-manager';
 import MainLayout from '../../layouts/MainLayout';
 
 const Attendance = () => {
@@ -8,46 +9,58 @@ const Attendance = () => {
   const [instruction, setInstruction] = useState('');
   const [awaitingTap, setAwaitingTap] = useState(false);
 
-  // Update the clock every second
+  // Initialize NFC Manager on component mount
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    NfcManager.start();
+
+    // Event listener for NFC tag discovery
+    NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag) => {
+      console.log('Tag Discovered', tag);
+      NfcManager.setAlertMessageIOS('NFC Tag Discovered');
+      NfcManager.unregisterTagEvent().catch(() => 0);
+
+      if (awaitingTap) {
+        setStatus(
+          instruction.includes('start') ? 'You are currently CLOCKED IN' : 'You are currently CLOCKED OUT'
+        );
+        setInstruction('');
+        setAwaitingTap(false);
+      }
+    });
+
+    // Clean up NFC manager on component unmount
+    return () => {
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+      NfcManager.unregisterTagEvent().catch(() => 0);
+      NfcManager.stop();
+    };
+  }, [awaitingTap, instruction]);
 
   const handleStartShift = () => {
     setInstruction('Please tap your phone on the attendance reader to start your shift.');
     setAwaitingTap(true);
+
+    // Enable NFC reading
+    NfcManager.registerTagEvent().catch((error) => console.warn(error));
   };
 
   const handleEndShift = () => {
     setInstruction('Please tap your phone on the attendance reader to end your shift.');
     setAwaitingTap(true);
-  };
 
-  const handleTap = () => {
-    if (awaitingTap) {
-      setStatus(instruction.includes('start') ? 'You are currently CLOCKED IN' : 'You are currently CLOCKED OUT');
-      setInstruction('');
-      setAwaitingTap(false);
-    }
+    // Enable NFC reading
+    NfcManager.registerTagEvent().catch((error) => console.warn(error));
   };
 
   return (
     <MainLayout>
-      {/* Header-like Digital Clock */}
       <View style={styles.header}>
-        <Text style={styles.digitalClock}>
-          {currentTime.toLocaleTimeString()}
-        </Text>
+        <Text style={styles.digitalClock}>{currentTime.toLocaleTimeString()}</Text>
       </View>
 
       <View style={styles.container}>
-        {/* Current Status */}
         <Text style={styles.statusText}>{status}</Text>
 
-        {/* Start Shift / End Shift Buttons */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
@@ -66,13 +79,9 @@ const Attendance = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Tap Instruction */}
         {instruction !== '' && (
           <View style={styles.instructionContainer}>
             <Text style={styles.instructionText}>{instruction}</Text>
-            <TouchableOpacity style={styles.tapButton} onPress={handleTap}>
-              <Text style={styles.tapButtonText}>Click here to enable tap</Text>
-            </TouchableOpacity>
           </View>
         )}
       </View>
@@ -103,7 +112,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F5F5F5',
   },
-  
+
   statusText: {
     fontSize: 30,
     fontWeight: 'bold',
@@ -144,18 +153,5 @@ const styles = StyleSheet.create({
     color: '#007AFF',
     marginBottom: 10,
     textAlign: 'center',
-  },
-
-  tapButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-
-  tapButtonText: {
-    fontSize: 16,
-    color: '#FFF',
-    fontWeight: 'bold',
   },
 });
