@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import './Styles.css'
 import ManagerDashboard from './screens/manager/ManagerDashboard';
 import MainLayout from './layouts/MainLayout'; 
 import SignIn from './screens/SignIn';
@@ -10,9 +11,12 @@ import EmployeeSchedule from './screens/employee/EmployeeSchedule';
 import Profile from './screens/employee/Profile';
 import TradeShift from './screens/employee/TradeShift';
 import EditEvent from './screens/EditEvent';
-import './Styles.css'
 import ForgotPassword from './screens/ForgotPassword';
 import ChatPage from './screens/Chat';
+import Reports from './screens/manager/Reports';
+
+
+
 function App() {
   return (
     /*This router component wraps the entire application to allow routing 
@@ -31,7 +35,10 @@ function App() {
 
         <Route path="/EmployeeSchedule" element={<MainLayout><EmployeeSchedule /></MainLayout>} />
         <Route path="/TradeShift/:accountId" element={<MainLayout><TradeShift /></MainLayout>} />
+        <Route path="/Reports" element={<MainLayout><Reports /></MainLayout>} />
         <Route path="/Chat" element={<MainLayout><ChatPage /></MainLayout>} />
+        
+        
       </Routes>
     </Router>
   );
