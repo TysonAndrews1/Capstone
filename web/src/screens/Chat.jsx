@@ -16,6 +16,7 @@ export default function ChatPage(){
         const socket = new SockJS("http://localhost:8080/ws"); // Adjust the backend URL if needed
         const client = new Client({ webSocketFactory: () => socket });
         
+        
         client.onConnect = () => {
             console.log("Connected to WebSocket");
             client.subscribe("/topic/public", (msg) => {
