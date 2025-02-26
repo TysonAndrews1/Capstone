@@ -242,10 +242,10 @@ DROP TABLE IF EXISTS `employee_vote`;
 CREATE TABLE `employee_vote` (
   `vote_id` int NOT NULL AUTO_INCREMENT,
   `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
-  `nominee_id` int NOT NULL, -- Foregin key referencing banquet_accounts
-  `voteDate` datetime NOT NULL,
+  `nominee_id` int NOT NULL, -- Foreign key referencing banquet_accounts
+  `vote_date` datetime NOT NULL,
   `reason` text NOT NULL,
-  `voteWeight` DECIMAL(3,2) NOT NULL DEFAULT 1.0,
+  `vote_weight` DECIMAL(3,2) NOT NULL DEFAULT 1.0,
   PRIMARY KEY (`vote_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (`nominee_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
