@@ -1,20 +1,44 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 
 /**
  * [1] Code Complete. Learn React ChartJS in 8 Minutes | Complete Guide. (Sep. 24, 2023). Accessed: Feb. 24, 2025. [Online Video]. Available: https://www.youtube.com/watch?v=6q5d3Z1-5kQ&ab_channel=CodeComplete
  * [2] Chart.js (4.4.8.). "Configuration." Accessed: Feb. 24, 2025. [Online]. Available: https://www.chartjs.org/docs/4.4.8/configuration/
+ * [3] Chart JS. Fetch and Display Advanced JSON Data in Chart JS. (Sep. 20, 2021). Accessed: Feb. 25, 2025. [Online Video]. Available: https://www.youtube.com/watch?v=mw5i_QGDomw
  */
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend); 
 
 const Reports = () => {
-  // Example data first to test the chart
-  /**
-   * [2] 
-   */
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchRequests = async () => {
+    try{
+      const response = await fetch("http://localhost:8080/api/requests");
+
+      if(!response.ok){
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      console.log("Data: ", data);  
+      setData(data);
+      setLoading(false);
+    } catch (error){
+      console.error("Error fetching the data: ", error);
+      setError("Failed to fetch request data");
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRequests();
+  }, []);
+  
   const chartData = {
     labels: ["Time-off", "Vacation", "Sick-day"],
     datasets: [
@@ -37,3 +61,4 @@ const Reports = () => {
 };
 
 export default Reports;
+
