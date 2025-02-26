@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { NfcManager, NfcEvents } from 'react-native-nfc-manager';
+import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 import MainLayout from '../../layouts/MainLayout';
 
 const Attendance = () => {
@@ -11,45 +11,55 @@ const Attendance = () => {
 
   // Initialize NFC Manager on component mount
   useEffect(() => {
-    NfcManager.start();
+    // Initialize NFC Manager
+    NfcManager.start()
+      .then(() => console.log('NFC Manager started'))
+      .catch((error) => console.warn('NFC Manager start error:', error));
 
-    // Event listener for NFC tag discovery
-    NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag) => {
-      console.log('Tag Discovered', tag);
-      NfcManager.setAlertMessageIOS('NFC Tag Discovered');
-      NfcManager.unregisterTagEvent().catch(() => 0);
-
-      if (awaitingTap) {
-        setStatus(
-          instruction.includes('start') ? 'You are currently CLOCKED IN' : 'You are currently CLOCKED OUT'
-        );
-        setInstruction('');
-        setAwaitingTap(false);
-      }
-    });
-
-    // Clean up NFC manager on component unmount
     return () => {
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-      NfcManager.unregisterTagEvent().catch(() => 0);
-      NfcManager.stop();
+      // Stop NFC Manager when component unmounts
+      NfcManager.stop()
+        .then(() => console.log('NFC Manager stopped'))
+        .catch((error) => console.warn('NFC Manager stop error:', error));
     };
-  }, [awaitingTap, instruction]);
+  }, []);
 
-  const handleStartShift = () => {
+  const handleStartShift = async () => {
     setInstruction('Please tap your phone on the attendance reader to start your shift.');
     setAwaitingTap(true);
 
-    // Enable NFC reading
-    NfcManager.registerTagEvent().catch((error) => console.warn(error));
+    try {
+      // Enable NFC reading
+      await NfcManager.requestTechnology(NfcTech.Ndef);
+      const tag = await NfcManager.getTag(); // Get NFC tag data
+      console.log('Tag Discovered', tag);
+      setStatus('You are currently CLOCKED IN');
+    } catch (error) {
+      console.warn('NFC reading error:', error);
+    } finally {
+      setInstruction('');
+      setAwaitingTap(false);
+      NfcManager.cancelTechnologyRequest().catch(() => 0);
+    }
   };
 
-  const handleEndShift = () => {
+  const handleEndShift = async () => {
     setInstruction('Please tap your phone on the attendance reader to end your shift.');
     setAwaitingTap(true);
 
-    // Enable NFC reading
-    NfcManager.registerTagEvent().catch((error) => console.warn(error));
+    try {
+      // Enable NFC reading
+      await NfcManager.requestTechnology(NfcTech.Ndef);
+      const tag = await NfcManager.getTag(); // Get NFC tag data
+      console.log('Tag Discovered', tag);
+      setStatus('You are currently CLOCKED OUT');
+    } catch (error) {
+      console.warn('NFC reading error:', error);
+    } finally {
+      setInstruction('');
+      setAwaitingTap(false);
+      NfcManager.cancelTechnologyRequest().catch(() => 0);
+    }
   };
 
   return (
