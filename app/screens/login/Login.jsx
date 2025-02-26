@@ -1,16 +1,101 @@
 import { StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { handleLogin } from "../../firebase/auth";
 import { useRouter } from "expo-router";
 import BaseURLConfig from '../../config/BaseURLConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as LocalAuthentication from 'expo-local-authentication';
 
+  /**
+   * The code related biometric was generated with assistance from chatGPT.
+   * Prompt: I want to use expo-local-authentication to login to our app. 
+   * Then, I want to Keep using biometric button once the first login happens.
+   */
 const Login = () => {
     const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    
+    const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+    const [isBioEnabled, setIsBioEnabled] = useState(false);
+
     const BASE_URL = BaseURLConfig();
+
+    useEffect(() => {
+        checkBiometricSupport();
+        checkIfBiometricEnabled();
+    }, []);
+
+    // Check if the device support biometric authentication
+    const checkBiometricSupport = async () => {
+        const isSupported = await LocalAuthentication.hasHardwareAsync();
+        setIsBiometricSupported(isSupported);
+    };
+
+    // Check saved login information
+    const checkIfBiometricEnabled = async () => {
+        const bioAuthEnabled = await AsyncStorage.getItem('bioAuthEnabled');
+
+        if (bioAuthEnabled === "true") {
+            setIsBioEnabled(true);
+        }
+    };
+
+    // Execute Biometric login
+    const handleBiometricAuth = async () => {
+        const savedEmail = await AsyncStorage.getItem('userEmail');
+        const savedPassword = await AsyncStorage.getItem('userPassword');
+
+        if (!savedEmail || !savedPassword) {
+            return Alert.alert("Error", "No saved login info.");
+        }
+
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (!isEnrolled) {
+            return Alert.alert("Register your face or finger print.");
+        }
+
+        // Without passcode only using Face ID or finger print
+        const result = await LocalAuthentication.authenticateAsync({
+            promptMessage: 'Use Biometric',
+            disableDeviceFallback: false,
+        });
+
+        if (result.success) {
+            Alert.alert('Authentication Successful');
+            loginWithCredentials(savedEmail, savedPassword);
+        } else {
+            Alert.alert('Failed to Authenticate, please try again');
+        }
+    };
+
+    // Process Login
+    const loginWithCredentials = async (email, password) => {
+        
+        try {
+            // Using Firebase Authentication
+            const firebaseUser = await handleLogin(email, password);
+            const role = await fetchUserRole(email); // Fetch user role from the database
+            console.log("User role:", role);
+
+            // Persist the role locally
+            await AsyncStorage.setItem('userEmail', email);
+            await AsyncStorage.setItem('userPassword', password);
+            await AsyncStorage.setItem('userRole', role);
+            await AsyncStorage.setItem('bioAuthEnabled', "true");
+
+            setIsBioEnabled(true);
+            // Navigate to the appropriate screen
+            if (role === "Manager") {
+                router.push('/screens/manager/ManagerScreen');
+            } else if (role === "Employee") {
+                router.push('/screens/employee/EmployeeScreen');
+            } else {
+                Alert.alert("Error", "Unknown role. Please contact support.");
+            }
+        } catch (error) {
+            Alert.alert("Login Failed", error.message);
+        }
+    };
 
     const fetchUserRole = async (email) => { // Fetch the user role from the database using the email provided
         try {
@@ -37,26 +122,7 @@ const Login = () => {
             return;
         }
 
-        try {
-            // Using Firebase Authentication
-            const firebaseUser = await handleLogin(email, password);
-            const role = await fetchUserRole(email); // Fetch user role from the database
-            console.log("User role:", role);
-
-            // Persist the role locally
-            await AsyncStorage.setItem("userRole", role);
-
-            // Navigate to the appropriate screen
-            if (role === "Manager") {
-                router.push('/screens/manager/ManagerScreen');
-            } else if (role === "Employee") {
-                router.push('/screens/employee/EmployeeScreen');
-            } else {
-                Alert.alert("Error", "Unknown role. Please contact support.");
-            }
-        } catch (error) {
-            Alert.alert("Login Failed", error.message);
-        }
+        loginWithCredentials(email, password);
     };
 
     return (
@@ -87,6 +153,11 @@ const Login = () => {
                 <TouchableOpacity style={styles.button} onPress={onLoginPress}>
                     <Text style={styles.buttonText}>Sign In</Text>
                 </TouchableOpacity>
+                {isBiometricSupported && isBioEnabled && (
+                    <TouchableOpacity style={styles.bioButton} onPress={handleBiometricAuth}>
+                        <Text style={styles.buttonText}>Sign In with Biometric</Text>
+                    </TouchableOpacity>
+                )}
                 <TouchableOpacity onPress={forgotPass}>
                     <Text style={styles.inputText}>Forgot password?</Text>
                 </TouchableOpacity>
@@ -158,4 +229,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
       },
+      bioButton: {
+        backgroundColor: "#1d3557",
+        borderRadius: 8,
+        paddingVertical: 14,
+        alignItems: "center",
+        marginBottom: 20,
+    },
 });

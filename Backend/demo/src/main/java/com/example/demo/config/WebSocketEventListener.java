@@ -12,7 +12,6 @@ import com.example.demo.entity.messageType;
 import com.google.protobuf.Extension.MessageType;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.var;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -29,7 +28,7 @@ public class WebSocketEventListener {
         String name = (String) headerAccessor.getSessionAttributes().get("name");
         if (name != null) {
             log.info("user disconnected: {}", name);
-            var chatMessage = BanquetChatMessage.builder()
+            BanquetChatMessage chatMessage = BanquetChatMessage.builder()
                     .type(messageType.LEAVE)
                     .sender(name)
                     .build();
