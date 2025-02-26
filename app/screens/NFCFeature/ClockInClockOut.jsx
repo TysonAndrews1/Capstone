@@ -1,30 +1,35 @@
+// References:
+// For installation and configuring Android - https://medium.com/@diliplohar204/nfc-integration-made-easy-exploring-react-native-nfc-manager-for-seamless-mobile-communication-65bf56f31398
+// ChatGPT NFC Attendance System - Prompt: How can I integrate NFC reading functionality in a React Native app using react-native-nfc-manager to create an employee clock-in/clock-out system using Javascript and React Native? I am also using Expo to run the application.
+// ChatGPT NFC unmounting - Prompt: How do I properly unmount the NFC Manager to stop running in the background?
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
 import MainLayout from '../../layouts/MainLayout';
 
-const Attendance = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [status, setStatus] = useState('You are currently not clocked in.');
+const ClockInClockOut = () => {
+  const [status, setStatus] = useState('You are currently CLOCKED OUT.');
   const [instruction, setInstruction] = useState('');
   const [awaitingTap, setAwaitingTap] = useState(false);
+  const [clockInTime, setClockInTime] = useState(null);
+  const [clockOutTime, setClockOutTime] = useState(null);
 
   // Initialize NFC Manager on component mount
   useEffect(() => {
-    // Initialize NFC Manager
-    NfcManager.start()
+    NfcManager.start() // Initialize NFC Manager
       .then(() => console.log('NFC Manager started'))
       .catch((error) => console.warn('NFC Manager start error:', error));
 
     return () => {
-      // Stop NFC Manager when component unmounts
-      NfcManager.stop()
-        .then(() => console.log('NFC Manager stopped'))
-        .catch((error) => console.warn('NFC Manager stop error:', error));
+      // Cleanup function to unmount NFCManager correctly
+      NfcManager.close() // Close NFC Manager properly, will not work in the background
+        .then(() => console.log('NFC Manager closed'))
+        .catch((error) => console.warn('NFC Manager close error:', error));
     };
   }, []);
 
-  const handleStartShift = async () => {
+  const handleStartShift = async () => { // This function will be called when the user taps the 'Start Shift' button
     setInstruction('Please tap your phone on the attendance reader to start your shift.');
     setAwaitingTap(true);
 
@@ -43,7 +48,7 @@ const Attendance = () => {
     }
   };
 
-  const handleEndShift = async () => {
+  const handleEndShift = async () => { // This function will be called when the user taps the 'End Shift' button
     setInstruction('Please tap your phone on the attendance reader to end your shift.');
     setAwaitingTap(true);
 
@@ -64,12 +69,13 @@ const Attendance = () => {
 
   return (
     <MainLayout>
-      <View style={styles.header}>
-        <Text style={styles.digitalClock}>{currentTime.toLocaleTimeString()}</Text>
-      </View>
-
       <View style={styles.container}>
-        <Text style={styles.statusText}>{status}</Text>
+        <Text style={[styles.statusText, status.includes('CLOCKED IN') ? styles.clockedIn : styles.clockedOut]}>
+          {status}
+        </Text>
+
+        {clockInTime && <Text style={styles.timeText}>Clock In Time: {clockInTime}</Text>}
+        {clockOutTime && <Text style={styles.timeText}>Clock Out Time: {clockOutTime}</Text>}
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
@@ -99,22 +105,9 @@ const Attendance = () => {
   );
 };
 
-export default Attendance;
+export default ClockInClockOut;
 
 const styles = StyleSheet.create({
-  header: {
-    width: '100%',
-    backgroundColor: '#3F6D89',
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-
-  digitalClock: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-
   container: {
     flex: 1,
     alignItems: 'center',
@@ -124,11 +117,19 @@ const styles = StyleSheet.create({
   },
 
   statusText: {
-    fontSize: 30,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
     textAlign: 'center',
+  },
+
+  clockedIn: {
+    color: '#28A745',
+  },
+
+  clockedOut: {
+    color: '#DC3545',
   },
 
   buttonContainer: {

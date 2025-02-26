@@ -15,7 +15,7 @@ const EmployeeMore = () => {
       {/* Main Button Section */}
       <View style={styles.container}>
         {/* Button to clock in / clock out */}
-        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/attendance/Attendance')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/NFCFeature/ClockInClockOut')}>
           <Text style={styles.text}>Clock In / Clock Out</Text>
         </TouchableOpacity>
 
