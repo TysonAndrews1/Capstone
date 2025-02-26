@@ -14,6 +14,7 @@ import EditEvent from './screens/EditEvent';
 import ForgotPassword from './screens/ForgotPassword';
 import ChatPage from './screens/Chat';
 import Reports from './screens/manager/Reports';
+import Vote from './screens/Vote';
 
 
 
@@ -37,7 +38,7 @@ function App() {
         <Route path="/TradeShift/:accountId" element={<MainLayout><TradeShift /></MainLayout>} />
         <Route path="/Reports" element={<MainLayout><Reports /></MainLayout>} />
         <Route path="/Chat" element={<MainLayout><ChatPage /></MainLayout>} />
-        
+        <Route path="/Vote" element={<MainLayout><Vote /></MainLayout>} />
         
       </Routes>
     </Router>
