@@ -146,6 +146,8 @@ const Reports = () => {
     {/* Display the filtered report in a graph */}
     <Bar data={chartData} options={{ responsive: true }} />
 
+  
+
     {/* Display the filtered report in a table */}
     <div>
       <table>
@@ -160,13 +162,15 @@ const Reports = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {data.map((request, index) => (
+          value={data.accountId}
+
+          {data.map((request,index) => (
             <tr key={index}>
               <td className="block text-sm font-medium text-gray-700"></td>
-              <td className="block text-sm font-medium text-gray-700">{request.account_id}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.request_type}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.start_date}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.end_date}</td>
+              <td className="block text-sm font-medium text-gray-700">{request.accountId}</td>
+              <td className="block text-sm font-medium text-gray-700">{request.requestType}</td>
+              <td className="block text-sm font-medium text-gray-700">{request.startDate}</td>
+              <td className="block text-sm font-medium text-gray-700">{request.endDate}</td>
               <td className="block text-sm font-medium text-gray-700">{request.status}</td>
             </tr>
           ))}
