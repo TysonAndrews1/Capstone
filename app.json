@@ -12,12 +12,16 @@
       "supportsTablet": true
     },
     "android": {
-      "permissions":["INTERNET"],
+      "permissions": [
+        "INTERNET",
+        "INTERNET"
+      ],
       "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.maecison123.Capstone"
     },
     "web": {
       "bundler": "metro",
