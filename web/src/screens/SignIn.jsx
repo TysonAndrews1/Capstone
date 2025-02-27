@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {handleLogin}  from '../firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,6 +73,19 @@ function SignIn() {
         setError("Login Failed", error.message);
     }
 };
+    // Handle Enter key press to send message
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === "Enter") {
+                onLoginPress(); // Call sendMessage when Enter is pressed
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+        return () => {
+            window.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [onLoginPress]); // Ensure useEffect updates if sendMessage changes
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
