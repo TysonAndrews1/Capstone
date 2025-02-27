@@ -18,6 +18,8 @@ const Reports = () => {
 
   // Filter states 
   const [accounts, setAccounts] = useState([]); 
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   
 
   const BASE_URL = "http://localhost:8080/api";
@@ -45,7 +47,7 @@ const Reports = () => {
   }, []);
   
 
-
+  // Function to fetch employee requests from the backend
   const fetchRequests = async () => {
     try{
       const response = await fetch(`${BASE_URL}/requests`);
@@ -69,6 +71,7 @@ const Reports = () => {
     fetchRequests();
   }, []);
   
+  // Chart design
   const chartData = {
     labels: ["Time-off", "Vacation", "Sick-day"],
     datasets: [
@@ -87,9 +90,12 @@ const Reports = () => {
       <h1 className="text-2xl font-bold mb-4">Requests Report</h1>
       <Bar data={chartData} options={{ responsive: true }} />
 
-      {/* Dropdown to select employee */} 
+      {/* Filter Options */} 
       <div className="mb-4">
           <h1 className="text-lg font-bold mb-4">Filter</h1>
+          <label className="block text-sm font-medium text-gray-700">
+            Employee:
+          </label>
         <select 
           className="w-full p-2 border border-gray-300 rounded"
           value={accounts.accountId}
@@ -102,8 +108,32 @@ const Reports = () => {
             </option>
           ))}
         </select>
-        </div>
-    </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Start Date:
+        </label>
+        <input
+          type="date"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          value={startDate}
+          onChange={(e) => setStartDate(e.target.value)}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          End Date:
+        </label>
+        <input
+          type="date"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          value={endDate}
+          onChange={(e) => setEndDate(e.target.value)}
+        />
+      </div>
+  </div>
   );
 };
 
