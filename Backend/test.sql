@@ -126,7 +126,7 @@ DROP TABLE IF EXISTS `employee_shifts`;
 CREATE TABLE `employee_shifts` (
   `shift_id` int NOT NULL AUTO_INCREMENT,
   `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
-  `event_id` int NOT NULL,   -- Foreign key referencing banquet_events
+  `event_id` int,   -- Foreign key referencing banquet_events
   `shift_start_date` datetime NOT NULL,
   `shift_end_date` datetime NOT NULL,
   `description` text,
@@ -144,7 +144,7 @@ LOCK TABLES `employee_shifts` WRITE;
 INSERT INTO `employee_shifts` VALUES
 (1, 2, 3, '2025-12-20 14:00:00', '2025-12-20 22:00:00', 'This is a christmas party for 250 people', 'YES'),
 (2, 2, 2, '2025-12-20 09:00:00', '2025-12-20 17:00:00', 'This is a 300-person conference for Calgary Police Service', 'NO'),
-(3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day', 'NO');
+(3, 1, NULL, '2025-01-10 07:00:00', '2025-01-10 15:00:00', 'Manager duties for the day', 'NO'),
 (4, 3, 4, '2025-12-23 14:00:00', '2025-12-23 22:00:00','This is an 18th birthday party', 'YES');
 
 /*!40000 ALTER TABLE `employee_shifts` ENABLE KEYS */;
@@ -164,7 +164,7 @@ DROP TABLE IF EXISTS `employee_requests`;
 -- Creates employee_requests table structure with foreign key relationships
 CREATE TABLE `employee_requests` (
   `request_id` int NOT NULL AUTO_INCREMENT,
-  `account_id` int NOT NULL, -- Foreign key referencing banquet_employees
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
   `request_type` ENUM('Time Off', 'Sick Day', 'Availability Change') NOT NULL,
   `request_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `start_date` datetime,
@@ -172,7 +172,7 @@ CREATE TABLE `employee_requests` (
   `details` text,
   `status` ENUM('PENDING', 'APPROVED', 'DECLINED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`request_id`),
-  FOREIGN KEY (`account_id`) REFERENCES `banquet_employees` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -227,6 +227,42 @@ INSERT INTO `employee_availability` VALUES
 /*!40000 ALTER TABLE `employee_availability` ENABLE KEYS */;
 
 -- Unlocks the employee_availability table
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_vote`
+--
+
+-- Deletes employee_vote if it exists
+DROP TABLE IF EXISTS `employee_vote`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+-- Creates employee_vote table structure with foreign key relationships
+CREATE TABLE `employee_vote` (
+  `vote_id` int NOT NULL AUTO_INCREMENT,
+  `account_id` int NOT NULL, -- Foreign key referencing banquet_accounts
+  `nominee_id` int NOT NULL, -- Foreign key referencing banquet_accounts
+  `vote_date` datetime NOT NULL,
+  `reason` text NOT NULL,
+  `vote_weight` DECIMAL(3,2) NOT NULL DEFAULT 1.0,
+  PRIMARY KEY (`vote_id`),
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (`nominee_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Locks the employee_vote table from other connections from modifying it during the insert operation
+LOCK TABLES `employee_vote` WRITE;
+/*!40000 ALTER TABLE `employee_vote` DISABLE KEYS */;
+
+INSERT INTO `employee_vote` VALUES 
+(1, 1, 2, '2025-02-25 10:30:00', 'Always willing to help and stays late to assist the team.', 2.0),
+(2, 2, 3, '2025-02-25 11:00:00', 'Great leadership skills and positive attitude.', 1.0),
+(3, 3, 2, '2025-02-25 12:15:00', 'Goes above and beyond to ensure customer satisfaction.', 1.0);
+/*!40000 ALTER TABLE `employee_vote` ENABLE KEYS */;
+
+-- Unlocks the employee_vote table
 UNLOCK TABLES;
 
 -- Cleanup and Reset Settings
