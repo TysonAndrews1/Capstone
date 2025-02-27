@@ -148,35 +148,35 @@ const Reports = () => {
 
   
 
+
     {/* Display the filtered report in a table */}
-    <div>
-      <table>
-        <thead>
+    <div className="overflow-x-auto">
+      <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+        <thead className="bg-gray-200 text-gray-700">
           <tr>
-            <th className="block text-sm font-medium text-gray-700">Employee Name</th>
-            <th className="block text-sm font-medium text-gray-700">Employee ID</th>
-            <th className="block text-sm font-medium text-gray-700">Request Type</th>
-            <th className="block text-sm font-medium text-gray-700">Start Date</th>
-            <th className="block text-sm font-medium text-gray-700">End Date</th>
-            <th className="block text-sm font-medium text-gray-700">Status</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">Employee Name</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">Employee ID</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">Request Type</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">Start Date</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">End Date</th>
+            <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          value={data.accountId}
-
-          {data.map((request,index) => (
-            <tr key={index}>
-              <td className="block text-sm font-medium text-gray-700"></td>
-              <td className="block text-sm font-medium text-gray-700">{request.accountId}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.requestType}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.startDate}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.endDate}</td>
-              <td className="block text-sm font-medium text-gray-700">{request.status}</td>
+        <tbody className="divide-y divide-gray-300">
+          {data.map((request, index) => (
+            <tr key={index} className="hover:bg-gray-100">
+              <td className="px-4 py-2 text-sm text-gray-700">{request.employeeName || 'N/A'}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{request.accountId}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{request.requestType}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{request.startDate}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{request.endDate}</td>
+              <td className="px-4 py-2 text-sm text-gray-700">{request.status}</td>
             </tr>
           ))}
-          </tbody>
+        </tbody>
       </table>
     </div>
+
     
     
   </div>
