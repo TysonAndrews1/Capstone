@@ -61,8 +61,11 @@ const Reports = () => {
       }
 
       const data = await response.json();
+      const filteredData = data.filter(function(request) {
+        return request.requestType === 'Time Off' || request.requestType === 'Sick Day';
+      });
+      setData(filteredData);
       console.log("Data: ", data);  
-      setData(data);
       setLoading(false);
     } catch (error){
       console.error("Error fetching the data: ", error);
@@ -96,59 +99,58 @@ const Reports = () => {
     <div className="p-5">
       <h1 className="text-2xl font-bold mb-4">Requests Report</h1>
 
-      {/* Filter Options */} 
-      <div className="">
-        <div className="md:w-1/3">
-          <h1 className="text-lg font-semibold mb-3">Filter</h1>
-          <label className="block text-sm font-medium text-gray-700">
-            Employee:
-          </label>
-        <select 
-          className="w-full p-2 border border-gray-300 rounded"
-          value={accounts.accountId}
-          
-          >
-          <option value="">-- Select employee --</option>
-          {accounts.map((account) => (
-            <option key={account.accountId} value={account.accountId}>
-              {account.firstName} {account.lastName}
-            </option>
-          ))}
-        </select>
-      </div>
+      {/* Filter Options */}
+      <div className="bg-gray-100 p-2 rounded-lg">
+        <h1 className="text-lg font-semibold mb-3">Filter</h1>
+        
+        <div className="flex flex-wrap gap-4">
+          {/* Employee Filter */}
+          <div className="flex-1 min-w-[250px]">
+            <label className="block text-sm font-medium text-gray-700">Employee:</label>
+            <select
+              className="w-full p-2 border border-gray-300 rounded"
+              value={accounts.accountId}
+            >
+              <option value="">-- Select Employee --</option>
+              {accounts.map((account) => (
+                <option key={account.accountId} value={account.accountId}>
+                  {account.firstName} {account.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div className="md:w-1/3">
-        <label className="block text-sm font-medium text-gray-700">
-          Start Date:
-        </label>
-        <input
-          type="date"
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-      </div>
+          {/* Start Date */}
+          <div className="flex-1 min-w-[250px]">
+            <label className="block text-sm font-medium text-gray-700">Start Date:</label>
+            <input
+              type="date"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
 
-      <div className="md:w-1/3">
-        <label className="block text-sm font-medium text-gray-700">
-          End Date:
-        </label>
-        <input
-          type="date"
-          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-      </div>
+          {/* End Date */}
+          <div className="flex-1 min-w-[250px]">
+            <label className="block text-sm font-medium text-gray-700">End Date:</label>
+            <input
+              type="date"
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>        
 
-    </div>
+
       
     {/* Display the filtered report in a graph */}
     <Bar data={chartData} options={{ responsive: true }} />
 
   
-
-
+    {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: Format the following code into a proper table. */}
     {/* Display the filtered report in a table */}
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
