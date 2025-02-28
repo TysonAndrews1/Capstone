@@ -265,6 +265,42 @@ INSERT INTO `employee_vote` VALUES
 -- Unlocks the employee_vote table
 UNLOCK TABLES;
 
+--
+-- Table structure for table `employee_attendance`
+--
+
+-- Deletes banquet_events if it exists
+DROP TABLE IF EXISTS `employee_attendance`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+-- Creates employee_attendance table structure
+CREATE TABLE `employee_attendance` (
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `account_id` int NOT NULL,
+  `clock_in_time` DATETIME DEFAULT NULL,
+  `clock_out_time` DATETIME DEFAULT NULL,
+  `status` ENUM('CLOCKED_IN', 'CLOCKED_OUT') NOT NULL DEFAULT 'CLOCKED_OUT',
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts`(`account_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_attendance`
+--
+
+-- Locks the employee_attendance table from other connections from modifying it during the insert operation
+LOCK TABLES `employee_attendance` WRITE;
+/*!40000 ALTER TABLE `employee_attendance` DISABLE KEYS */;
+
+INSERT INTO `employee_attendance` VALUES
+(1, 2, '2025-02-25 08:00:00', '2025-02-25 16:00:00', 'CLOCKED_OUT'),
+(2, 2, '2025-02-27 09:00:00', '2025-02-27 17:00:00', 'CLOCKED_OUT');
+/*!40000 ALTER TABLE `employee_attendance` ENABLE KEYS */;
+
+-- Unlocks the employee_attendance table
+UNLOCK TABLES;
+
 -- Cleanup and Reset Settings
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
