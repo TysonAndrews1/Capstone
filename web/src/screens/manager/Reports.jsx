@@ -153,6 +153,29 @@ const Reports = () => {
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
+
+          {/* Status Filter */}
+          <div className="flex-1 min-w-[250px]">
+            <label className="block text-sm font-medium text-gray-700">Status:</label>
+            <select
+              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              value={accounts.accountId}
+              onChange={(e) => setSelectedEmployee(e.target.value)}
+            >
+              <option value="">-- Select Status --</option>
+              <option value="Approved">Approved</option>
+              <option value="Pending">Pending</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          {/* Filter Button */}
+          <div className="flex-1 min-w-[250px]">
+            <button className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded">
+              Filter
+            </button>
+          </div>
+
         </div>
       </div>        
 
