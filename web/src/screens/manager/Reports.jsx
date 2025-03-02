@@ -24,6 +24,7 @@ const Reports = () => {
   const [selectedEmployee, setSelectedEmployee] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [status, setStatus] = useState(""); 
   
 
   const BASE_URL = "http://localhost:8080/api";
@@ -88,6 +89,14 @@ const Reports = () => {
   const formatDate = (date) => {
     const d = new Date(date);
     return d.toLocaleDateString();
+  };
+
+  // Function to reset filter options
+  const resetFilters = () => {
+    setSelectedEmployee("");
+    setStartDate("");
+    setEndDate("");
+    setStatus("");
   };
 
 
@@ -167,6 +176,14 @@ const Reports = () => {
               <option value="Pending">Pending</option>
               <option value="Rejected">Rejected</option>
             </select>
+          </div>
+
+          {/* Reset Button */}
+          <div className="flex-1 min-w-[250px]">
+            <button className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+              onClick={() => resetFilters()}>
+              Reset
+            </button>
           </div>
 
           {/* Filter Button */}
