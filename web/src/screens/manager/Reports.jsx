@@ -84,6 +84,12 @@ const Reports = () => {
     fetchRequests();
   }, []);
 
+  // Format date to be more readable
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString();
+  };
+
 
   // [1]
   const chartData = {
@@ -150,16 +156,11 @@ const Reports = () => {
         </div>
       </div>        
 
-
-      
-    {/* Display the filtered report in a graph */}
-    <Bar data={chartData} options={{ responsive: true }} />
-
-  
     {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: Format the following code into a proper table. */}
     {/* Display the filtered report in a table */}
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+
         <thead className="bg-gray-200 text-gray-700">
           <tr>
             <th className="px-4 py-2 text-left text-sm font-medium">Employee Name</th>
@@ -170,6 +171,7 @@ const Reports = () => {
             <th className="px-4 py-2 text-left text-sm font-medium">Status</th>
           </tr>
         </thead>
+        
         <tbody className="divide-y divide-gray-300">
           {data.map((request, index) => {
             const employee = accounts.find(account => account.accountId === request.accountId);
@@ -180,17 +182,19 @@ const Reports = () => {
                 </td>
                 <td className="px-4 py-2 text-sm text-gray-700">{request.accountId}</td>
                 <td className="px-4 py-2 text-sm text-gray-700">{request.requestType}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{request.startDate}</td>
-                <td className="px-4 py-2 text-sm text-gray-700">{request.endDate}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{formatDate(request.startDate)}</td>
+                <td className="px-4 py-2 text-sm text-gray-700">{formatDate(request.endDate)}</td>
                 <td className="px-4 py-2 text-sm text-gray-700">{request.status}</td>
               </tr>
             );
           })}
         </tbody>
+
       </table>
     </div>
 
-    
+    {/* Display the filtered report in a graph */}
+    <Bar data={chartData} options={{ responsive: true }} />    
     
   </div>
   );

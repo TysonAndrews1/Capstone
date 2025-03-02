@@ -37,6 +37,7 @@ export default function TradeShift() {
     }
   };
 
+  
 
   const fetchShifts = async (accountId, setShifts) => {
     try {
@@ -55,6 +56,10 @@ export default function TradeShift() {
     }
   };
 
+  /**
+   * Reference: OpenAI, "ChatGPT," Personal Communication, Jan. 26, 2025. 
+   * Prompt: Please create a function to fetch the Logged in user's shift.
+   */
   // Fetch the logged-in user data when the component mounts
     useEffect(() => {
       const fetchUserData = async () => {
