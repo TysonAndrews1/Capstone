@@ -18,6 +18,8 @@ const Reports = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allRequests, setAllRequests] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   // Filter states 
   const [accounts, setAccounts] = useState([]); 
@@ -74,6 +76,8 @@ const Reports = () => {
           });
           
           setData(filteredData);
+          setFilteredData(filteredData); // Initialize filteredData with the same data
+          setAllRequests(filteredData);  // Store all requests for filtering
           console.log("Data: ", data);  
         } catch (error){
           console.error("Error fetching the data: ", error);
@@ -84,6 +88,8 @@ const Reports = () => {
 
     fetchRequests();
   }, []);
+
+  
 
   // Format date to be more readable
   const formatDate = (date) => {
@@ -97,7 +103,45 @@ const Reports = () => {
     setStartDate("");
     setEndDate("");
     setStatus("");
+    setFilteredData(allRequests);
   };
+
+  // Apply filters to the data based on the selected options
+  const applyFilters = () => {
+    const filtered = allRequests.filter(request => {
+      // Filter by selected employee
+      if (selectedEmployee && request.accountId !== parseInt(selectedEmployee)) {
+        return false;
+      }
+
+      // Filter by start date
+      if (startDate) {
+        const requestDate = new Date(request.startDate);
+        const filterDate = new Date(startDate);
+        if (requestDate < filterDate) {
+          return false;
+        }
+      }
+
+      // Filter by end date
+      if (endDate) {
+        const requestDate = new Date(request.endDate);
+        const filterDate = new Date(endDate);
+        if (requestDate > filterDate) {
+          return false;
+        }
+      }
+
+      // Filter by status
+      if (status && request.status !== status) {
+        return false;
+      }
+
+      return true;
+  });
+
+  setFilteredData(filtered);
+};
 
 
   // [1]
@@ -168,13 +212,13 @@ const Reports = () => {
             <label className="block text-sm font-medium text-gray-700">Status:</label>
             <select
               className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              value={accounts.accountId}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
             >
               <option value="">-- Select Status --</option>
-              <option value="Approved">Approved</option>
-              <option value="Pending">Pending</option>
-              <option value="Rejected">Rejected</option>
+              <option value="APPROVED">Approved</option>
+              <option value="PENDING">Pending</option>
+              <option value="DECLINED">Declined</option>
             </select>
           </div>
 
@@ -188,7 +232,8 @@ const Reports = () => {
 
           {/* Filter Button */}
           <div className="flex-1 min-w-[250px]">
-            <button className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded">
+            <button className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+              onClick={() => applyFilters()}>
               Filter
             </button>
           </div>
@@ -213,7 +258,7 @@ const Reports = () => {
         </thead>
         
         <tbody className="divide-y divide-gray-300">
-          {data.map((request, index) => {
+          {filteredData.map((request, index) => {
             const employee = accounts.find(account => account.accountId === request.accountId);
             return (
               <tr key={index} className="hover:bg-gray-100">
