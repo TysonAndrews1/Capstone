@@ -98,13 +98,24 @@ const Reports = () => {
     return d.toLocaleDateString();
   };
 
-  // Function to reset filter options
-  const resetFilters = () => {
-    setSelectedEmployee("");
-    setStartDate("");
-    setEndDate("");
-    setStatus("");
-    setFilteredData(allRequests);
+
+  const generateChartData = () => {
+    // Calculate counts for each request type
+    const timeOffCount = filteredData.filter(req => req.requestType === "Time Off").length;
+    const sickDayCount = filteredData.filter(req => req.requestType === "Sick Day").length;
+    
+    return {
+      labels: ["Time-off", "Sick-day"],
+      datasets: [
+        {
+          label: "Number of Requests",
+          data: [timeOffCount, sickDayCount],
+          backgroundColor: "rgba(75, 192, 192, 0.6)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        },
+      ],
+    };
   };
 
   // Apply filters to the data based on the selected options
@@ -148,6 +159,15 @@ const Reports = () => {
 
   setFilteredData(filtered);
   
+};
+
+// Function to reset filter options
+const resetFilters = () => {
+  setSelectedEmployee("");
+  setStartDate("");
+  setEndDate("");
+  setStatus("");
+  setFilteredData(allRequests);
 };
 
 
@@ -285,10 +305,23 @@ const Reports = () => {
       </table>
     </div>
 
-    {/* Display the filtered report in a graph */}
-    <Bar data={chartData} options={{ responsive: true }} />    
-    
-  </div>
+    <div className="mt-8">
+  <h2 className="text-xl font-bold mb-4">Request Type Distribution</h2>
+  <Bar data={generateChartData()} options={{
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Request Types'
+      }
+    }
+  }} />
+</div>
+
+    </div>
   );
 };
 
