@@ -21,6 +21,7 @@ const Reports = () => {
   const [allRequests, setAllRequests] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
 
+
   // Filter states 
   const [accounts, setAccounts] = useState([]); 
   const [selectedEmployee, setSelectedEmployee] = useState("");
@@ -108,29 +109,34 @@ const Reports = () => {
 
   // Apply filters to the data based on the selected options
   const applyFilters = () => {
+    console.log("Filtering with criteria:", { selectedEmployee, startDate, endDate, status });
     const filtered = allRequests.filter(request => {
       // Filter by selected employee
       if (selectedEmployee && request.accountId !== parseInt(selectedEmployee)) {
         return false;
       }
 
-      // Filter by start date
+      // Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: Please update the filter logic to make the date range inclusive.
+      if (startDate || endDate) {
+        const requestStartDate = new Date(request.startDate);
+        const requestEndDate = new Date(request.endDate);
+      
+      // Filter start date 
       if (startDate) {
-        const requestDate = new Date(request.startDate);
-        const filterDate = new Date(startDate);
-        if (requestDate < filterDate) {
-          return false;
+        const filterStartDate = new Date(startDate);
+        if (requestEndDate < filterStartDate) {
+          return false; // Request ends before filter start date
         }
       }
-
-      // Filter by end date
+      
+      // Filter end date
       if (endDate) {
-        const requestDate = new Date(request.endDate);
-        const filterDate = new Date(endDate);
-        if (requestDate > filterDate) {
-          return false;
+        const filterEndDate = new Date(endDate);
+        if (requestStartDate > filterEndDate) {
+          return false; // Request starts after filter end date
         }
       }
+    }
 
       // Filter by status
       if (status && request.status !== status) {
@@ -141,6 +147,7 @@ const Reports = () => {
   });
 
   setFilteredData(filtered);
+  
 };
 
 
@@ -173,7 +180,7 @@ const Reports = () => {
             <label className="block text-sm font-medium text-gray-700">Employee:</label>
             <select
               className="w-full p-2 border border-gray-300 rounded"
-              value={accounts.accountId}
+              value={selectedEmployee}
               onChange={(e) => setSelectedEmployee(e.target.value)}
             >
               <option value="">-- Select Employee --</option>
