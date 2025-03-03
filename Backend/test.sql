@@ -107,7 +107,11 @@ LOCK TABLES `banquet_accounts` WRITE;
 INSERT INTO `banquet_accounts` VALUES
 (1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', 'ACTIVE'),
 (2, 'Peter', 'Parker', '000002', 'spiderman@example.com', '456 Web Drive NE', '587-111-2222', 'Employee', 'ACTIVE'),
-(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', 'INACTIVE');
+(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', 'INACTIVE'),
+(4, 'Steve', 'Rogers', '000004', 'captianamerica@example.com', '1 Shield Ave SW', '403-111-1111', 'Employee', 'ACTIVE'),
+(5, 'Natasha', 'Romanoff', '000005', 'blackwidow@example.com', '2 Spy Blvd SE', '403-222-2222', 'Employee', 'ACTIVE'),
+(6, 'Clint', 'Barton', '000006', 'hawkeye@example.com', '3 Arrow Place NE', '403-333-3333', 'Employee', 'ACTIVE'),
+(7, 'Bruce', 'Banner', '000007', 'hulk@example.com', '4 Smash Way SE', '403-444-4444', 'Employee', 'ACTIVE');
 /*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
 -- Unlocks the banquet_accounts table
