@@ -135,6 +135,12 @@ const Reports = () => {
     const pendingSickCount = filteredData.filter(
       (req) => (req.status === "PENDING" && req.requestType === "Sick Day")
     ).length;
+    const declinedROCount = filteredData.filter(
+      (req) => (req.status === "DECLINED" && req.requestType === "Time Off")
+    ).length;
+    const declinedSickCount = filteredData.filter(
+      (req) => (req.status === "DECLINED" && req.requestType === "Sick Day")
+    ).length;
 
     return {
       labels: ["Time-off", "Sick-day"],
@@ -144,15 +150,22 @@ const Reports = () => {
           data: [timeOffCount, sickDayCount],
           backgroundColor: "rgba(75, 192, 192, 0.6)",
           borderColor: "rgba(75, 192, 192, 1)",
-          borderWidth: 3,
+          borderWidth: 1,
         },
         {
           label: "Pending",
           data: [pendingROCount, pendingSickCount],
           backgroundColor: "rgba(255, 99, 132, 0.6)",
           borderColor: "rgba(255, 99, 132, 1)",
-          borderWidth: 3,
+          borderWidth: 1,
 
+        },
+        {
+          label: "Declined",
+          data: [declinedROCount, declinedSickCount],
+          backgroundColor: "rgba(54, 162, 235, 0.6)",
+          borderColor: "rgba(54, 162, 235, 1)",
+          borderWidth: 1,
         }
       ],
     };
