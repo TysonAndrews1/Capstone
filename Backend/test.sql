@@ -93,7 +93,7 @@ CREATE TABLE `banquet_accounts` (
   `role` varchar(100) NOT NULL,
   `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   PRIMARY KEY (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,11 @@ LOCK TABLES `banquet_accounts` WRITE;
 INSERT INTO `banquet_accounts` VALUES
 (1, 'Tony', 'Voong', '000001', 'tonyvoong@example.com', '123 Home Road SE', '403-123-4567', 'Manager', 'ACTIVE'),
 (2, 'Peter', 'Parker', '000002', 'spiderman@example.com', '456 Web Drive NE', '587-111-2222', 'Employee', 'ACTIVE'),
-(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', 'INACTIVE');
+(3, 'Tony', 'Stark', '000003', 'ironman@example.com', '789 Stark Tower NW', '403-333-4444', 'Employee', 'INACTIVE'),
+(4, 'Steve', 'Rogers', '000004', 'captianamerica@example.com', '1 Shield Ave SW', '403-111-1111', 'Employee', 'ACTIVE'),
+(5, 'Natasha', 'Romanoff', '000005', 'blackwidow@example.com', '2 Spy Blvd SE', '403-222-2222', 'Employee', 'ACTIVE'),
+(6, 'Clint', 'Barton', '000006', 'hawkeye@example.com', '3 Arrow Place NE', '403-333-3333', 'Employee', 'ACTIVE'),
+(7, 'Bruce', 'Banner', '000007', 'hulk@example.com', '4 Smash Way SE', '403-444-4444', 'Employee', 'ACTIVE');
 /*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
 -- Unlocks the banquet_accounts table
@@ -173,7 +177,7 @@ CREATE TABLE `employee_requests` (
   `status` ENUM('PENDING', 'APPROVED', 'DECLINED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`request_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Locks the employee_requests table from other connections from modifying it during the insert operation
@@ -183,8 +187,15 @@ LOCK TABLES `employee_requests` WRITE;
 INSERT INTO `employee_requests` VALUES 
 (1, 2, 'Time Off', '2025-01-01 09:00:00', '2025-01-15 09:00:00', '2025-01-20 17:00:00', 'Family vacation', 'PENDING'),
 (2, 2, 'Sick Day', '2025-01-05 08:00:00', '2025-01-05 09:00:00', '2025-01-05 17:00:00', 'Fever and cold', 'APPROVED'),
-(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED');
-
+(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED'),
+(4, 4, 'Availability Change', '2025-02-09 08:00:00', NULL, NULL, 'Can work anytime and anyday', 'APPROVED'),
+(5, 4, 'Time Off', '2025-02-09 08:30:00', '2025-04-10 08:00:00', '2025-04-20 08:00:00', 'Need to study for finals', 'APPROVED'),
+(6, 5, 'Sick Day', '2025-02-12 06:00:00', '2025-02-12 08:00:00', '2025-02-12 16:00:00', 'Woke up with a migraine', 'APPROVED'),
+(7, 6, 'Sick Day', '2025-02-20 07:00:00', '2025-02-20 08:00:00', '2025-02-20 16:00:00', 'Got into a car accident', 'APPROVED'),
+(8, 6, 'Time Off', '2025-02-21 10:00:00', '2025-03-01 08:00:00', '2025-03-02 23:00:00', 'Need to take my car to the autobody shop', 'PENDING'),
+(9, 7, 'Time Off', '2025-01-29 10:30:00', '2025-05-01 08:00:00', '2025-05-31 23:00:00', 'Going to Europe for a month', 'APPROVED'),
+(10, 7, 'Availability Change', '2025-03-02 10:00:00', NULL, NULL, 'Can only work weekends once school starts', 'PENDING'),
+(11, 3, 'Availability Change', '2025-01-01 8:00:00', NULL, NULL, 'Going back to my full job, will be back for the christmas season', 'APPROVED');
 /*!40000 ALTER TABLE `employee_requests` ENABLE KEYS */;
 
 -- Unlocks the employee_requests table
