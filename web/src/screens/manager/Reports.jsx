@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
-
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 /**
  * [1] Code Complete. Learn React ChartJS in 8 Minutes | Complete Guide. (Sep. 24, 2023). Accessed: Feb. 24, 2025. [Online Video]. Available: https://www.youtube.com/watch?v=6q5d3Z1-5kQ&ab_channel=CodeComplete
  * [2] Chart.js (4.4.8.). "Configuration." Accessed: Feb. 24, 2025. [Online]. Available: https://www.chartjs.org/docs/4.4.8/configuration/
  * [3] Chart JS. Fetch and Display Advanced JSON Data in Chart JS. (Sep. 20, 2021). Accessed: Feb. 25, 2025. [Online Video]. Available: https://www.youtube.com/watch?v=mw5i_QGDomw
+ * [4] Aalam Info Solutions LLP. "Creating Dynamic PDFs with JsPDF and Customizing AutoTables in React." Accessed: Mar. 3, 2025 [Online]. Available: https://medium.com/@aalam-info-solutions-llp/creating-dynamic-pdfs-with-jspdf-and-customizing-autotables-in-react-a846a6f3fdca
  */
 
 
@@ -127,7 +129,7 @@ const Reports = () => {
         return false;
       }
 
-      // Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: Please update the filter logic to make the date range inclusive.
+      // Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: How do I update the filter logic to make the date range inclusive?
       if (startDate || endDate) {
         const requestStartDate = new Date(request.startDate);
         const requestEndDate = new Date(request.endDate);
@@ -171,6 +173,86 @@ const resetFilters = () => {
 };
 
 
+/**
+ * [4]
+ */
+// Replace your existing DownloadData function with this one
+const downloadPDF = () => {
+
+  // Create a new jsPDF instance 
+  const pdf = new jsPDF();
+  
+  // Add title
+  pdf.setProperties({
+    title: "Time Off Requests Report"
+  });
+
+  // Add text to the PDF
+  pdf.setFontSize(18);
+  pdf.setFont('bold');
+  pdf.text("Time Off Requests Report", 14, 22);
+  pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+  
+  // Create table data
+  const tableColumn = ["Employee Name", "Employee ID", "Request Type", "Start Date", "End Date", "Status"];
+  const tableRows = [];
+  
+  filteredData.forEach(request => {
+    const employee = accounts.find(account => account.accountId === request.accountId);
+    const employeeName = employee ? `${employee.firstName} ${employee.lastName}` : "N/A";
+    
+    tableRows.push([
+      employeeName,
+      request.accountId,
+      request.requestType,
+      formatDate(request.startDate),
+      formatDate(request.endDate),
+      request.status
+    ]);
+  });
+  
+  // Generate the table
+  autoTable(pdf, {
+    head: [tableColumn],
+    body: tableRows,
+    startY: 40,
+    theme: 'grid',
+    styles: {
+      fontSize: 9,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [75, 192, 192],
+      textColor: [255, 255, 255],
+      fontStyle: 'bold'
+    },
+    alternateRowStyles: {
+      fillColor: [240, 240, 240]
+    },
+    margin: { top: 35 }
+  });
+  
+   // Add chart summary
+   const finalY = pdf.lastAutoTable ? pdf.lastAutoTable.finalY : 100;
+   const timeOffCount = filteredData.filter(req => req.requestType === "Time Off").length;
+   const sickDayCount = filteredData.filter(req => req.requestType === "Sick Day").length;
+   
+   pdf.setFontSize(14);
+   pdf.text("Request Summary", 14, finalY + 20);
+   pdf.setFontSize(11);
+   pdf.text(`Time Off Requests: ${timeOffCount}`, 14, finalY + 30);
+   pdf.text(`Sick Day Requests: ${sickDayCount}`, 14, finalY + 38);
+   pdf.text(`Total Requests: ${filteredData.length}`, 14, finalY + 46);
+  
+  // Save the PDF
+  pdf.save("requests-report.pdf");
+};
+
+
+
+
+
   // [1]
   const chartData = {
     labels: ["Time-off", "Sick-day"],
@@ -188,6 +270,14 @@ const resetFilters = () => {
   return (
     <div className="p-5">
       <h1 className="text-2xl font-bold mb-4">Requests Report</h1>
+
+    {/* Button to download the filtered data as PDF */}
+    <button 
+      className="bg-main-blue hover:bg-hover-blue text-white font-bold py-2 px-4 rounded mb-4"
+      onClick={downloadPDF}
+    >
+      Download PDF Report
+    </button>
 
       {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: Format the following code for a horizontal layout */}
       {/* Filter Options */}
