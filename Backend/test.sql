@@ -93,7 +93,7 @@ CREATE TABLE `banquet_accounts` (
   `role` varchar(100) NOT NULL,
   `status` ENUM('ACTIVE', 'INACTIVE') NOT NULL DEFAULT 'ACTIVE',
   PRIMARY KEY (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +177,7 @@ CREATE TABLE `employee_requests` (
   `status` ENUM('PENDING', 'APPROVED', 'DECLINED') NOT NULL DEFAULT 'PENDING',
   PRIMARY KEY (`request_id`),
   FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Locks the employee_requests table from other connections from modifying it during the insert operation
@@ -187,8 +187,15 @@ LOCK TABLES `employee_requests` WRITE;
 INSERT INTO `employee_requests` VALUES 
 (1, 2, 'Time Off', '2025-01-01 09:00:00', '2025-01-15 09:00:00', '2025-01-20 17:00:00', 'Family vacation', 'PENDING'),
 (2, 2, 'Sick Day', '2025-01-05 08:00:00', '2025-01-05 09:00:00', '2025-01-05 17:00:00', 'Fever and cold', 'APPROVED'),
-(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED');
-
+(3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED'),
+(4, 4, 'Availability Change', '2025-02-09 08:00:00', NULL, NULL, 'Can work anytime and anyday', 'APPROVED'),
+(5, 4, 'Time Off', '2025-02-09 08:30:00', '2025-04-10 08:00:00', '2025-04-20 08:00:00', 'Need to study for finals', 'APPROVED'),
+(6, 5, 'Sick Day', '2025-02-12 06:00:00', '2025-02-12 08:00:00', '2025-02-12 16:00:00', 'Woke up with a migraine', 'APPROVED'),
+(7, 6, 'Sick Day', '2025-02-20 07:00:00', '2025-02-20 08:00:00', '2025-02-20 16:00:00', 'Got into a car accident', 'APPROVED'),
+(8, 6, 'Time Off', '2025-02-21 10:00:00', '2025-03-01 08:00:00', '2025-03-02 23:00:00', 'Need to take my car to the autobody shop', 'PENDING'),
+(9, 7, 'Time Off', '2025-01-29 10:30:00', '2025-05-01 08:00:00', '2025-05-31 23:00:00', 'Going to Europe for a month', 'APPROVED'),
+(10, 7, 'Availability Change', '2025-03-02 10:00:00', NULL, NULL, 'Can only work weekends once school starts', 'PENDING'),
+(11, 3, 'Availability Change', '2025-01-01 8:00:00', NULL, NULL, 'Going back to my full job, will be back for the christmas season', 'APPROVED');
 /*!40000 ALTER TABLE `employee_requests` ENABLE KEYS */;
 
 -- Unlocks the employee_requests table
