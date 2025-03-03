@@ -119,25 +119,28 @@ const Reports = () => {
   /**
    *
    * [1], [2], [3]
-   *
+   * Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: "How do I generate a chart based on the filtered data?"
    */
   const generateChartData = () => {
     // Calculate counts for each request type
     const timeOffCount = filteredData.filter(
-      (req) => req.requestType === "Time Off"
+      (req) => (req.requestType === "Time Off" && req.status === "APPROVED")
     ).length;
     const sickDayCount = filteredData.filter(
-      (req) => req.requestType === "Sick Day"
+      (req) => (req.requestType === "Sick Day" && req.status === "APPROVED")
     ).length;
-    const pendingCount = filteredData.filter(
-      (req) => req.status === "PENDING"
+    const pendingROCount = filteredData.filter(
+      (req) => (req.status === "PENDING" && req.requestType === "Time Off")
+    ).length;
+    const pendingSickCount = filteredData.filter(
+      (req) => (req.status === "PENDING" && req.requestType === "Sick Day")
     ).length;
 
     return {
       labels: ["Time-off", "Sick-day"],
       datasets: [
         {
-          label: "Number of Requests",
+          label: "Approved",
           data: [timeOffCount, sickDayCount],
           backgroundColor: "rgba(75, 192, 192, 0.6)",
           borderColor: "rgba(75, 192, 192, 1)",
@@ -145,7 +148,7 @@ const Reports = () => {
         },
         {
           label: "Pending",
-          data: [pendingCount, pendingCount],
+          data: [pendingROCount, pendingSickCount],
           backgroundColor: "rgba(255, 99, 132, 0.6)",
           borderColor: "rgba(75, 192, 192, 1)",
           borderWidth: 1,
@@ -172,7 +175,7 @@ const Reports = () => {
         return false;
       }
 
-      // Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: How do I update the filter logic to make the date range inclusive?
+      // Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: "How do I update the filter logic to make the date range inclusive?""
       if (startDate || endDate) {
         const requestStartDate = new Date(request.startDate);
         const requestEndDate = new Date(request.endDate);
@@ -320,7 +323,7 @@ const Reports = () => {
         Download PDF Report
       </button>
 
-      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: Format the following code for a horizontal layout */}
+      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: "Format the following code for a horizontal layout" */}
       {/* Filter Options */}
       <div className="bg-gray-100 p-2 rounded-lg">
         <h1 className="text-lg font-semibold mb-3">Filter</h1>
@@ -410,7 +413,7 @@ const Reports = () => {
         </div>
       </div>
 
-      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: Format the following code into a proper table. */}
+      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: "Format the following code into a proper table."" */}
       {/* Display the filtered report in a table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
@@ -484,7 +487,7 @@ const Reports = () => {
               },
               title: {
                 display: true,
-                text: "Request Types",
+                text: "Employee Requests",
               },
             },
           }}
