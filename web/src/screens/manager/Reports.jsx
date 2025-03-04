@@ -99,7 +99,7 @@ const Reports = () => {
         setData(filteredData);
         setFilteredData(filteredData); // Used to store the filtered data
         setAllRequests(filteredData); // Store all requests for filtering
-        console.log("Data: ", data); // Check to see if the data was fetched 
+        console.log("Data: ", data); // Check to see if the data was fetched
       } catch (error) {
         console.error("Error fetching the data: ", error);
         setError("Failed to fetch request data");
@@ -124,22 +124,22 @@ const Reports = () => {
   const generateChartData = () => {
     // Calculate counts for each request type
     const timeOffCount = filteredData.filter(
-      (req) => (req.requestType === "Time Off" && req.status === "APPROVED")
+      (req) => req.requestType === "Time Off" && req.status === "APPROVED"
     ).length;
     const sickDayCount = filteredData.filter(
-      (req) => (req.requestType === "Sick Day" && req.status === "APPROVED")
+      (req) => req.requestType === "Sick Day" && req.status === "APPROVED"
     ).length;
     const pendingROCount = filteredData.filter(
-      (req) => (req.status === "PENDING" && req.requestType === "Time Off")
+      (req) => req.status === "PENDING" && req.requestType === "Time Off"
     ).length;
     const pendingSickCount = filteredData.filter(
-      (req) => (req.status === "PENDING" && req.requestType === "Sick Day")
+      (req) => req.status === "PENDING" && req.requestType === "Sick Day"
     ).length;
     const declinedROCount = filteredData.filter(
-      (req) => (req.status === "DECLINED" && req.requestType === "Time Off")
+      (req) => req.status === "DECLINED" && req.requestType === "Time Off"
     ).length;
     const declinedSickCount = filteredData.filter(
-      (req) => (req.status === "DECLINED" && req.requestType === "Sick Day")
+      (req) => req.status === "DECLINED" && req.requestType === "Sick Day"
     ).length;
 
     return {
@@ -158,7 +158,6 @@ const Reports = () => {
           backgroundColor: "rgba(229, 173, 172, 0.6)",
           borderColor: "rgba(229, 173, 172, 1)",
           borderWidth: 1,
-
         },
         {
           label: "Declined",
@@ -166,7 +165,7 @@ const Reports = () => {
           backgroundColor: "rgba(17, 42, 70, 0.6)",
           borderColor: "rgba(17, 42, 70, 1)",
           borderWidth: 1,
-        }
+        },
       ],
     };
   };
@@ -322,15 +321,13 @@ const Reports = () => {
     pdf.save("requests-report.pdf");
   };
 
-
-
   return (
     <div className="p-5">
       <h1 className="text-2xl font-bold mb-4">Requests Report</h1>
 
       {/* Button to download the filtered data as PDF */}
       <button
-        className="bg-main-blue hover:bg-hover-blue text-white font-bold py-2 px-4 rounded mb-4"
+        className="bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded mb-4"
         onClick={downloadPDF}
       >
         Download PDF Report
@@ -338,12 +335,12 @@ const Reports = () => {
 
       {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: "Format the following code for a horizontal layout" */}
       {/* Filter Options */}
-      <div className="bg-gray-100 p-2 rounded-lg">
-        <h1 className="text-lg font-semibold mb-3">Filter</h1>
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 mb-6">
+        <h1 className="text-lg font-semibold mb-3">Filter Options</h1>
 
         <div className="flex flex-wrap gap-4">
           {/* Employee Filter */}
-          <div className="flex-1 min-w-[250px]">
+          <div className="flex-1 min-w-[180px]">
             <label className="block text-sm font-medium text-gray-700">
               Employee:
             </label>
@@ -362,38 +359,38 @@ const Reports = () => {
           </div>
 
           {/* Start Date */}
-          <div className="flex-1 min-w-[250px]">
+          <div className="flex-1 min-w-[180px]">
             <label className="block text-sm font-medium text-gray-700">
               Start Date:
             </label>
             <input
               type="date"
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
             />
           </div>
 
           {/* End Date */}
-          <div className="flex-1 min-w-[250px]">
+          <div className="flex-1 min-w-[180px]">
             <label className="block text-sm font-medium text-gray-700">
               End Date:
             </label>
             <input
               type="date"
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
 
           {/* Status Filter */}
-          <div className="flex-1 min-w-[250px]">
+          <div className="flex-1 min-w-[180px]">
             <label className="block text-sm font-medium text-gray-700">
               Status:
             </label>
             <select
-              className="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
               value={status}
               onChange={(e) => setStatus(e.target.value)}
             >
@@ -404,20 +401,16 @@ const Reports = () => {
             </select>
           </div>
 
-          {/* Reset Button */}
-          <div className="flex-1 min-w-[250px]">
+          {/* Filter buttons */}
+          <div className="flex-1 min-w-[180px] flex space-x-2 items-end">
             <button
-              className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+              className="w-1/2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
               onClick={() => resetFilters()}
             >
               Reset
             </button>
-          </div>
-
-          {/* Filter Button */}
-          <div className="flex-1 min-w-[250px]">
             <button
-              className="w-full bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+              className="w-1/2 bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
               onClick={() => applyFilters()}
             >
               Filter
@@ -500,20 +493,21 @@ const Reports = () => {
               },
               title: {
                 display: true,
-                text: "Employee requests"
+                text: "Employee requests",
               },
             },
-            scales:{
+            scales: {
               x: {
                 stacked: true,
               },
               y: {
                 stacked: true,
-              }
+              },
             },
             barPercentage: 0.6,
             categoryPercentage: 0.8,
-          }}/>
+          }}
+        />
       </div>
     </div>
   );
