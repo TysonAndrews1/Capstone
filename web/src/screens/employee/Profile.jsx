@@ -4,7 +4,7 @@ import { FaUserCircle, FaWrench } from "react-icons/fa";
 /**
  * Created by: Michelle Tran 
  * This is the Profile screen where employees can view and edit their profile information
- * Reference: ChatGPT to help with the HandleInputChange function
+ * 
  * 
  */
 function Profile() {
@@ -52,32 +52,7 @@ function Profile() {
     fetchEmployeeData();
   }, []);
 
-  /**
-   * this function sends updated employeeData to the backend using a PUT request and saves the response.
-   */
-  // const handleSaveClick = async () => {
-  //   try {
 
-  //     const response = await fetch(`http://localhost:8080/api/accounts/${employeeData.employee_id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(employeeData),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
-
-  //     const updatedData = await response.json();
-  //     setEmployeeData(updatedData); // Updated data is saved into the employeeData state
-  //     setIsEditing(false); // After saving the data, it sets the isEditing state to false
-  //     alert("profile updated successfully!");
-
-  //   } catch (error) {
-  //     console.error("Error saving employee data:", error);
-  //     alert("Failed to save changes. Please try again.");
-  //   }
-  // };
 
    /**
    * Updated save handler with proper API structure
@@ -119,7 +94,7 @@ function Profile() {
   
 
   /**
-   * 
+   * Reference: OpenAI, "ChatGPT," Personal Communication, Jan. 20, 2025. Prompt: "Please create a handleInputChange function that only updates values that are changed"
     * @param {Event} e - The event object that triggered the function
     * This function updates the employeeData state when the user inputs new data in the input fields.
    */

@@ -12,11 +12,11 @@ import com.example.demo.config.FirebaseInitializer;
 public class DemoApplication {
 
 	public static void main(String[] args) {
-		
+
 		// Run this file to start the backend server
 		SpringApplication.run(DemoApplication.class, args);
-		
-		new FirebaseInitializer(); 
+
+		new FirebaseInitializer();
 
 	}
 
