@@ -12,7 +12,28 @@ const ClockInClockOut = () => {
   const [clockInTime, setClockInTime] = useState(null);
   const [clockOutTime, setClockOutTime] = useState(null);
   const [accountId, setAccountId] = useState(null);
+  const [currentTime, setCurrentTime] = useState('');
   const BASE_URL = BaseURLConfig();
+
+  useEffect(() => {
+        const updateClock = () => {
+            const now = new Date();
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+
+            hours = hours % 12;
+            hours = hours ? hours : 12; // If hour is 0, set to 12 (midnight)
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            setCurrentTime(`${hours}:${minutes}:${seconds} ${ampm}`);
+        };
+
+        const interval = setInterval(updateClock, 1000);
+        return () => clearInterval(interval); // Cleanup interval
+  }, []);
 
   useEffect(() => {
     const fetchAccountId = async () => {
@@ -22,6 +43,7 @@ const ClockInClockOut = () => {
   
         if (storedAccountId) {
           setAccountId(storedAccountId);
+          checkClockInStatus(storedAccountId); // This ensures the correct status is displayed even after a reload or exiting the screen
         } else {
           console.error('No Account ID found in storage');
           Alert.alert('Error', 'No Account ID found.');
@@ -142,32 +164,49 @@ const ClockInClockOut = () => {
     }
   };
 
+  const checkClockInStatus = async (accountId) => {
+    try {
+        const response = await fetch(`${BASE_URL}/attendance/status?account_id=${accountId}`);
+        const data = await response.json();
+        console.log("Clock-In Status:", data);
+
+        if (response.ok && data.status === "CLOCKED_IN") {
+            setStatus('You are currently CLOCKED IN.');
+            setClockInTime(data.clock_in_time);
+        } else {
+            setStatus('You are currently CLOCKED OUT.');
+            setClockOutTime(data.clock_out_time);
+        }
+    } catch (error) {
+        console.warn('Error fetching clock-in status:', error);
+    }
+  };
+
   return (
     <MainLayout>
-      <View style={styles.container}>
-        <Text style={[styles.statusText, status.includes('CLOCKED IN') ? styles.clockedIn : styles.clockedOut]}>
-          {status}
-        </Text>
+        <View style={styles.container}>
+          <Text style={styles.digitalClock}>{currentTime}</Text>
 
-        {clockInTime && <Text style={styles.timeText}>Clock In Time: {clockInTime}</Text>}
-        {clockOutTime && <Text style={styles.timeText}>Clock Out Time: {clockOutTime}</Text>}
+          <Text style={[styles.statusText, status.includes('CLOCKED IN') ? styles.clockedIn : styles.clockedOut]}>
+            {status}
+          </Text>
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleStartShift} disabled={awaitingTap}>
-            <Text style={styles.buttonText}>Start Shift</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleStartShift}>
+              <Text style={styles.buttonText}>Start Shift</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity style={styles.button} onPress={handleEndShift} disabled={awaitingTap}>
-            <Text style={styles.buttonText}>End Shift</Text>
-          </TouchableOpacity>
-        </View>
-
-        {instruction !== '' && (
-          <View style={styles.instructionContainer}>
-            <Text style={styles.instructionText}>{instruction}</Text>
+            <TouchableOpacity style={styles.button} onPress={handleEndShift}>
+              <Text style={styles.buttonText}>End Shift</Text>
+            </TouchableOpacity>
           </View>
-        )}
-      </View>
+
+          {instruction !== '' && (
+            <View style={styles.instructionContainer}>
+              <Text style={styles.instructionText}>{instruction}</Text>
+            </View>
+          )}
+        </View>
     </MainLayout>
   );
 };
@@ -177,57 +216,78 @@ export default ClockInClockOut;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     padding: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2F3',
+  },
+
+  digitalClock: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 20,
   },
 
   statusText: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 20,
     textAlign: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
   },
 
   clockedIn: { 
-    color: '#28A745' },
+    color: '#28A745',
+  },
 
   clockedOut: { 
-    color: '#DC3545' },
+    color: '#DC3545',
+  },
 
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '80%',
-    marginBottom: 20,
+    width: '90%',
+    marginTop: 30,
   },
 
   button: {
-    backgroundColor: '#3F6D89',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    elevation: 2,
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 4,
     alignItems: 'center',
+    minWidth: '40%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
   },
 
   instructionContainer: {
-    marginTop: 20,
-    alignItems: 'center',
+    marginTop: 30,
+    padding: 15,
+    borderRadius: 8,
+    backgroundColor: '#FFF8E1',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 2,
   },
 
   instructionText: {
     fontSize: 16,
-    color: '#007AFF',
-    marginBottom: 10,
+    color: '#FF9800',
     textAlign: 'center',
+    fontWeight: '600',
   },
 });

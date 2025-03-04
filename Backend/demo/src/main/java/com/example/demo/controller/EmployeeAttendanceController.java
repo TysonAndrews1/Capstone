@@ -118,4 +118,20 @@ public class EmployeeAttendanceController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> getClockInStatus(@RequestParam Long account_id) {
+        Optional<EmployeeAttendance> latestAttendance = repository.findLatestClockInByAccountId(account_id);
+
+        if (latestAttendance.isPresent()) {
+            EmployeeAttendance attendance = latestAttendance.get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("status", attendance.getStatus());
+            response.put("clock_in_time", attendance.getClockInTime());
+            response.put("clock_out_time", attendance.getClockOutTime());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.ok(Collections.singletonMap("status", "CLOCKED_OUT"));
+        }
+    }
 }
