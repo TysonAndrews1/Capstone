@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface EmployeeAttendanceRepository extends JpaRepository<EmployeeAttendance, Long> {
     
+    @Query("SELECT a FROM EmployeeAttendance a WHERE a.accountId = ?1 ORDER BY a.clockInTime DESC")
     List<EmployeeAttendance> findByAccountId(Long accountId);
 
     @Query("SELECT a FROM EmployeeAttendance a WHERE a.accountId = ?1 AND a.clockOutTime IS NULL")

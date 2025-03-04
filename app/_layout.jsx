@@ -67,7 +67,9 @@ export default function RootLayout() {
       <Stack.Screen name="screens/manager/RequestList" options={{ title: 'Employee Requests' }}/>
 
       <Stack.Screen name="screens/employee/EmployeeMore" options={{ title: 'More Options' }}/>
+
       <Stack.Screen name="screens/NFCFeature/ClockInClockOut" options={{ title: 'Clock In / Clock Out'}}/>
+      <Stack.Screen name="screens/NFCFeature/AttendanceLog" options={{ title: 'Attendance Log'}}/>
 
     </Stack>
   );
