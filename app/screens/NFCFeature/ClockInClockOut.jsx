@@ -1,11 +1,8 @@
-// References:
-// For installation and configuring Android - https://medium.com/@diliplohar204/nfc-integration-made-easy-exploring-react-native-nfc-manager-for-seamless-mobile-communication-65bf56f31398
-// ChatGPT NFC Attendance System - Prompt: How can I integrate NFC reading functionality in a React Native app using react-native-nfc-manager to create an employee clock-in/clock-out system using Javascript and React Native? I am also using Expo to run the application.
-// ChatGPT NFC unmounting - Prompt: How do I properly unmount the NFC Manager to stop running in the background?
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import NfcManager, { NfcTech } from 'react-native-nfc-manager';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BaseURLConfig from '../../config/BaseURLConfig';
 import MainLayout from '../../layouts/MainLayout';
 
 const ClockInClockOut = () => {
@@ -14,56 +11,134 @@ const ClockInClockOut = () => {
   const [awaitingTap, setAwaitingTap] = useState(false);
   const [clockInTime, setClockInTime] = useState(null);
   const [clockOutTime, setClockOutTime] = useState(null);
+  const [accountId, setAccountId] = useState(null);
+  const BASE_URL = BaseURLConfig();
 
-  // Initialize NFC Manager on component mount
   useEffect(() => {
-    NfcManager.start() // Initialize NFC Manager
-      .then(() => console.log('NFC Manager started'))
-      .catch((error) => console.warn('NFC Manager start error:', error));
-
+    const fetchAccountId = async () => {
+      try {
+        const storedAccountId = await AsyncStorage.getItem('selectedAccountId');
+        console.log("Stored Account ID:", storedAccountId);
+  
+        if (storedAccountId) {
+          setAccountId(storedAccountId);
+        } else {
+          console.error('No Account ID found in storage');
+          Alert.alert('Error', 'No Account ID found.');
+        }
+      } catch (error) {
+        console.error('Error retrieving Account ID:', error);
+      }
+    };
+  
+    fetchAccountId();
+    NfcManager.start().catch((error) => console.warn('NFC Manager start error:', error));
+  
     return () => {
-      // Cleanup function to unmount NFCManager correctly
-      NfcManager.close() // Close NFC Manager properly, will not work in the background
-        .then(() => console.log('NFC Manager closed'))
-        .catch((error) => console.warn('NFC Manager close error:', error));
+      NfcManager.close().catch((error) => console.warn('NFC Manager close error:', error));
     };
   }, []);
 
-  const handleStartShift = async () => { // This function will be called when the user taps the 'Start Shift' button
-    setInstruction('Please tap your phone on the attendance reader to start your shift.');
-    setAwaitingTap(true);
 
+  const handleNfcScan = async () => {
     try {
-      // Enable NFC reading
-      await NfcManager.requestTechnology(NfcTech.Ndef);
-      const tag = await NfcManager.getTag(); // Get NFC tag data
-      console.log('Tag Discovered', tag);
-      setStatus('You are currently CLOCKED IN');
+        await NfcManager.requestTechnology(NfcTech.Ndef);
+        const tag = await NfcManager.getTag();
+        console.log('Tag Discovered:', tag);
+
+        if (tag && tag.id) {
+            return tag.id;
+        }
+        Alert.alert('Error', 'No valid NFC tag found.');
+        return null;
     } catch (error) {
-      console.warn('NFC reading error:', error);
+        console.warn('NFC reading error:', error);
+        Alert.alert('Error', 'NFC scan failed.');
+        return null;
     } finally {
-      setInstruction('');
-      setAwaitingTap(false);
-      NfcManager.cancelTechnologyRequest().catch(() => 0);
+        NfcManager.cancelTechnologyRequest().catch(() => 0);
     }
   };
 
-  const handleEndShift = async () => { // This function will be called when the user taps the 'End Shift' button
-    setInstruction('Please tap your phone on the attendance reader to end your shift.');
+  const handleStartShift = async () => {
+    if (!accountId) {
+        Alert.alert('Error', 'No Account ID found.');
+        return;
+    }
+
+    setInstruction('Please tap your phone on the NFC reader to start your shift.');
     setAwaitingTap(true);
 
+    const scannedNfc = await handleNfcScan();
+    if (!scannedNfc) {
+        setAwaitingTap(false);
+        return;
+    }
+
     try {
-      // Enable NFC reading
-      await NfcManager.requestTechnology(NfcTech.Ndef);
-      const tag = await NfcManager.getTag(); // Get NFC tag data
-      console.log('Tag Discovered', tag);
-      setStatus('You are currently CLOCKED OUT');
+        const response = await fetch(`${BASE_URL}/attendance/clockin`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ account_id: accountId }),
+        });
+
+        const data = await response.json();
+        console.log("Clock-In Response:", data);
+
+        if (response.ok) {
+            setClockInTime(data.clock_in_time);
+            setStatus('You are currently CLOCKED IN.');
+            Alert.alert('Success', 'Clock-in recorded successfully.');
+        } else {
+            Alert.alert('Error', data.message || 'Failed to clock in.');
+        }
     } catch (error) {
-      console.warn('NFC reading error:', error);
+        console.warn('Clock-in error:', error);
+        Alert.alert('Error', 'Could not record clock-in.');
     } finally {
-      setInstruction('');
-      setAwaitingTap(false);
-      NfcManager.cancelTechnologyRequest().catch(() => 0);
+        setInstruction('');
+        setAwaitingTap(false);
+    }
+  };
+
+  const handleEndShift = async () => {
+    if (!accountId) {
+        Alert.alert('Error', 'No Account ID found.');
+        return;
+    }
+
+    setInstruction('Please tap your phone on the NFC reader to end your shift.');
+    setAwaitingTap(true);
+
+    const scannedNfc = await handleNfcScan();
+    if (!scannedNfc) {
+        setAwaitingTap(false);
+        return;
+    }
+
+    try {
+        const response = await fetch(`${BASE_URL}/attendance/clockout`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ account_id: accountId }),
+        });
+
+        const data = await response.json();
+        console.log("Clock-Out Response:", data);
+
+        if (response.ok) {
+            setClockOutTime(data.clock_out_time);
+            setStatus('You are currently CLOCKED OUT.');
+            Alert.alert('Success', 'Clock-out recorded successfully.');
+        } else {
+            Alert.alert('Error', data.message || 'Failed to clock out.');
+        }
+    } catch (error) {
+        console.warn('Clock-out error:', error);
+        Alert.alert('Error', 'Could not record clock-out.');
+    } finally {
+        setInstruction('');
+        setAwaitingTap(false);
     }
   };
 
@@ -78,19 +153,11 @@ const ClockInClockOut = () => {
         {clockOutTime && <Text style={styles.timeText}>Clock Out Time: {clockOutTime}</Text>}
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleStartShift}
-            disabled={awaitingTap}
-          >
+          <TouchableOpacity style={styles.button} onPress={handleStartShift} disabled={awaitingTap}>
             <Text style={styles.buttonText}>Start Shift</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleEndShift}
-            disabled={awaitingTap}
-          >
+          <TouchableOpacity style={styles.button} onPress={handleEndShift} disabled={awaitingTap}>
             <Text style={styles.buttonText}>End Shift</Text>
           </TouchableOpacity>
         </View>
@@ -124,13 +191,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  clockedIn: {
-    color: '#28A745',
-  },
+  clockedIn: { 
+    color: '#28A745' },
 
-  clockedOut: {
-    color: '#DC3545',
-  },
+  clockedOut: { 
+    color: '#DC3545' },
 
   buttonContainer: {
     flexDirection: 'row',

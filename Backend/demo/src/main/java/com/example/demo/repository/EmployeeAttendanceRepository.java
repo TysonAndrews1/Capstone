@@ -1,17 +1,19 @@
-//Reference: https://masteringbackend.com/posts/spring-boot
-//Reference: Code from BanquetAccountRepository.java
-
 package com.example.demo.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.demo.entity.EmployeeAttendance;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import java.util.List;
+import java.util.Optional;
 
 public interface EmployeeAttendanceRepository extends JpaRepository<EmployeeAttendance, Long> {
-
-    // Retrieve attendance records by employee ID
-    List<EmployeeAttendance> findByEmployeeId(String employeeId);
     
-    // Retrieve attendance records by date
-    List<EmployeeAttendance> findByDate(String date);
+    List<EmployeeAttendance> findByAccountId(Long accountId);
+
+    @Query("SELECT a FROM EmployeeAttendance a WHERE a.accountId = ?1 AND a.clockOutTime IS NULL")
+    List<EmployeeAttendance> findOpenShiftByAccountId(Long accountId);
+
+    @Query("SELECT a FROM EmployeeAttendance a WHERE a.accountId = ?1 AND a.clockOutTime IS NULL ORDER BY a.clockInTime DESC LIMIT 1")
+    Optional<EmployeeAttendance> findLatestClockInByAccountId(Long accountId);
+
 }

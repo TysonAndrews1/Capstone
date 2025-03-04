@@ -74,20 +74,25 @@ const Login = () => {
         try {
             // Using Firebase Authentication
             const firebaseUser = await handleLogin(email, password);
-            const role = await fetchUserRole(email); // Fetch user role from the database
-            console.log("User role:", role);
+            const userDetails = await fetchUserRole(email); // Fetch user role from the database
+            console.log("User role:", userDetails);
+            
+            if (!userDetails || !userDetails.accountId) {
+                throw new Error("User not found in the database.");
+            }
 
             // Persist the role locally
+            await AsyncStorage.setItem('selectedAccountId', userDetails.accountId.toString());
             await AsyncStorage.setItem('userEmail', email);
             await AsyncStorage.setItem('userPassword', password);
-            await AsyncStorage.setItem('userRole', role);
+            await AsyncStorage.setItem('userRole', userDetails.role);
             await AsyncStorage.setItem('bioAuthEnabled', "true");
 
             setIsBioEnabled(true);
             // Navigate to the appropriate screen
-            if (role === "Manager") {
+            if (userDetails.role === "Manager") {
                 router.push('/screens/manager/ManagerScreen');
-            } else if (role === "Employee") {
+            } else if (userDetails.role === "Employee") {
                 router.push('/screens/employee/EmployeeScreen');
             } else {
                 Alert.alert("Error", "Unknown role. Please contact support.");
@@ -104,9 +109,12 @@ const Login = () => {
                 throw new Error(`Failed to fetch user role: ${response.status}`);
             }
             const data = await response.json();
-            return data.role;
+            return {
+                role: data.role,
+                accountId: data.accountId,
+            }
         } catch (error) {
-            console.error("Error fetching user role:", error.message);
+            console.error("Error fetching user details:", error.message);
             throw error;
         }
     };

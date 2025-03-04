@@ -3,6 +3,9 @@
 
 package com.example.demo.controller;
 
+import java.util.Map;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,14 +90,19 @@ public class BanquetAccountController {
     // API to retrieve a specific employee by email
 
     @GetMapping("/user")
-    public ResponseEntity<BanquetAccount> getUserByEmail(@RequestParam String email) {
+    public ResponseEntity<Map<String, Object>> getUserByEmail(@RequestParam String email) {
         BanquetAccount employee = repository.findByEmail(email);
+
         if (employee != null) {
-            return ResponseEntity.ok(employee); // Return 200 with employee data
+            Map<String, Object> response = new HashMap<>();
+            response.put("accountId", employee.getAccountId());
+            response.put("role", employee.getRole());
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } // Return 404 if no employee found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found"));
+        }
     }
+
 
     @PostMapping // Create new accounts using information from the frontend
     public BanquetAccount createAccount(@RequestBody BanquetAccount account) {

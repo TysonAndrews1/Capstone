@@ -1,71 +1,61 @@
 // Reference: https://masteringbackend.com/posts/spring-boot
-// Reference: Also copied code from BanquetAccount.java
+// Reference: Also modified code from BanquetAccount.java
 
 package com.example.demo.entity;
 
+import java.time.LocalDateTime;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "employee_attendance") //Maps the class to the employee_attendance table in the database
+@Table(name = "employee_attendance")
 public class EmployeeAttendance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "attendance_id")
-    private Long attendanceId;
+    @Column(name = "id")
+    private Long id;
 
-    @Column(name = "employee_id", nullable = false, length = 6)
-    private String employeeId;
+    @Column(name = "account_id", nullable = false)
+    private Long accountId;
 
-    @Column(name = "date", nullable = false)
-    private String date;
+    @Column(name = "clock_in_time")
+    private LocalDateTime clockInTime;
 
-    @Column(name = "clock_in_time", nullable = false)
-    private String clockInTime;
-
-    @Column(name = "clock_out_time", nullable = false)
-    private String clockOutTime;
+    @Column(name = "clock_out_time")
+    private LocalDateTime clockOutTime;
 
     @Column(name = "status", nullable = false)
     private String status;
 
-    public Long getAttendanceId() {
-        return attendanceId;
+    public Long getId() {
+        return id;
     }
 
-    public void setAttendanceId(Long attendanceId) {
-        this.attendanceId = attendanceId;
+    public void setid(Long id) {
+        this.id = id;
     }
 
-    public String getEmployeeId() {
-        return employeeId;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setEmployeeId(String employeeId) {
-        this.employeeId = employeeId;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getClockInTime() {
+    public LocalDateTime getClockInTime() {
         return clockInTime;
     }
 
-    public void setClockInTime(String clockInTime) {
+    public void setClockInTime(LocalDateTime clockInTime) {
         this.clockInTime = clockInTime;
     }
 
-    public String getClockOutTime() {
+    public LocalDateTime getClockOutTime() {
         return clockOutTime;
     }
 
-    public void setClockOutTime(String clockOutTime) {
+    public void setClockOutTime(LocalDateTime clockOutTime) {
         this.clockOutTime = clockOutTime;
     }
 
@@ -80,11 +70,10 @@ public class EmployeeAttendance {
     @Override
     public String toString() {
         return "EmployeeAttendance{" +
-                "attendanceId=" + attendanceId +
-                ", employeeId='" + employeeId + '\'' +
-                ", date='" + date + '\'' +
-                ", clockInTime='" + clockInTime + '\'' +
-                ", clockOutTime='" + clockOutTime + '\'' +
+                "id=" + id +
+                ", accountId=" + accountId +
+                ", clockInTime=" + clockInTime +
+                ", clockOutTime=" + clockOutTime +
                 ", status='" + status + '\'' +
                 '}';
     }
