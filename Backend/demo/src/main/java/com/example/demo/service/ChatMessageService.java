@@ -22,4 +22,9 @@ public class ChatMessageService {
     public List<BanquetChatMessage> getChatHistory() {
         return chatMessageRepository.findAll();
     }
+
+    public List<BanquetChatMessage> getChatHistoryForUser(String sender, String recipient) {
+        return chatMessageRepository.findBySenderAndRecipient(sender, recipient);
+    }
+
 }

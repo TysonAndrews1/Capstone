@@ -26,6 +26,7 @@
     "@react-navigation/drawer": "^7.0.14",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/stack": "^7.0.14",
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
@@ -37,6 +38,7 @@
     "expo-font": "~13.0.1",
     "expo-haptics": "~14.0.0",
     "expo-linking": "~7.0.3",
+    "expo-local-authentication": "~15.0.2",
     "expo-router": "^4.0.17",
     "expo-splash-screen": "~0.29.13",
     "expo-status-bar": "~2.0.0",
@@ -59,7 +61,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.2",
-    "expo-local-authentication": "~15.0.2"
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

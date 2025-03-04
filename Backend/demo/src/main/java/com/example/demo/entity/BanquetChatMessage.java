@@ -19,6 +19,7 @@ public class BanquetChatMessage {
 
     private String sender;
     private String content;
+    private String recipient;
     private messageType type; // Can be "CHAT", "JOIN", etc.
 
     private LocalDateTime timestamp;

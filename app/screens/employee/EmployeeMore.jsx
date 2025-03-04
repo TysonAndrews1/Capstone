@@ -28,6 +28,10 @@ const EmployeeMore = () => {
         <TouchableOpacity style={styles.button} onPress={() => router.push('screens/employee/MyRequests')}>
           <Text style={styles.text}>My Requests</Text>
         </TouchableOpacity>
+        {/* Temporary button to test chat feature*/}
+        <TouchableOpacity style={styles.button} onPress={() => router.push('screens/chatFeature/Chat')}>
+          <Text style={styles.text}>Chat</Text>
+        </TouchableOpacity>
       </View>
     </MainLayout>
   );
