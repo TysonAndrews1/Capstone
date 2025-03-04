@@ -188,23 +188,23 @@ INSERT INTO `employee_requests` VALUES
 (1, 2, 'Time Off', '2025-01-01 09:00:00', '2025-01-15 09:00:00', '2025-01-20 17:00:00', 'Family vacation', 'PENDING'),
 (2, 2, 'Sick Day', '2025-01-05 08:00:00', '2025-01-05 09:00:00', '2025-01-05 17:00:00', 'Fever and cold', 'APPROVED'),
 (3, 2, 'Availability Change', '2025-01-10 12:00:00', NULL, NULL, 'Request to work weekends only', 'DECLINED'),
-(4, 4, 'Availability Change', '2025-02-09 08:00:00', NULL, NULL, 'Can work anytime and anyday', 'APPROVED'),
+(4, 4, 'Availability Change', '2025-02-09 08:00:00', NULL, NULL, 'Can work anytime and any day', 'APPROVED'),
 (5, 4, 'Time Off', '2025-02-09 08:30:00', '2025-04-10 08:00:00', '2025-04-20 08:00:00', 'Need to study for finals', 'APPROVED'),
 (6, 5, 'Sick Day', '2025-02-12 06:00:00', '2025-02-12 08:00:00', '2025-02-12 16:00:00', 'Woke up with a migraine', 'APPROVED'),
 (7, 6, 'Sick Day', '2025-02-20 07:00:00', '2025-02-20 08:00:00', '2025-02-20 16:00:00', 'Got into a car accident', 'APPROVED'),
-(8, 6, 'Time Off', '2025-02-21 10:00:00', '2025-03-01 08:00:00', '2025-03-02 23:00:00', 'Need to take my car to the autobody shop', 'PENDING'),
+(8, 6, 'Time Off', '2025-02-21 10:00:00', '2025-03-01 08:00:00', '2025-03-02 23:00:00', 'Need to take my car to the auto body shop', 'PENDING'),
 (9, 7, 'Time Off', '2025-01-29 10:30:00', '2025-05-01 08:00:00', '2025-05-31 23:00:00', 'Going to Europe for a month', 'APPROVED'),
 (10, 7, 'Availability Change', '2025-03-02 10:00:00', NULL, NULL, 'Can only work weekends once school starts', 'PENDING'),
-(11, 3, 'Availability Change', '2025-01-01 8:00:00', NULL, NULL, 'Going back to my full job, will be back for the christmas season', 'APPROVED'),
+(11, 3, 'Availability Change', '2025-01-01 08:00:00', NULL, NULL, 'Going back to my full job, will be back for the christmas season', 'APPROVED'),
 (12, 2, 'Time Off', '2024-10-11 09:00:00', '2024-12-01 09:00:00', '2024-12-20 17:00:00', 'Final Exams', 'APPROVED'),
-(13, 2, 'Time Off', '2025-03-02 11:00:00', '2025-03-03 08:00:00', '2024-03-04 23:00:00', 'Sorry for short notice but my friends want to go snowboarding', 'DECLINED'),
-(14, 2, 'Time Off', '2025-03-06 10:00:00', '2025-03-22 08:00:00', '2024-03-23 23:00:00', 'Snowboarding Trip', 'APPROVED'),
-(15, 2, 'Time Off', '2025-03-12 08:00:00', '2025-04-15 08:00:00', '2024-04-20 23:00:00', 'Finals week! need to study', 'PENDING'),
+(13, 2, 'Time Off', '2025-03-02 11:00:00', '2025-03-03 08:00:00', '2025-03-04 23:00:00', 'Sorry for short notice but my friends want to go snowboarding', 'DECLINED'),
+(14, 2, 'Time Off', '2025-03-06 10:00:00', '2025-03-22 08:00:00', '2025-03-23 23:00:00', 'Snowboarding Trip', 'APPROVED'),
+(15, 2, 'Time Off', '2025-03-12 08:00:00', '2025-04-15 08:00:00', '2025-04-20 23:00:00', 'Finals week! need to study', 'PENDING'),
 (16, 6, 'Time Off', '2025-03-01 10:00:00', '2025-04-01 08:00:00', '2025-04-07 23:00:00', 'Wisdom tooth surgery and recovery', 'APPROVED'),
 (17, 6, 'Time Off', '2025-02-03 09:00:00', '2025-02-05 08:00:00', '2025-02-05 23:00:00', 'Friends want to go to banff', 'DECLINED'),
 (18, 6, 'Time Off', '2025-01-02 10:00:00', '2025-01-25 08:00:00', '2025-01-26 23:00:00', 'Booking off for my birthday', 'APPROVED'),
 (19, 6, 'Time Off', '2025-03-02 10:00:00', '2025-03-03 08:15:00', '2025-03-04 23:00:00', 'Snowboarding trip with peter! Decline if its too short of a notice', 'DECLINED'),
-(20, 6, 'Time Off', '2025-03-20 10:00:00', '2025-06-01 08:00:00', '2025-06-31 23:00:00', 'Found a summber job, might be gone in june', 'PENDING');
+(20, 6, 'Time Off', '2025-03-20 10:00:00', '2025-06-01 08:00:00', '2025-06-30 23:00:00', 'Found a summer job, might be gone in june', 'PENDING');
 
 /*!40000 ALTER TABLE `employee_requests` ENABLE KEYS */;
 
