@@ -97,6 +97,8 @@ public class BanquetAccountController {
             Map<String, Object> response = new HashMap<>();
             response.put("accountId", employee.getAccountId());
             response.put("role", employee.getRole());
+            response.put("firstName", employee.getFirstName());
+            response.put("lastName", employee.getLastName());
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "User not found"));
