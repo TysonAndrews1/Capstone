@@ -231,7 +231,7 @@ const Reports = () => {
 
   /**
    * [4]
-   * Prompt: "Please help me resolve 'ERROR pdf.autoTable is not a function'."
+   *  Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 3, 2025. Prompt: "Please help me resolve 'ERROR pdf.autoTable is not a function'."
    */
   const downloadPDF = () => {
     // Create a new jsPDF instance
@@ -323,191 +323,201 @@ const Reports = () => {
 
   return (
     <div className="p-5">
-      <h1 className="text-2xl font-bold mb-4">Requests Report</h1>
+      {/* Header with title and download button */}
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Requests Report</h1>
 
-      {/* Button to download the filtered data as PDF */}
-      <button
-        className="bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded mb-4"
-        onClick={downloadPDF}
-      >
-        Download PDF Report
-      </button>
+        {/* Button to download the filtered data as PDF */}
+        <button
+          className="bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+          onClick={downloadPDF}
+        >
+          Download PDF Report
+        </button>
+      </div>
 
-      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: "Format the following code for a horizontal layout" */}
-      {/* Filter Options */}
-      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 mb-6">
-        <h1 className="text-lg font-semibold mb-3">Filter Options</h1>
+      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Mar. 2, 2025. Prompt: "Please help me rearrange the bar chart container to be side by side with the table." */}
+      {/* Main content with flex layout */}
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left column - filters and table */}
+        <div className="w-full lg:w-1/2">
+          {/* Filter Options */}
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-5 mb-6">
+            <h1 className="text-lg font-semibold mb-3">Filter Options</h1>
 
-        <div className="flex flex-wrap gap-4">
-          {/* Employee Filter */}
-          <div className="flex-1 min-w-[180px]">
-            <label className="block text-sm font-medium text-gray-700">
-              Employee:
-            </label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded"
-              value={selectedEmployee}
-              onChange={(e) => setSelectedEmployee(e.target.value)}
-            >
-              <option value="">-- Select Employee --</option>
-              {accounts.map((account) => (
-                <option key={account.accountId} value={account.accountId}>
-                  {account.firstName} {account.lastName}
-                </option>
-              ))}
-            </select>
+            <div className="flex flex-wrap gap-4">
+              {/* Employee Filter */}
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700">
+                  Employee:
+                </label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded"
+                  value={selectedEmployee}
+                  onChange={(e) => setSelectedEmployee(e.target.value)}
+                >
+                  <option value="">-- Select Employee --</option>
+                  {accounts.map((account) => (
+                    <option key={account.accountId} value={account.accountId}>
+                      {account.firstName} {account.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Start Date */}
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700">
+                  Start Date:
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </div>
+
+              {/* End Date */}
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700">
+                  End Date:
+                </label>
+                <input
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+
+              {/* Status Filter */}
+              <div className="flex-1 min-w-[180px]">
+                <label className="block text-sm font-medium text-gray-700">
+                  Status:
+                </label>
+                <select
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="">-- Select Status --</option>
+                  <option value="APPROVED">Approved</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="DECLINED">Declined</option>
+                </select>
+              </div>
+
+              {/* Filter buttons */}
+              <div className="flex-1 min-w-[180px] flex space-x-2 items-end">
+                <button
+                  className="w-1/2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                  onClick={() => resetFilters()}
+                >
+                  Reset
+                </button>
+                <button
+                  className="w-1/2 bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
+                  onClick={() => applyFilters()}
+                >
+                  Filter
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Start Date */}
-          <div className="flex-1 min-w-[180px]">
-            <label className="block text-sm font-medium text-gray-700">
-              Start Date:
-            </label>
-            <input
-              type="date"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </div>
+          {/* Data Table */}
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+              <thead className="bg-gray-200 text-gray-700">
+                <tr>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    Employee Name
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    Employee ID
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    Request Type
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    Start Date
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    End Date
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-medium">
+                    Status
+                  </th>
+                </tr>
+              </thead>
 
-          {/* End Date */}
-          <div className="flex-1 min-w-[180px]">
-            <label className="block text-sm font-medium text-gray-700">
-              End Date:
-            </label>
-            <input
-              type="date"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-
-          {/* Status Filter */}
-          <div className="flex-1 min-w-[180px]">
-            <label className="block text-sm font-medium text-gray-700">
-              Status:
-            </label>
-            <select
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="">-- Select Status --</option>
-              <option value="APPROVED">Approved</option>
-              <option value="PENDING">Pending</option>
-              <option value="DECLINED">Declined</option>
-            </select>
-          </div>
-
-          {/* Filter buttons */}
-          <div className="flex-1 min-w-[180px] flex space-x-2 items-end">
-            <button
-              className="w-1/2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-              onClick={() => resetFilters()}
-            >
-              Reset
-            </button>
-            <button
-              className="w-1/2 bg-hover-blue hover:bg-main-blue text-white font-bold py-2 px-4 rounded"
-              onClick={() => applyFilters()}
-            >
-              Filter
-            </button>
+              <tbody className="divide-y divide-gray-300">
+                {filteredData.map((request, index) => {
+                  const employee = accounts.find(
+                    (account) => account.accountId === request.accountId
+                  );
+                  return (
+                    <tr key={index} className="hover:bg-gray-100">
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {employee
+                          ? `${employee.firstName} ${employee.lastName}`
+                          : "N/A"}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {request.accountId}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {request.requestType}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {formatDate(request.startDate)}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {formatDate(request.endDate)}
+                      </td>
+                      <td className="px-4 py-2 text-sm text-gray-700">
+                        {request.status}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
 
-      {/* Reference: OpenAI, "ChatGPT," Personal Communication, Feb. 26, 2025. Prompt: "Format the following code into a proper table."" */}
-      {/* Display the filtered report in a table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
-          <thead className="bg-gray-200 text-gray-700">
-            <tr>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                Employee Name
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                Employee ID
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                Request Type
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                Start Date
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                End Date
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-medium">
-                Status
-              </th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y divide-gray-300">
-            {filteredData.map((request, index) => {
-              const employee = accounts.find(
-                (account) => account.accountId === request.accountId
-              );
-              return (
-                <tr key={index} className="hover:bg-gray-100">
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {employee
-                      ? `${employee.firstName} ${employee.lastName}`
-                      : "N/A"}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {request.accountId}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {request.requestType}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {formatDate(request.startDate)}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {formatDate(request.endDate)}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {request.status}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Bar Chart UI */}
-      <div className="mt-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
-        <h2 className="text-xl font-bold mb-4">Employee Request Chart</h2>
-        <Bar
-          data={generateChartData()}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: {
-                position: "top",
-              },
-              title: {
-                display: true,
-                text: "Employee requests",
-              },
-            },
-            scales: {
-              x: {
-                stacked: true,
-              },
-              y: {
-                stacked: true,
-              },
-            },
-            barPercentage: 0.6,
-            categoryPercentage: 0.8,
-          }}
-        />
+        {/* Right column - Chart */}
+        <div className="w-full lg:w-1/2">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 h-full">
+            <h2 className="text-xl font-bold mb-4 text-center">Employee Request Chart</h2>
+            <Bar
+              data={generateChartData()}
+              options={{
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                  legend: {
+                    position: "top",
+                  },
+                  title: {
+                    display: true,
+                  },
+                },
+                scales: {
+                  x: {
+                    stacked: true,
+                  },
+                  y: {
+                    stacked: true,
+                  },
+                },
+                barPercentage: 0.6,
+                categoryPercentage: 0.8,
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
