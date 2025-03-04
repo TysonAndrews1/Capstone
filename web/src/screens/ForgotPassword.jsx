@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword(){
@@ -15,7 +15,6 @@ const cancel = ()=>{
 }
 
     const handleRequest = async (e) => {
-      e.preventDefault();
       setError('');
       try {
         alert('Request Email Sent');
@@ -23,6 +22,20 @@ const cancel = ()=>{
         setError(err.message);
       }
     };
+
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+            if (event.key === "Enter") {
+                handleRequest(); 
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyPress);
+        return () => {
+            window.removeEventListener("keydown", handleKeyPress);
+        };
+    }, [handleRequest]); 
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
           <form className="bg-white p-7 rounded-2xl shadow-lg w-80" onSubmit={handleRequest}>

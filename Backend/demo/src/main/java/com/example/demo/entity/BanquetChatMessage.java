@@ -1,19 +1,30 @@
 package com.example.demo.entity;
 
-import lombok.Builder;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "chat_messages")
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
-
 public class BanquetChatMessage {
-    private String content;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String sender;
-    private messageType type;
+    private String content;
+    private messageType type; // Can be "CHAT", "JOIN", etc.
+
+    private LocalDateTime timestamp;
+
+    public BanquetChatMessage() {
+        this.timestamp = LocalDateTime.now();
+    }
+    // Getters and Setters
 }
