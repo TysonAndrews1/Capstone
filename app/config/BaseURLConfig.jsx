@@ -2,9 +2,9 @@ import { Platform } from 'react-native';
 
 const BASE_URL = Platform.OS === 'android' 
 
-  ? 'http://10.0.0.66:8080/api'
+  ? 'http://10.187.208.148:8080/api'
 
-  : 'http://10.0.0.66:8080/api';
+  : 'http://localhost:8080/api';
 
 const BaseURLConfig = () => {
   return BASE_URL;
