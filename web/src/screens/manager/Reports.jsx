@@ -148,23 +148,23 @@ const Reports = () => {
         {
           label: "Approved",
           data: [timeOffCount, sickDayCount],
-          backgroundColor: "rgba(75, 192, 192, 0.6)",
-          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(82, 140, 175, 0.6)",
+          borderColor: "rgba(82, 140, 175, 1)",
           borderWidth: 1,
         },
         {
           label: "Pending",
           data: [pendingROCount, pendingSickCount],
-          backgroundColor: "rgba(255, 99, 132, 0.6)",
-          borderColor: "rgba(255, 99, 132, 1)",
+          backgroundColor: "rgba(229, 173, 172, 0.6)",
+          borderColor: "rgba(229, 173, 172, 1)",
           borderWidth: 1,
 
         },
         {
           label: "Declined",
           data: [declinedROCount, declinedSickCount],
-          backgroundColor: "rgba(54, 162, 235, 0.6)",
-          borderColor: "rgba(54, 162, 235, 1)",
+          backgroundColor: "rgba(17, 42, 70, 0.6)",
+          borderColor: "rgba(17, 42, 70, 1)",
           borderWidth: 1,
         }
       ],
@@ -289,7 +289,7 @@ const Reports = () => {
         cellPadding: 3,
       },
       headStyles: {
-        fillColor: [75, 192, 192],
+        fillColor: [82, 140, 175],
         textColor: [255, 255, 255],
         fontStyle: "bold",
       },
@@ -487,8 +487,8 @@ const Reports = () => {
         </table>
       </div>
 
-      {/* Chart UI */}
-      <div className="mt-8">
+      {/* Bar Chart UI */}
+      <div className="mt-8 p-6 bg-white border border-gray-200 rounded-lg shadow-md">
         <h2 className="text-xl font-bold mb-4">Employee Request Chart</h2>
         <Bar
           data={generateChartData()}
@@ -500,7 +500,7 @@ const Reports = () => {
               },
               title: {
                 display: true,
-                text: "Employee Requests",
+                text: "Employee requests"
               },
             },
             scales:{
@@ -510,9 +510,10 @@ const Reports = () => {
               y: {
                 stacked: true,
               }
-            }
-          }}
-        />
+            },
+            barPercentage: 0.6,
+            categoryPercentage: 0.8,
+          }}/>
       </div>
     </div>
   );
