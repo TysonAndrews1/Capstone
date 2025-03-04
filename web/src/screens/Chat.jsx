@@ -3,7 +3,6 @@ import SockJS from "sockjs-client";
 import { Client } from '@stomp/stompjs';
 import { getCurrentUser } from '../components/FetchData';
 
-
 //ChatGPT used to help connecting to websocket and backend
 
 export default function ChatPage() {
@@ -46,14 +45,10 @@ export default function ChatPage() {
         client.onConnect = () => {
             console.log("Connected to WebSocket");
             client.subscribe("/topic/public", (msg) => {
-                console.log("Received message:", msg.body);
                 try {
                     const parsedMessage = JSON.parse(msg.body);
-                    console.log("Parsed message:", parsedMessage);
                     setMessages((prevMessages) => {
-                        console.log("Previous messages:", prevMessages);
                         const updatedMessages = [...prevMessages, parsedMessage];
-                        console.log("Updated messages:", updatedMessages);
                         return updatedMessages;
                     });
                 } catch (error) {
@@ -105,22 +100,25 @@ export default function ChatPage() {
     }, [sendMessage]); // Ensure useEffect updates if sendMessage changes
 
     return (
-        <div style={{ padding: 20, maxWidth: 500, margin: "auto", textAlign: "center" }}>
-            <h2>WebSocket Chat</h2>
-            <p style={{ width: "100%", padding: 8, marginBottom: 10 }}>User: {username}</p>
-            <div style={{ border: "1px solid #ccc", padding: 10, height: 300, overflowY: "auto", marginBottom: 10 }}>
-                {messages.map((msg, index) => (
-                    <div key={index}><strong>{msg.sender}:</strong> {msg.content}</div>
-                ))}
-            </div>
-            <input 
-                type="text" 
-                value={message} 
-                onChange={(e) => setMessage(e.target.value)} 
-                placeholder="Type a message..." 
-                style={{ width: "80%", padding: 8 }}
-            />
-            <button onClick={sendMessage} style={{ padding: 8, marginLeft: 10 }}>Send</button>
+        <div className="p-5 max-w-xl mx-auto text-center">
+        <h2 className="text-2xl font-semibold mb-4">WebSocket Chat</h2>
+        <p className="w-full p-2 mb-4">User: {username}</p>
+        <div className="border border-gray-300 p-3 h-72 overflow-y-auto mb-4">
+            {messages.map((msg, index) => (
+                <div key={index}>
+                    <strong>{msg.sender}:</strong> {msg.content}
+                </div>
+            ))}
         </div>
+        <input 
+            type="text" 
+            value={message} 
+            onChange={(e) => setMessage(e.target.value)} 
+            placeholder="Type a message..." 
+            className="w-4/5 p-2 rounded"
+        />
+        <button onClick={sendMessage} className="p-2 ml-2 border rounded">Send</button>
+    </div>
+    
     );
 };
