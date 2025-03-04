@@ -6,6 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,15 +20,24 @@ import java.util.List;
 public class BanquetChatController {
 
     private final ChatMessageService chatMessageService;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public BanquetChatController(ChatMessageService chatMessageService) {
+    public BanquetChatController(ChatMessageService chatMessageService, SimpMessagingTemplate messagingTemplate) {
         this.chatMessageService = chatMessageService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/public")
     public BanquetChatMessage sendMessage(@Payload BanquetChatMessage chatMessage) {
         return chatMessageService.saveMessage(chatMessage); // Save message in DB
+    }
+
+    public void sendPrivateMessage(@Payload BanquetChatMessage chatMessage) {
+        String recipient = chatMessage.getRecipient(); // FIX: Ensure `getRecipient()` exists
+        if (recipient != null) {
+            messagingTemplate.convertAndSendToUser(recipient, "/queue/messages", chatMessage);
+        }
     }
 
     @GetMapping("/history")
