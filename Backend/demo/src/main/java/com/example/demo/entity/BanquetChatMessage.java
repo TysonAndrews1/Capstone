@@ -6,26 +6,26 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "chat_messages")
-@Getter
 @Setter
-@AllArgsConstructor
+@Getter
 @Builder
+@AllArgsConstructor
 public class BanquetChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sender;
+    private Long senderId;
     private String content;
-    private String recipient;
-    private messageType type; // Can be "CHAT", "JOIN", etc.
-
     private LocalDateTime timestamp;
 
     public BanquetChatMessage() {
-        this.timestamp = LocalDateTime.now();
+
     }
+
+    @ManyToOne
+    @JoinColumn(name = "chat_id")
+    private BanquetChat chat;
     // Getters and Setters
 }
