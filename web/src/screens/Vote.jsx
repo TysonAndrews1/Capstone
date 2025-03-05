@@ -10,6 +10,8 @@ export default function Vote() {
     const [reason, setReason] = useState(""); // Reason for nomination 
     const [loggedInUserID, setLoggedInUserID] = useState(null);
     const [hasVoted, setHasVoted] = useState(false);
+    const [loggedInUserRole, setLoggedInUserRole] = useState(null);
+    const [votes, setVotes] = useState([]);
 
     const fetchEmployeeData = async () => {
         try {
@@ -23,6 +25,20 @@ export default function Vote() {
             setEmployees(employeeList);
         } catch (error) {
             setFetchError(error.message);
+        }
+    };
+
+    const fetchVoteCounts = async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/votes`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const voteData = await response.json();
+            setVotes(voteData);
+        } catch (error) {
+            console.error("Error fetching votes:", error);
         }
     };
 
@@ -47,8 +63,10 @@ export default function Vote() {
         fetchEmployeeData();
         getCurrentUser().then(user => {
             setLoggedInUserID(user.accountId);
+            setLoggedInUserRole(user.role);
             checkIfUserHasVoted(user.accountId);
         });
+        fetchVoteCounts();
     }, []);
 
     // Handle employee selection
@@ -77,7 +95,7 @@ export default function Vote() {
             nomineeId: parseInt(selectedEmployee),
             voteDate: new Date().toISOString().slice(0, 19), //Use ChatGPT to help with formatting
             reason,
-            voteWeight: 1.0 // Set to 1 for testing purpose, will change base on if either employee or manager is logged in.
+            voteWeight: 1.0 
         };
 
         try {
@@ -92,11 +110,16 @@ export default function Vote() {
             if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             
             alert("Vote submitted successfully!");
-            
+            fetchVoteCounts();
             window.location.reload();
         } catch (error) {
             alert(`Error submitting vote: ${error.message}`);
         }
+    };
+
+    // Function to get vote count for each employee
+    const getVoteCountForEmployee = (employeeId) => {
+        return votes.filter(vote => vote.nomineeId === employeeId).length;
     };
 
     /**
@@ -160,6 +183,45 @@ export default function Vote() {
                         Submit Vote!
                     </button>
                 </>
+            )}
+
+            {/* Manager View */}
+            {loggedInUserRole === 'Manager' && (
+                <div className="flex mt-6">
+                    {/* Left Side - Employee Vote Counts */}
+                    <div className="w-1/2 p-4 border-r">
+                        <h2 className="text-xl font-semibold mb-3">Employee Vote Counts</h2>
+                        <ul className="list-disc list-inside">
+                            {employees.map((employee) => (
+                                <li key={employee.accountId} className="text-lg">
+                                    {employee.firstName} {employee.lastName} - {getVoteCountForEmployee(employee.accountId)} votes
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Right Side - Votes and Reasons */}
+                    <div className="w-1/2 p-4">
+                        <h2 className="text-xl font-semibold mb-3">Votes and Reasons</h2>
+                        {votes.length > 0 ? (
+                            <ul className="space-y-3">
+                                {votes.map((vote) => {
+                                    const nominee = employees.find(emp => emp.accountId === vote.nomineeId);
+                                    if (!nominee) return null;
+
+                                    return (
+                                        <li key={vote.voteId} className="border p-3 rounded-lg shadow-sm">
+                                            <p><strong>Nominee:</strong> {nominee.firstName} {nominee.lastName}</p>
+                                            <p><strong>Reason:</strong> {vote.reason}</p>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500">No votes yet.</p>
+                        )}
+                    </div>
+                </div>
             )}
         </div>
     );
