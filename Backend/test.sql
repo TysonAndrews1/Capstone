@@ -283,6 +283,9 @@ INSERT INTO `employee_vote` VALUES
 (3, 3, 2, '2025-02-25 12:15:00', 'Goes above and beyond to ensure customer satisfaction.', 1.0);
 /*!40000 ALTER TABLE `employee_vote` ENABLE KEYS */;
 
+-- intitalizes the public chat
+INSERT INTO Chat (id, name) VALUES (1, 'Public Chat');
+
 -- Unlocks the employee_vote table
 UNLOCK TABLES;
 
