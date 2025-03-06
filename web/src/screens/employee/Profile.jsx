@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaUserCircle, FaWrench } from "react-icons/fa";
+import { getCurrentUser } from "../../components/FetchData";
 
 /**
  * Created by: Michelle Tran 
@@ -18,7 +19,10 @@ function Profile() {
   });
   const [availability, setAvailability] = useState([]); 
   const [notifyShifts, setNotifyShifts] = useState(false); 
-  const [fetchError, setFetchError] = useState(false); 
+  const [fetchError, setFetchError] = useState(false);
+  const [loggedInUserID, setLoggedInUserID] = useState(null);
+  const [isWinner, setIsWinner] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
   
   const BASE_URL = 'http://localhost:8080/api';
 
@@ -32,10 +36,10 @@ function Profile() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
-      const account = data.find((account) => account.role === 'Employee');
+      const account = data.find((account) => account.accountId === loggedInUserID);
       setAvailability([]); 
       setEmployeeData({
-        employee_id: account.accountId,
+        employee_id: account.employeeId,
         first_name: account.firstName,
         last_name: account.lastName,
         phone_number: account.phoneNumber,
@@ -43,16 +47,39 @@ function Profile() {
       });
       setAvailability(["Monday: 9 AM - 5 PM", "Wednesday: 10 AM - 4 PM", "Friday: 8 AM - 2 PM"]); // Example data
     } catch (error) {
-      setFetchError(error.message);
-      
+      setFetchError(error.message); 
     }
   };
 
   useEffect(() => {
-    fetchEmployeeData();
+    getCurrentUser().then(user => setLoggedInUserID(user.accountId));
   }, []);
 
-
+  useEffect(() => {
+    if (loggedInUserID !== null) {
+      fetchEmployeeData();
+      
+      // Check if the user is a winner
+      const checkWinnerStatus = async () => {
+        try {
+          const response = await fetch(`${BASE_URL}/winner`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const winners = await response.json();
+          const userIsWinner = winners.some(winner => 
+            winner.accountId === loggedInUserID
+          );          
+          setIsWinner(userIsWinner);
+          setShowCongrats(userIsWinner); // Show message when they first visit
+        } catch (error) {
+          console.error("Error fetching winner data:", error);
+        }
+      };
+  
+      checkWinnerStatus();
+    }
+  }, [loggedInUserID]);  
 
    /**
    * Updated save handler with proper API structure
@@ -89,10 +116,7 @@ function Profile() {
       alert("Failed to save changes. Please try again.");
     }
   };
-
   
-  
-
   /**
    * Reference: OpenAI, "ChatGPT," Personal Communication, Jan. 20, 2025. Prompt: "Please create a handleInputChange function that only updates values that are changed"
     * @param {Event} e - The event object that triggered the function
@@ -107,13 +131,29 @@ function Profile() {
   return (
     <div className="flex flex-row min-h-screen">
       <div className="grid grid-cols-3 gap-20 w-full bg-white p-8 rounded-lg shadow-lg">
+          {showCongrats && (
+            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+                <h2 className="text-2xl font-bold text-green-600">🎉 Congratulations! 🎉</h2>
+                <p className="text-gray-700 mt-2">
+                  You have been selected as a banquet's employee of the month winner! Keep up the great work!
+                </p>
+                <button
+                  onClick={() => setShowCongrats(false)}
+                  className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
 
         {/* Column 1: Profile Information */}
         <div className="flex flex-col items-center space-y-4">
           <FaUserCircle className="text-gray-400" size={100} /> 
           <h2 className="text-xl font-bold text-gray-800">
             {employeeData.first_name || "First Name"} {employeeData.last_name || "Last Name"}
-            
+            {isWinner && <span className="ml-2">👑</span>}
           </h2>
           {fetchError && (
             <p className="text-red-500 text-center">
