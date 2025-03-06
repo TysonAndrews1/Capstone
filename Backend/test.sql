@@ -112,6 +112,7 @@ INSERT INTO `banquet_accounts` VALUES
 (5, 'Natasha', 'Romanoff', '000005', 'blackwidow@example.com', '2 Spy Blvd SE', '403-222-2222', 'Employee', 'ACTIVE'),
 (6, 'Clint', 'Barton', '000006', 'hawkeye@example.com', '3 Arrow Place NE', '403-333-3333', 'Employee', 'ACTIVE'),
 (7, 'Bruce', 'Banner', '000007', 'hulk@example.com', '4 Smash Way SE', '403-444-4444', 'Employee', 'ACTIVE');
+(0, 'System', 'Log', '000000', 'N/A', 'N/A', 'N/A', 'Manager', 'ACTIVE');
 /*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
 -- Unlocks the banquet_accounts table
