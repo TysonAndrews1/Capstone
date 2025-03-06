@@ -68,4 +68,16 @@ public class ChatController {
         return chatService.getChatParticipants(chatId);
     }
 
+    @DeleteMapping("/{chatId}/accounts/{accountId}")
+    public ResponseEntity<?> removeAccountFromChat(@PathVariable Long chatId, @PathVariable Long accountId) {
+        chatService.removeAccountFromChat(chatId, accountId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{chatId}/accounts/{accountId}")
+    public ResponseEntity<?> addAccountToChat(@PathVariable Long chatId, @PathVariable Long accountId) {
+        chatService.addAccountToChat(chatId, accountId);
+        return ResponseEntity.ok().build();
+    }
+
 }

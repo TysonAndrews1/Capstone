@@ -90,4 +90,32 @@ public class ChatService {
                 .collect(Collectors.toList());
     }
 
+    public void removeAccountFromChat(Long chatId, Long accountId) {
+        BanquetChat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new RuntimeException("Chat not found"));
+
+        BanquetAccount account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if (!chat.getAccounts().contains(account)) {
+            throw new RuntimeException("Account is not part of this chat");
+        }
+
+        chat.getAccounts().remove(account);
+        chatRepository.save(chat);
+    }
+
+    public void addAccountToChat(Long chatId, Long accountId) {
+        BanquetChat chat = chatRepository.findById(chatId)
+                .orElseThrow(() -> new RuntimeException("Chat not found"));
+
+        BanquetAccount account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+
+        if (!chat.getAccounts().contains(account)) {
+            chat.getAccounts().add(account);
+            chatRepository.save(chat);
+        }
+    }
+
 }
