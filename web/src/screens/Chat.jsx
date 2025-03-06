@@ -282,11 +282,9 @@ export default function ChatPage() {
                 setError("Sorry but you cannot change the membership of the public channel")
                 console.log(error);
                 
-            }if (chat.accounts.some(account => account.accountId === element.value)) {
+            }else if (chat.participants.some(account => account.accountId === element.value)) {
                 setError(prev => prev + `Sorry but ${element.label} is already in this chat`)
-                console.log(error);
-                
-            
+                console.log(error);    
             }else{
             fetch(`${BASE_URL}/chat/${chat.chatId}/accounts/${element.value}`, {method: "POST"}).then((response) => {
                 if (response.ok) {
@@ -301,8 +299,11 @@ export default function ChatPage() {
                             destination: `/app/chat/${chat.chatId}/send`,
                             body: JSON.stringify(chatMessage)  // No need to include the body if you're using URL parameters
                           });
-                        console.log(messages);
-    
+                          setChat(prev => ({
+                            ...prev,
+                            participants: [...prev.participants, { accountId: element.value, firstName: element.label}]
+                          }));
+                          setError("")
                 } else {
                     console.error("Failed to add account to chat.");
                 }
@@ -402,7 +403,7 @@ export default function ChatPage() {
                 />
                 <button onClick={sendMessage} className="p-2 ml-2 border rounded">Send</button>
                 {currentUser.role === "Manager" && (
-                    <button onClick={deleteMessages} className="basic-button mt-4">Delete</button>
+                    <button onClick={deleteMessages} className="basic-button mt-4">Delete Messages</button>
                 )}
             </div>
     

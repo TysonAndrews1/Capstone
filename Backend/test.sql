@@ -314,6 +314,9 @@ CREATE TABLE banquet_chat_accounts (
 );
 
 INSERT INTO `banquet_chat` (id, name) VALUES (1, 'Public Chat');
+DELETE FROM banquet_chat 
+WHERE id NOT IN (SELECT DISTINCT chat_id FROM banquet_chat_accounts) 
+AND id != 1;
 
 
 --

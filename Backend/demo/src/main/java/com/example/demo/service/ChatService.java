@@ -10,6 +10,7 @@ import com.example.demo.repository.ChatRepository;
 import com.example.demo.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -117,5 +118,13 @@ public class ChatService {
             chatRepository.save(chat);
         }
     }
+
+    // @Scheduled(cron = "0 0 0 * * ?") // This runs every day at midnight
+    // @Transactional
+    // public void cleanUpEmptyChats() {
+    //     // Delete chats with no members (participants)
+    //     chatRepository.deleteChatsWithoutParticipantsExcludingChat1();
+    //     System.out.println("Empty chats have been cleaned up, excluding chatId 1!");
+    // }
 
 }
