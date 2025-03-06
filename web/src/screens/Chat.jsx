@@ -42,6 +42,7 @@ export default function ChatPage() {
 
 
     })},[])
+    //List of Chats that user is part of
     useEffect(() => {
         if (currentUser && currentUser.accountId) {
             getChats();
@@ -79,10 +80,9 @@ export default function ChatPage() {
         chat.chatId === 1 || // Always include public chat with ID:1
         chat.participants.some(participant => participant.chatId === currentUser.accountId)
     );
-    
-            
             console.log("Filtered chats for current user:", filteredChats);
             setChats(filteredChats);
+
         } catch (error) {
             console.error("Error fetching chats:", error);
         } finally{
@@ -91,8 +91,11 @@ export default function ChatPage() {
     };
     // Fetch chat history once on component mount
     useEffect(() => {
+      
+        
         const fetchMessages = async () => {
             try {
+                console.log(chat);
                 const response = await fetch(`${BASE_URL}/chat/messages/${chat.chatId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -150,10 +153,6 @@ export default function ChatPage() {
                 console.log("subbed");
                 
                 try {                    
-                    let tempYou;
-
-
-                
                     const parsedMessage = JSON.parse(msg.body)
                     console.log(parsedMessage);
                     console.log(accounts)
@@ -203,7 +202,7 @@ export default function ChatPage() {
         }
     };
 
-        const createChat = async () => {
+    const createChat = async () => {
             const employeeIds = [...selectedEmployees.map(emp => emp.value), currentUser.accountId];
             try {
                 let response = await fetch(`${BASE_URL}/chat/create`, {
@@ -223,7 +222,7 @@ export default function ChatPage() {
             } catch (err) {
                 console.error("Error creating chat:", err);
             }
-        };
+    };
         
 
     const deleteMessages = () => {
@@ -283,6 +282,11 @@ export default function ChatPage() {
                 setError("Sorry but you cannot change the membership of the public channel")
                 console.log(error);
                 
+            }if (chat.accounts.some(account => account.accountId === element.value)) {
+                setError(prev => prev + `Sorry but ${element.label} is already in this chat`)
+                console.log(error);
+                
+            
             }else{
             fetch(`${BASE_URL}/chat/${chat.chatId}/accounts/${element.value}`, {method: "POST"}).then((response) => {
                 if (response.ok) {
@@ -347,7 +351,7 @@ export default function ChatPage() {
                                     className="ml-2 text-red-500 hover:text-red-700" 
                                     onClick={(e) => {
                                         e.stopPropagation(); // Prevent onClick from selecting chat
-                                        removeChat(achat.chatId);
+                                        removeChat(achat.chatId)
                                     }}
                                 >
                                     ✖
@@ -423,6 +427,15 @@ export default function ChatPage() {
                 </button> </div>:
                     
                 <></>}
+                <div>
+                    <p>Members: </p>
+
+                    { chat.chatId == 1? <p>Everyone</p> :
+                    chat.participants.map((name)=>(
+                        <p key={name.chatId}>{name.firstName} {name.lastName}</p>
+                    ))
+                    }
+                </div>
                 
             </div>
         </div>
