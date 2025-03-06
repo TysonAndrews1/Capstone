@@ -283,11 +283,35 @@ INSERT INTO `employee_vote` VALUES
 (3, 3, 2, '2025-02-25 12:15:00', 'Goes above and beyond to ensure customer satisfaction.', 1.0);
 /*!40000 ALTER TABLE `employee_vote` ENABLE KEYS */;
 
--- intitalizes the public chat
-INSERT INTO Chat (id, name) VALUES (1, 'Public Chat');
 
 -- Unlocks the employee_vote table
 UNLOCK TABLES;
+DROP TABLE IF EXISTS `banquet_chat_accounts`;
+DROP TABLE IF EXISTS `banquet_chat_messages`;
+DROP TABLE IF EXISTS `banquet_chat`;
+
+CREATE TABLE banquet_chat (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+CREATE TABLE banquet_chat_messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    chat_id BIGINT NOT NULL,
+    FOREIGN KEY (chat_id) REFERENCES banquet_chat(id) ON DELETE CASCADE
+);
+CREATE TABLE banquet_chat_accounts (
+    chat_id BIGINT NOT NULL,
+    account_id INT NOT NULL,
+    PRIMARY KEY (chat_id, account_id),
+    FOREIGN KEY (chat_id) REFERENCES banquet_chat(id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES banquet_accounts(account_id) ON DELETE CASCADE
+);
+
+INSERT INTO `banquet_chat` (id, name) VALUES (1, 'Public Chat');
+
 
 --
 -- Table structure for table `employee_attendance`

@@ -7,8 +7,9 @@ import com.example.demo.repository.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository.*;
+
+import java.util.*;
+import java.time.LocalDateTime;
 
 @Service
 public class ChatService {
@@ -19,14 +20,17 @@ public class ChatService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    public void sendMessage(Long chatId, Long senderId, String content) {
-        BanquetChat chat = chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
-        BanquetChatMessage message = new BanquetChatMessage();
-        message.setSenderId(senderId);
-        message.setContent(content);
-        message.setChat(chat);
-        messageRepository.save(message);
-        messagingTemplate.convertAndSend("/topic/chat/" + chatId, message);
+    public void sendMessage(BanquetChatMessage message, long chatId) {
+        message.setTimestamp(LocalDateTime.now()); // Set the timestamp
+        messageRepository.save(message); // Save the message to the DB
+        try {
+            messagingTemplate.convertAndSend("/topic/chat/" + chatId, message);
+            System.out.println("Message broadcast complete");
+        } catch (Exception e) {
+            System.err.println("Error broadcasting message: " + e.getMessage());
+            e.printStackTrace();
+        }
+
     }
 
     public List<BanquetChatMessage> getMessages(Long chatId) {
@@ -37,5 +41,10 @@ public class ChatService {
     public void clearChat(Long chatId) {
         BanquetChat chat = chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
         messageRepository.deleteAll(chat.getMessages());
+        messageRepository.deleteByChatId(chatId);
+    }
+
+    public BanquetChat getChatById(Long chatId) {
+        return chatRepository.findById(chatId).orElseThrow(() -> new RuntimeException("Chat not found"));
     }
 }
