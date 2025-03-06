@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
 import SockJS from "sockjs-client";
 import { Client } from '@stomp/stompjs';
@@ -15,7 +17,8 @@ export default function ChatPage() {
     const [selectedEmployees, setSelectedEmployees] = useState([])
     const [chats, setChats] =useState([])
     const [createChatName, setCreateChatName] = useState("")
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true)
+
     useEffect(()=>{
         getCurrentUser().then((e)=>{setCurrentUser(e) 
         let uid = e.accountId
@@ -32,6 +35,7 @@ export default function ChatPage() {
             console.error("Error fetching accounts:", error);
         });
         
+
 
 
     })},[])
@@ -143,22 +147,24 @@ export default function ChatPage() {
                 console.log("subbed");
                 
                 try {                    
-            // Append the current user's name to the message
-            getCurrentUser().then((e)=>{console.log(e);
-                console.log(currentUser);
+                    let tempYou;
+
+
                 
-            })
                     const parsedMessage = JSON.parse(msg.body)
+                    console.log(parsedMessage);
+                    console.log(accounts)
                     if (parsedMessage.senderId === currentUser.accountId) {
                         parsedMessage.name = `${currentUser.firstName} ${currentUser.lastName}`;
                     } else {
-                        const senderAccount = accounts.find(account => account.value === parsedMessage.senderId);
+                        const senderAccount = accounts.find(account => account.value == parsedMessage.senderId);
+                        console.log(accounts);
+                        
                         parsedMessage.name = senderAccount
                             ? `${senderAccount.label}`
                             : 'Unknown';
                     }
                     setMessages((prev) => [...prev, parsedMessage]);
-
                 } catch (error) {
                     console.error("Error parsing message:", error);
                 }
@@ -172,7 +178,7 @@ export default function ChatPage() {
         setStompClient(client);
 
         return () => client.deactivate();
-    }, [chatId]);
+    }, [chatId,accounts,currentUser]);
 
     // Send a message on button click or Enter key press
      const sendMessage = () => {
@@ -194,7 +200,7 @@ export default function ChatPage() {
         }
     };
 
-        const createChat = async (chatName) => {
+        const createChat = async () => {
             let employeeIds = [...selectedEmployees.map(emp => emp.value), currentUser.accountId];
             try {
                 const response = await fetch(`${BASE_URL}/chat/create`, {
@@ -283,13 +289,28 @@ export default function ChatPage() {
         <p className="w-full p-2 mb-4">User: {currentUser.firstName}</p>
 
         {/* Messages Display */}
-        <div className="border border-gray-300 p-3 h-72 overflow-y-auto mb-4">
-            {messages.map((msg, index) => (
-                <div key={index}>
-                    <strong>{msg.name}:</strong> {msg.content}
+        <div className="border border-gray-300 p-3 h-72 overflow-y-auto mb-4 flex flex-col gap-2">
+    {messages.map((msg, index) => {
+        const isCurrentUser = msg.senderId === currentUser?.accountId ||msg.id === currentUser?.accountId;
+        return (
+            <div 
+                key={index} 
+                className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}
+            >
+                <div 
+                    className={`p-2 w-[15vw] rounded-lg shadow-md ${
+                        isCurrentUser 
+                            ? 'bg-blue-500 text-white rounded-br-none' // Current user
+                            : 'bg-gray-200 text-black rounded-bl-none' // Other users
+                    }`}
+                >
+                    <span className="text-sm font-semibold block mb-1">{msg.name}</span>
+                    <span className="text-sm">{msg.content}</span>
                 </div>
-            ))}
-        </div>
+            </div>
+        );
+    })}
+</div>
 
         {/* Message Input */}
         <input 
