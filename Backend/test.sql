@@ -278,9 +278,11 @@ LOCK TABLES `employee_vote` WRITE;
 /*!40000 ALTER TABLE `employee_vote` DISABLE KEYS */;
 
 INSERT INTO `employee_vote` VALUES 
-(1, 1, 2, '2025-02-25 10:30:00', 'Always willing to help and stays late to assist the team.', 2.0),
-(2, 2, 3, '2025-02-25 11:00:00', 'Great leadership skills and positive attitude.', 1.0),
-(3, 3, 2, '2025-02-25 12:15:00', 'Goes above and beyond to ensure customer satisfaction.', 1.0);
+(1, 1, 2, '2025-02-25 10:30:00', 'Always willing to help and stays late to assist the team.', 1.0),
+(2, 4, 5, '2025-02-25 11:00:00', 'Great leadership skills and positive attitude.', 1.0),
+(3, 5, 2, '2025-02-25 12:15:00', 'Goes above and beyond to ensure customer satisfaction.', 1.0),
+(4, 6, 2, '2025-02-25 12:35:00', 'Teamplayer!', 1.0),
+(5, 7, 2, '2025-02-25 12:55:00', 'Works really hard and helps others!', 1.0);
 /*!40000 ALTER TABLE `employee_vote` ENABLE KEYS */;
 
 -- Unlocks the employee_vote table
@@ -321,6 +323,26 @@ INSERT INTO `employee_attendance` VALUES
 
 -- Unlocks the employee_attendance table
 UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_winner`
+--
+
+-- Deletes employee_winner if it exists
+DROP TABLE IF EXISTS `employee_winner`;
+
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+-- Creates employee_winner table structure
+CREATE TABLE `employee_winner` (
+  `winner_id` INT PRIMARY KEY AUTO_INCREMENT,
+  `account_id` int NOT NULL,
+  `first_name` varchar(100) DEFAULT NULL,
+  `last_name` varchar(100) DEFAULT NULL,
+  FOREIGN KEY (`account_id`) REFERENCES `banquet_accounts`(`account_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Cleanup and Reset Settings
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
