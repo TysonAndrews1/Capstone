@@ -142,12 +142,23 @@ export default function ChatPage() {
             client.subscribe(`/topic/chat/${chatId}`, (msg) => {
                 console.log("subbed");
                 
-                try {
-                    
-                    const parsedMessage = JSON.parse(msg.body);
+                try {                    
+            // Append the current user's name to the message
+            getCurrentUser().then((e)=>{console.log(e);
+                console.log(currentUser);
+                
+            })
+                    const parsedMessage = JSON.parse(msg.body)
+                    if (parsedMessage.senderId === currentUser.accountId) {
+                        parsedMessage.name = `${currentUser.firstName} ${currentUser.lastName}`;
+                    } else {
+                        const senderAccount = accounts.find(account => account.value === parsedMessage.senderId);
+                        parsedMessage.name = senderAccount
+                            ? `${senderAccount.label}`
+                            : 'Unknown';
+                    }
                     setMessages((prev) => [...prev, parsedMessage]);
 
-                    
                 } catch (error) {
                     console.error("Error parsing message:", error);
                 }
