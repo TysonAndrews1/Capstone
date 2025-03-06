@@ -203,7 +203,14 @@ export default function ChatPage() {
     };
 
     const createChat = async () => {
-            const employeeIds = [...selectedEmployees.map(emp => emp.value), currentUser.accountId];
+        if (createChatName == "" || selectedEmployees.length == 0) {
+            setError("Please fill in both an employee and a chat name to create a new chat")
+        
+        }else{
+
+            console.log(selectedEmployees);
+            
+        const employeeIds = [...selectedEmployees.map(emp => emp.value), currentUser.accountId];
             try {
                 let response = await fetch(`${BASE_URL}/chat/create`, {
                     method: "POST",
@@ -217,13 +224,23 @@ export default function ChatPage() {
                 const staticname = createChatName
                 let newChat = await response.json();
                 console.log(newChat);
-                newChat = {chatId: newChat.id, name: staticname};
+                newChat = {
+                    chatId: newChat.id,
+                    name: staticname,
+                    participants: selectedEmployees.map(employee => ({
+                      accountId: employee.value, // Convert 'value' to 'accountId'
+                      firstName: employee.label // Assuming 'label' is 'FirstName LastName' and we take the first part as the first name
+                    }))
+                  };
                 setChats((prevChats) => [...prevChats, newChat]); // Update UI
+                setCreateChatName("")
+                setSelectedEmployees([])
+                setError("")
             } catch (err) {
                 console.error("Error creating chat:", err);
             }
-    };
-        
+        }
+    }
 
     const deleteMessages = () => {
         fetch(`${BASE_URL}/chat/clear/${chat.chatId}`, { method: "DELETE" })
@@ -268,6 +285,7 @@ export default function ChatPage() {
                         body: JSON.stringify(chatMessage)  // No need to include the body if you're using URL parameters
                       });
                     console.log(messages);
+                setChat(chats[0])
 
             } else {
                 console.error("Failed to remove account from chat.");
@@ -304,6 +322,8 @@ export default function ChatPage() {
                             participants: [...prev.participants, { accountId: element.value, firstName: element.label}]
                           }));
                           setError("")
+                          setSelectedNewMembers([])
+                          setMembersDiv(prev => !prev)
                 } else {
                     console.error("Failed to add account to chat.");
                 }
@@ -365,9 +385,9 @@ export default function ChatPage() {
     
             {/* Chat Window */}
             <div className="w-2/4 p-4 text-center border-r border-gray-300">
-                <h2 className="text-2xl font-semibold mb-4">WebSocket Chat</h2>
+                <h2 className="text-2xl font-semibold mb-4">{chat.name}</h2>
                 <h4 className="font-semibold text-red-600" >{error}</h4>
-                <p className="w-full p-2 mb-4">User: {currentUser.firstName}</p>
+                <p className="w-full p-2 mb-4">User: {currentUser.firstName} {currentUser.lastName}</p>
     
                 {/* Messages Display */}
                 <div className="border border-gray-300 p-3 h-72 overflow-y-auto mb-4 flex flex-col gap-2">
