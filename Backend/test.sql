@@ -112,6 +112,7 @@ INSERT INTO `banquet_accounts` VALUES
 (5, 'Natasha', 'Romanoff', '000005', 'blackwidow@example.com', '2 Spy Blvd SE', '403-222-2222', 'Employee', 'ACTIVE'),
 (6, 'Clint', 'Barton', '000006', 'hawkeye@example.com', '3 Arrow Place NE', '403-333-3333', 'Employee', 'ACTIVE'),
 (7, 'Bruce', 'Banner', '000007', 'hulk@example.com', '4 Smash Way SE', '403-444-4444', 'Employee', 'ACTIVE');
+(0, 'System', 'Log', '000000', 'N/A', 'N/A', 'N/A', 'Manager', 'ACTIVE');
 /*!40000 ALTER TABLE `banquet_accounts` ENABLE KEYS */;
 
 -- Unlocks the banquet_accounts table
@@ -285,8 +286,38 @@ INSERT INTO `employee_vote` VALUES
 (5, 7, 2, '2025-02-25 12:55:00', 'Works really hard and helps others!', 1.0);
 /*!40000 ALTER TABLE `employee_vote` ENABLE KEYS */;
 
+
 -- Unlocks the employee_vote table
 UNLOCK TABLES;
+DROP TABLE IF EXISTS `banquet_chat_accounts`;
+DROP TABLE IF EXISTS `banquet_chat_messages`;
+DROP TABLE IF EXISTS `banquet_chat`;
+
+CREATE TABLE banquet_chat (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+CREATE TABLE banquet_chat_messages (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    content TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    chat_id BIGINT NOT NULL,
+    FOREIGN KEY (chat_id) REFERENCES banquet_chat(id) ON DELETE CASCADE
+);
+CREATE TABLE banquet_chat_accounts (
+    chat_id BIGINT NOT NULL,
+    account_id INT NOT NULL,
+    PRIMARY KEY (chat_id, account_id),
+    FOREIGN KEY (chat_id) REFERENCES banquet_chat(id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES banquet_accounts(account_id) ON DELETE CASCADE
+);
+
+INSERT INTO `banquet_chat` (id, name) VALUES (1, 'Public Chat');
+DELETE FROM banquet_chat 
+WHERE id NOT IN (SELECT DISTINCT chat_id FROM banquet_chat_accounts) 
+AND id != 1;
+
 
 --
 -- Table structure for table `employee_attendance`

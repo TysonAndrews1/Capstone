@@ -70,6 +70,7 @@ export default function RootLayout() {
 
       <Stack.Screen name="screens/NFCFeature/ClockInClockOut" options={{ title: 'Clock In / Clock Out'}}/>
       <Stack.Screen name="screens/NFCFeature/AttendanceLog" options={{ title: 'Attendance Log'}}/>
+      <Stack.Screen name="screens/chatFeature/Chat" options={{ title: 'Chat'}}/>
 
     </Stack>
   );

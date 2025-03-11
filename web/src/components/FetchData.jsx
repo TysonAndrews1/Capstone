@@ -1,7 +1,7 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 
-const BASE_URL =  'http://localhost:8080/api'
+  export const BASE_URL =  'http://localhost:8080/api'
 
 export const getShifts = async() =>{
     try {
